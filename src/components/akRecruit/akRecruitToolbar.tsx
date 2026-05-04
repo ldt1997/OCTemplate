@@ -236,7 +236,7 @@ export function AkRecruitToolbar({
   return (
     <>
       {variant === "desktop" ? (
-        <div className="flex h-full flex-col bg-background p-4">          
+        <div className="flex h-full flex-col bg-background p-4">
           <Tabs
             defaultValue={sections[0].key}
             orientation="vertical"
@@ -272,10 +272,10 @@ export function AkRecruitToolbar({
           </Tabs>
         </div>
       ) : (
-        <div className="absolute inset-x-3 bottom-3 z-20 lg:hidden">
+        <div className="lg:hidden">
           <Tabs
             defaultValue={sections[0].key}
-            className="rounded-2xl border bg-background/95 p-3 shadow-xl backdrop-blur"
+            className="bg-background p-4"
           >
             <TabsList className="grid h-auto w-full grid-cols-3">
               {sections.map((section) => (
@@ -300,7 +300,9 @@ export function AkRecruitToolbar({
                   <FieldDescription className="mt-1">
                     {section.desc}
                   </FieldDescription>
-                  <div className="mt-4">{section.content}</div>
+                  <div className="mt-4 pb-[calc(env(safe-area-inset-bottom,0px)+8px)]">
+                    {section.content}
+                  </div>
                 </div>
               </TabsContent>
             ))}

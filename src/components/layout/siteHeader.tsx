@@ -8,8 +8,8 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ actions }: SiteHeaderProps) {
   return (
-    <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
-      <div className="flex items-center justify-between px-4 py-3">
+    <header className="sticky top-0 z-10 h-16 shrink-0 border-b border-border bg-background/95 backdrop-blur">
+      <div className="flex h-full items-center justify-between px-4">
         <Link
           to="/"
           className="text-2xl font-extrabold tracking-[-0.02em] text-[#ff385c]"
