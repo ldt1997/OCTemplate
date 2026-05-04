@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/uiBadge";
-import { Button } from "@/components/ui/uiButton";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/uiCard";
+} from "@/components/ui/card";
 import type { TemplateItem } from "@/types/template";
 
 type TemplateCardProps = {
