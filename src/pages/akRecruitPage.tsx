@@ -355,7 +355,7 @@ export function AkRecruitPage() {
                 form={form}
                 imageSize={imageSize}
                 previewScale={previewScale}
-                onImageTransformChange={(next) =>
+                onImageTransformCommit={(next) =>
                   setForm((current) => ({
                     ...current,
                     ...next,

@@ -1,10 +1,10 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   akRecruitAssets,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   clamp,
-  getImageLayout,
+  getBaseImageLayout,
   organizationAssetMap,
   posterEnNameStyle,
   posterIntroStyle,
@@ -18,7 +18,7 @@ type AkRecruitPreviewProps = {
   form: RecruitFormState;
   imageSize: ImageSize | null;
   previewScale: number;
-  onImageTransformChange: (
+  onImageTransformCommit: (
     next: Partial<
       Pick<RecruitFormState, "imageScale" | "imageOffsetX" | "imageOffsetY">
     >,
@@ -29,11 +29,16 @@ export function AkRecruitPreview({
   form,
   imageSize,
   previewScale,
-  onImageTransformChange,
+  onImageTransformCommit,
 }: AkRecruitPreviewProps) {
   const professionAsset = form.profession
     ? professionAssetMap[form.profession]
     : null;
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const wheelCommitTimeoutRef = useRef<number | null>(null);
+  const isInteractingRef = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
   const interactionRef = useRef<{
     mode: "idle" | "drag" | "pinch";
     startX: number;
@@ -53,54 +58,113 @@ export function AkRecruitPreview({
     initialDistance: 0,
     pointers: new Map(),
   });
+  const liveTransformRef = useRef({
+    imageScale: form.imageScale,
+    imageOffsetX: form.imageOffsetX,
+    imageOffsetY: form.imageOffsetY,
+  });
 
-  const imageLayout = useMemo(() => {
-    if (!form.imageUrl || !imageSize) {
+  const baseLayout = useMemo(() => {
+    if (!imageSize) {
       return null;
     }
 
-    return getImageLayout(
-      imageSize.width,
-      imageSize.height,
-      form.imageScale,
-      form.imageOffsetX,
-      form.imageOffsetY,
-    );
-  }, [
-    form.imageOffsetX,
-    form.imageOffsetY,
-    form.imageScale,
-    form.imageUrl,
-    imageSize,
-  ]);
+    return getBaseImageLayout(imageSize.width, imageSize.height);
+  }, [imageSize]);
 
-  const handleWheel = (event: React.WheelEvent<HTMLImageElement>) => {
-    event.preventDefault();
-    onImageTransformChange({
-      imageScale: clamp(form.imageScale + (event.deltaY < 0 ? 0.08 : -0.08), 0.5, 3),
+  const syncNodeTransform = () => {
+    const node = imageRef.current;
+    if (!node) {
+      return;
+    }
+
+    const { imageScale, imageOffsetX, imageOffsetY } = liveTransformRef.current;
+    node.style.transform = `translate3d(${imageOffsetX}px, ${imageOffsetY}px, 0) scale(${imageScale})`;
+  };
+
+  const scheduleNodeTransform = () => {
+    if (frameRef.current !== null) {
+      return;
+    }
+
+    frameRef.current = window.requestAnimationFrame(() => {
+      frameRef.current = null;
+      syncNodeTransform();
     });
   };
 
+  const commitTransform = () => {
+    onImageTransformCommit({ ...liveTransformRef.current });
+  };
+
+  useEffect(() => {
+    if (isInteractingRef.current) {
+      return;
+    }
+
+    liveTransformRef.current = {
+      imageScale: form.imageScale,
+      imageOffsetX: form.imageOffsetX,
+      imageOffsetY: form.imageOffsetY,
+    };
+    syncNodeTransform();
+  }, [form.imageOffsetX, form.imageOffsetY, form.imageScale, form.imageUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+      }
+      if (wheelCommitTimeoutRef.current !== null) {
+        window.clearTimeout(wheelCommitTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleWheel = (event: React.WheelEvent<HTMLImageElement>) => {
+    event.preventDefault();
+    liveTransformRef.current = {
+      ...liveTransformRef.current,
+      imageScale: clamp(
+        liveTransformRef.current.imageScale + (event.deltaY < 0 ? 0.08 : -0.08),
+        0.5,
+        3,
+      ),
+    };
+    scheduleNodeTransform();
+
+    if (wheelCommitTimeoutRef.current !== null) {
+      window.clearTimeout(wheelCommitTimeoutRef.current);
+    }
+
+    wheelCommitTimeoutRef.current = window.setTimeout(() => {
+      commitTransform();
+    }, 120);
+  };
+
   const handlePointerDown = (event: React.PointerEvent<HTMLImageElement>) => {
+    isInteractingRef.current = true;
     const state = interactionRef.current;
     state.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 
     if (state.pointers.size === 2) {
       const [first, second] = Array.from(state.pointers.values());
       state.mode = "pinch";
-      state.initialScale = form.imageScale;
+      state.initialScale = liveTransformRef.current.imageScale;
       state.initialDistance = Math.hypot(
         second.x - first.x,
         second.y - first.y,
       );
+      setIsDragging(false);
       return;
     }
 
     state.mode = "drag";
+    setIsDragging(true);
     state.startX = event.clientX;
     state.startY = event.clientY;
-    state.originX = form.imageOffsetX;
-    state.originY = form.imageOffsetY;
+    state.originX = liveTransformRef.current.imageOffsetX;
+    state.originY = liveTransformRef.current.imageOffsetY;
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
@@ -116,24 +180,28 @@ export function AkRecruitPreview({
       const [first, second] = Array.from(state.pointers.values());
       const distance = Math.hypot(second.x - first.x, second.y - first.y);
       if (state.initialDistance > 0) {
-        onImageTransformChange({
+        liveTransformRef.current = {
+          ...liveTransformRef.current,
           imageScale: clamp(
             state.initialScale * (distance / state.initialDistance),
             0.5,
             3,
           ),
-        });
+        };
+        scheduleNodeTransform();
       }
       return;
     }
 
     if (state.mode === "drag") {
-      onImageTransformChange({
+      liveTransformRef.current = {
+        ...liveTransformRef.current,
         imageOffsetX:
           state.originX + (event.clientX - state.startX) / previewScale,
         imageOffsetY:
           state.originY + (event.clientY - state.startY) / previewScale,
-      });
+      };
+      scheduleNodeTransform();
     }
   };
 
@@ -144,11 +212,12 @@ export function AkRecruitPreview({
     if (state.pointers.size >= 2) {
       const [first, second] = Array.from(state.pointers.values());
       state.mode = "pinch";
-      state.initialScale = form.imageScale;
+      state.initialScale = liveTransformRef.current.imageScale;
       state.initialDistance = Math.hypot(
         second.x - first.x,
         second.y - first.y,
       );
+      setIsDragging(false);
       return;
     }
 
@@ -157,12 +226,16 @@ export function AkRecruitPreview({
       state.mode = "drag";
       state.startX = remaining.x;
       state.startY = remaining.y;
-      state.originX = form.imageOffsetX;
-      state.originY = form.imageOffsetY;
+      state.originX = liveTransformRef.current.imageOffsetX;
+      state.originY = liveTransformRef.current.imageOffsetY;
+      setIsDragging(true);
       return;
     }
 
     state.mode = "idle";
+    isInteractingRef.current = false;
+    setIsDragging(false);
+    commitTransform();
   };
 
   return (
@@ -181,26 +254,27 @@ export function AkRecruitPreview({
         style={{ left: 342, top: 190, width: 500 }}
       />
 
-      {form.imageUrl && imageLayout ? (
+      {form.imageUrl && baseLayout ? (
         <img
+          ref={imageRef}
           src={form.imageUrl}
           alt="上传的角色图片"
           className={`absolute select-none touch-none ${
-            interactionRef.current.mode === "drag"
-              ? "cursor-grabbing"
-              : "cursor-grab"
+            isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           style={{
-            left: imageLayout.imageX,
-            top: imageLayout.imageY,
-            width: imageLayout.imageWidth,
-            height: imageLayout.imageHeight,
+            left: baseLayout.baseX,
+            top: baseLayout.baseY,
+            width: baseLayout.baseWidth,
+            height: baseLayout.baseHeight,
+            transformOrigin: "center center",
           }}
           onWheel={handleWheel}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerEnd}
           onPointerCancel={handlePointerEnd}
+          onPointerLeave={handlePointerEnd}
         />
       ) : null}
 

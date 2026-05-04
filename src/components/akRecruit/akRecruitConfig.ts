@@ -69,6 +69,13 @@ export type RenderLayout = {
   imageY: number;
 };
 
+export type BaseImageLayout = {
+  baseWidth: number;
+  baseHeight: number;
+  baseX: number;
+  baseY: number;
+};
+
 export type ImageSize = {
   width: number;
   height: number;
@@ -141,7 +148,8 @@ export function getImageLayout(
   imageOffsetX: number,
   imageOffsetY: number,
 ): RenderLayout {
-  if (imageWidth === 0 || imageHeight === 0) {
+  const baseLayout = getBaseImageLayout(imageWidth, imageHeight);
+  if (!baseLayout) {
     return {
       imageWidth: 0,
       imageHeight: 0,
@@ -150,17 +158,36 @@ export function getImageLayout(
     };
   }
 
-  const baseHeight = CANVAS_HEIGHT;
-  const baseWidth = (imageWidth / imageHeight) * baseHeight;
-  const nextWidth = baseWidth * imageScale;
-  const nextHeight = baseHeight * imageScale;
-  const centeredX = (CANVAS_WIDTH - nextWidth) / 2;
-  const centeredY = (CANVAS_HEIGHT - nextHeight) / 2;
+  const nextWidth = baseLayout.baseWidth * imageScale;
+  const nextHeight = baseLayout.baseHeight * imageScale;
+  const nextX =
+    baseLayout.baseX + imageOffsetX - (nextWidth - baseLayout.baseWidth) / 2;
+  const nextY =
+    baseLayout.baseY + imageOffsetY - (nextHeight - baseLayout.baseHeight) / 2;
 
   return {
     imageWidth: nextWidth,
     imageHeight: nextHeight,
-    imageX: centeredX + imageOffsetX,
-    imageY: centeredY + imageOffsetY,
+    imageX: nextX,
+    imageY: nextY,
+  };
+}
+
+export function getBaseImageLayout(
+  imageWidth: number,
+  imageHeight: number,
+): BaseImageLayout | null {
+  if (imageWidth === 0 || imageHeight === 0) {
+    return null;
+  }
+
+  const baseHeight = CANVAS_HEIGHT;
+  const baseWidth = (imageWidth / imageHeight) * baseHeight;
+
+  return {
+    baseWidth,
+    baseHeight,
+    baseX: (CANVAS_WIDTH - baseWidth) / 2,
+    baseY: (CANVAS_HEIGHT - baseHeight) / 2,
   };
 }
