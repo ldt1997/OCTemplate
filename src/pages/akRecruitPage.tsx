@@ -99,9 +99,9 @@ async function exportRecruitImage(form: RecruitFormState) {
     const layout = getImageLayout(
       uploadedImage.width,
       uploadedImage.height,
-      form.scale,
-      form.offsetX,
-      form.offsetY,
+      form.imageScale,
+      form.imageOffsetX,
+      form.imageOffsetY,
     );
     ctx.drawImage(
       uploadedImage,
@@ -257,6 +257,9 @@ export function AkRecruitPage() {
           ...current,
           imageFile: null,
           imageUrl: null,
+          imageScale: 1,
+          imageOffsetX: 0,
+          imageOffsetY: 0,
         };
       });
       return;
@@ -285,6 +288,9 @@ export function AkRecruitPage() {
         ...current,
         imageFile: nextFile,
         imageUrl: nextUrl,
+        imageScale: 1,
+        imageOffsetX: 0,
+        imageOffsetY: 0,
       };
     });
   };
@@ -324,7 +330,7 @@ export function AkRecruitPage() {
             onSliderChange={(field, value) =>
               setForm((current) => ({
                 ...current,
-                [field]: field === "rarity" ? Math.round(value) : value,
+                [field]: Math.round(value),
               }))
             }
             onOrganizationChange={(value) =>
@@ -337,8 +343,26 @@ export function AkRecruitPage() {
         </aside>
 
         <section className="relative min-w-0 flex-1">
-          <AkRecruitCanvas>
-            <AkRecruitPreview form={form} imageSize={imageSize} />
+          <AkRecruitCanvas
+            hint={
+              <div className="absolute left-4 top-4 z-10 rounded-full bg-background/90 px-3 py-1 text-xs text-muted-foreground shadow-sm">
+                滚轮或双指缩放图片，拖动调整位置
+              </div>
+            }
+          >
+            {(previewScale) => (
+              <AkRecruitPreview
+                form={form}
+                imageSize={imageSize}
+                previewScale={previewScale}
+                onImageTransformChange={(next) =>
+                  setForm((current) => ({
+                    ...current,
+                    ...next,
+                  }))
+                }
+              />
+            )}
           </AkRecruitCanvas>
 
           <AkRecruitToolbar
@@ -351,7 +375,7 @@ export function AkRecruitPage() {
             onSliderChange={(field, value) =>
               setForm((current) => ({
                 ...current,
-                [field]: field === "rarity" ? Math.round(value) : value,
+                [field]: Math.round(value),
               }))
             }
             onOrganizationChange={(value) =>

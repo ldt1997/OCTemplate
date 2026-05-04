@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import {
   akRecruitAssets,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
+  clamp,
   getImageLayout,
   organizationAssetMap,
   posterEnNameStyle,
@@ -16,10 +17,43 @@ import {
 type AkRecruitPreviewProps = {
   form: RecruitFormState;
   imageSize: ImageSize | null;
+  previewScale: number;
+  onImageTransformChange: (
+    next: Partial<
+      Pick<RecruitFormState, "imageScale" | "imageOffsetX" | "imageOffsetY">
+    >,
+  ) => void;
 };
 
-export function AkRecruitPreview({ form, imageSize }: AkRecruitPreviewProps) {
-  const professionAsset = form.profession ? professionAssetMap[form.profession] : null;
+export function AkRecruitPreview({
+  form,
+  imageSize,
+  previewScale,
+  onImageTransformChange,
+}: AkRecruitPreviewProps) {
+  const professionAsset = form.profession
+    ? professionAssetMap[form.profession]
+    : null;
+  const interactionRef = useRef<{
+    mode: "idle" | "drag" | "pinch";
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+    initialScale: number;
+    initialDistance: number;
+    pointers: Map<number, { x: number; y: number }>;
+  }>({
+    mode: "idle",
+    startX: 0,
+    startY: 0,
+    originX: 0,
+    originY: 0,
+    initialScale: 1,
+    initialDistance: 0,
+    pointers: new Map(),
+  });
+
   const imageLayout = useMemo(() => {
     if (!form.imageUrl || !imageSize) {
       return null;
@@ -28,11 +62,108 @@ export function AkRecruitPreview({ form, imageSize }: AkRecruitPreviewProps) {
     return getImageLayout(
       imageSize.width,
       imageSize.height,
-      form.scale,
-      form.offsetX,
-      form.offsetY,
+      form.imageScale,
+      form.imageOffsetX,
+      form.imageOffsetY,
     );
-  }, [form.imageUrl, form.offsetX, form.offsetY, form.scale, imageSize]);
+  }, [
+    form.imageOffsetX,
+    form.imageOffsetY,
+    form.imageScale,
+    form.imageUrl,
+    imageSize,
+  ]);
+
+  const handleWheel = (event: React.WheelEvent<HTMLImageElement>) => {
+    event.preventDefault();
+    onImageTransformChange({
+      imageScale: clamp(form.imageScale + (event.deltaY < 0 ? 0.08 : -0.08), 0.5, 3),
+    });
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLImageElement>) => {
+    const state = interactionRef.current;
+    state.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (state.pointers.size === 2) {
+      const [first, second] = Array.from(state.pointers.values());
+      state.mode = "pinch";
+      state.initialScale = form.imageScale;
+      state.initialDistance = Math.hypot(
+        second.x - first.x,
+        second.y - first.y,
+      );
+      return;
+    }
+
+    state.mode = "drag";
+    state.startX = event.clientX;
+    state.startY = event.clientY;
+    state.originX = form.imageOffsetX;
+    state.originY = form.imageOffsetY;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLImageElement>) => {
+    const state = interactionRef.current;
+    if (!state.pointers.has(event.pointerId)) {
+      return;
+    }
+
+    state.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (state.mode === "pinch" && state.pointers.size >= 2) {
+      const [first, second] = Array.from(state.pointers.values());
+      const distance = Math.hypot(second.x - first.x, second.y - first.y);
+      if (state.initialDistance > 0) {
+        onImageTransformChange({
+          imageScale: clamp(
+            state.initialScale * (distance / state.initialDistance),
+            0.5,
+            3,
+          ),
+        });
+      }
+      return;
+    }
+
+    if (state.mode === "drag") {
+      onImageTransformChange({
+        imageOffsetX:
+          state.originX + (event.clientX - state.startX) / previewScale,
+        imageOffsetY:
+          state.originY + (event.clientY - state.startY) / previewScale,
+      });
+    }
+  };
+
+  const handlePointerEnd = (event: React.PointerEvent<HTMLImageElement>) => {
+    const state = interactionRef.current;
+    state.pointers.delete(event.pointerId);
+
+    if (state.pointers.size >= 2) {
+      const [first, second] = Array.from(state.pointers.values());
+      state.mode = "pinch";
+      state.initialScale = form.imageScale;
+      state.initialDistance = Math.hypot(
+        second.x - first.x,
+        second.y - first.y,
+      );
+      return;
+    }
+
+    if (state.pointers.size === 1) {
+      const [remaining] = Array.from(state.pointers.values());
+      state.mode = "drag";
+      state.startX = remaining.x;
+      state.startY = remaining.y;
+      state.originX = form.imageOffsetX;
+      state.originY = form.imageOffsetY;
+      return;
+    }
+
+    state.mode = "idle";
+  };
 
   return (
     <div
@@ -54,13 +185,22 @@ export function AkRecruitPreview({ form, imageSize }: AkRecruitPreviewProps) {
         <img
           src={form.imageUrl}
           alt="上传的角色图片"
-          className="pointer-events-none absolute select-none"
+          className={`absolute select-none touch-none ${
+            interactionRef.current.mode === "drag"
+              ? "cursor-grabbing"
+              : "cursor-grab"
+          }`}
           style={{
             left: imageLayout.imageX,
             top: imageLayout.imageY,
             width: imageLayout.imageWidth,
             height: imageLayout.imageHeight,
           }}
+          onWheel={handleWheel}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerEnd}
+          onPointerCancel={handlePointerEnd}
         />
       ) : null}
 
@@ -74,7 +214,9 @@ export function AkRecruitPreview({ form, imageSize }: AkRecruitPreviewProps) {
               key={`star-${index}`}
               src={akRecruitAssets.starImage}
               alt=""
-              className={`h-[152px] w-[152px] ${index === 0 ? "" : "-ml-[35px]"}`}
+              className={`h-[152px] w-[152px] ${
+                index === 0 ? "" : "-ml-[35px]"
+              }`}
             />
           ))}
         </div>

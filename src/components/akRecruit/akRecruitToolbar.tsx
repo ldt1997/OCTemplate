@@ -18,8 +18,13 @@ import {
   FieldTitle,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type AkRecruitToolbarProps = {
@@ -27,7 +32,7 @@ type AkRecruitToolbarProps = {
   imageError: string | null;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onTextChange: (field: "name" | "enName" | "intro", value: string) => void;
-  onSliderChange: (field: "scale" | "offsetX" | "offsetY" | "rarity", value: number) => void;
+  onSliderChange: (field: "rarity", value: number) => void;
   onOrganizationChange: (value: OrganizationValue) => void;
   onProfessionChange: (value: ProfessionValue | "") => void;
 };
@@ -44,13 +49,13 @@ export function AkRecruitToolbar({
   const sections = [
     {
       key: "appearance",
-      label: "形象设置",
-      desc: "调整人物图片的显示效果与位置",
+      label: "人物立绘",
+      desc: "在预览区缩放并拖动人物图片",
       content: (
         <FieldSet>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="image-upload">人物图片</FieldLabel>
+              <FieldLabel htmlFor="image-upload">上传图片</FieldLabel>
               <FieldContent>
                 <Input
                   id="image-upload"
@@ -59,41 +64,14 @@ export function AkRecruitToolbar({
                   onChange={onFileChange}
                 />
                 <FieldDescription>
-                  支持 PNG / JPEG，最大 6MB{form.imageFile ? `，当前文件：${form.imageFile.name}` : ""}
+                  支持 PNG / JPEG，最大 6MB。滚轮或双指缩放，拖动调整位置
+                  {form.imageFile ? `，当前文件：${form.imageFile.name}` : ""}
                 </FieldDescription>
                 {imageError ? (
                   <p className="text-sm text-destructive">{imageError}</p>
                 ) : null}
               </FieldContent>
             </Field>
-
-            <AkRecruitSliderField
-              label="图片缩放"
-              value={form.scale}
-              min={0.1}
-              max={2}
-              step={0.1}
-              displayValue={form.scale.toFixed(2)}
-              onValueChange={(value) => onSliderChange("scale", value)}
-            />
-            <AkRecruitSliderField
-              label="水平偏移 (X)"
-              value={form.offsetX}
-              min={0}
-              max={1}
-              step={0.01}
-              displayValue={form.offsetX.toFixed(2)}
-              onValueChange={(value) => onSliderChange("offsetX", value)}
-            />
-            <AkRecruitSliderField
-              label="垂直偏移 (Y)"
-              value={form.offsetY}
-              min={0}
-              max={1}
-              step={0.01}
-              displayValue={form.offsetY.toFixed(2)}
-              onValueChange={(value) => onSliderChange("offsetY", value)}
-            />
           </FieldGroup>
         </FieldSet>
       ),
@@ -108,7 +86,12 @@ export function AkRecruitToolbar({
             <Field>
               <FieldLabel>所属组织</FieldLabel>
               <FieldContent>
-                <Select value={form.organization} onValueChange={(value) => onOrganizationChange(value as OrganizationValue)}>
+                <Select
+                  value={form.organization}
+                  onValueChange={(value) =>
+                    onOrganizationChange(value as OrganizationValue)
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="选择组织" />
                   </SelectTrigger>
@@ -126,7 +109,12 @@ export function AkRecruitToolbar({
             <Field>
               <FieldLabel>职业</FieldLabel>
               <FieldContent>
-                <Select value={form.profession || undefined} onValueChange={(value) => onProfessionChange(value as ProfessionValue)}>
+                <Select
+                  value={form.profession || undefined}
+                  onValueChange={(value) =>
+                    onProfessionChange(value as ProfessionValue)
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="选择职业" />
                   </SelectTrigger>
@@ -141,15 +129,28 @@ export function AkRecruitToolbar({
               </FieldContent>
             </Field>
 
-            <AkRecruitSliderField
-              label="星级"
-              value={form.rarity}
-              min={1}
-              max={6}
-              step={1}
-              displayValue={`${form.rarity} 星`}
-              onValueChange={(value) => onSliderChange("rarity", value)}
-            />
+            <Field>
+              <FieldLabel>星级</FieldLabel>
+              <FieldContent>
+                <Select
+                  value={String(form.rarity)}
+                  onValueChange={(value) =>
+                    onSliderChange("rarity", Number(value))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择星级" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6].map((value) => (
+                      <SelectItem key={value} value={String(value)}>
+                        {value} 星
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FieldContent>
+            </Field>
           </FieldGroup>
         </FieldSet>
       ),
@@ -182,7 +183,9 @@ export function AkRecruitToolbar({
                   value={form.enName}
                   placeholder="20个字以内"
                   maxLength={20}
-                  onChange={(event) => onTextChange("enName", event.target.value)}
+                  onChange={(event) =>
+                    onTextChange("enName", event.target.value)
+                  }
                 />
               </FieldContent>
             </Field>
@@ -196,7 +199,9 @@ export function AkRecruitToolbar({
                   value={form.intro}
                   placeholder="100字以内"
                   maxLength={100}
-                  onChange={(event) => onTextChange("intro", event.target.value)}
+                  onChange={(event) =>
+                    onTextChange("intro", event.target.value)
+                  }
                 />
               </FieldContent>
             </Field>
@@ -212,13 +217,18 @@ export function AkRecruitToolbar({
         <div className="flex h-full flex-col bg-background p-4">
           <div className="mb-4">
             <h2 className="text-lg font-semibold">模板参数</h2>
-            <p className="mt-1 text-sm text-muted-foreground">修改配置后会实时更新右侧画布预览。</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              修改配置后会实时更新右侧画布预览。
+            </p>
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto pr-1">
             <div className="space-y-6">
               {sections.map((section) => (
-                <section key={section.key} className="rounded-xl border bg-background p-4">
+                <section
+                  key={section.key}
+                  className="rounded-xl border bg-background p-4"
+                >
                   <FieldLegend>{section.label}</FieldLegend>
                   <FieldDescription>{section.desc}</FieldDescription>
                   <div className="mt-4">{section.content}</div>
@@ -230,20 +240,33 @@ export function AkRecruitToolbar({
       </div>
 
       <div className="absolute inset-x-3 bottom-3 z-20 lg:hidden">
-        <Tabs defaultValue={sections[0].key} className="rounded-2xl border bg-background/95 p-3 shadow-xl backdrop-blur">
+        <Tabs
+          defaultValue={sections[0].key}
+          className="rounded-2xl border bg-background/95 p-3 shadow-xl backdrop-blur"
+        >
           <TabsList className="grid h-auto w-full grid-cols-3">
             {sections.map((section) => (
-              <TabsTrigger key={section.key} value={section.key} className="px-2 py-2 text-xs">
+              <TabsTrigger
+                key={section.key}
+                value={section.key}
+                className="px-2 py-2 text-xs"
+              >
                 {section.label}
               </TabsTrigger>
             ))}
           </TabsList>
 
           {sections.map((section) => (
-            <TabsContent key={section.key} value={section.key} className="mt-4">
+            <TabsContent
+              key={section.key}
+              value={section.key}
+              className="mt-4"
+            >
               <div className="rounded-xl border p-4">
                 <FieldTitle>{section.label}</FieldTitle>
-                <FieldDescription className="mt-1">{section.desc}</FieldDescription>
+                <FieldDescription className="mt-1">
+                  {section.desc}
+                </FieldDescription>
                 <div className="mt-4">{section.content}</div>
               </div>
             </TabsContent>
@@ -251,42 +274,5 @@ export function AkRecruitToolbar({
         </Tabs>
       </div>
     </>
-  );
-}
-
-function AkRecruitSliderField({
-  label,
-  value,
-  min,
-  max,
-  step,
-  displayValue,
-  onValueChange,
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step: number;
-  displayValue: string;
-  onValueChange: (value: number) => void;
-}) {
-  return (
-    <Field>
-      <FieldLabel>{label}</FieldLabel>
-      <FieldContent>
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">当前值</span>
-          <span>{displayValue}</span>
-        </div>
-        <Slider
-          value={[value]}
-          min={min}
-          max={max}
-          step={step}
-          onValueChange={(values) => onValueChange(values[0] ?? value)}
-        />
-      </FieldContent>
-    </Field>
   );
 }

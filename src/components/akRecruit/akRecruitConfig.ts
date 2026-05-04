@@ -51,9 +51,9 @@ export type ProfessionValue = (typeof professionOptions)[number]["value"];
 export type RecruitFormState = {
   imageFile: File | null;
   imageUrl: string | null;
-  scale: number;
-  offsetX: number;
-  offsetY: number;
+  imageScale: number;
+  imageOffsetX: number;
+  imageOffsetY: number;
   organization: OrganizationValue;
   profession: ProfessionValue | "";
   rarity: number;
@@ -98,9 +98,9 @@ export const professionAssetMap: Record<ProfessionValue, string> = {
 export const initialFormState: RecruitFormState = {
   imageFile: null,
   imageUrl: null,
-  scale: 1,
-  offsetX: 0.5,
-  offsetY: 0.5,
+  imageScale: 1,
+  imageOffsetX: 0,
+  imageOffsetY: 0,
   organization: "lungmen",
   profession: "vanguard",
   rarity: 6,
@@ -137,19 +137,30 @@ export function clamp(value: number, min: number, max: number) {
 export function getImageLayout(
   imageWidth: number,
   imageHeight: number,
-  scale: number,
-  offsetX: number,
-  offsetY: number,
+  imageScale: number,
+  imageOffsetX: number,
+  imageOffsetY: number,
 ): RenderLayout {
-  const nextHeight = CANVAS_HEIGHT * scale;
-  const nextWidth = imageHeight === 0 ? 0 : (imageWidth / imageHeight) * nextHeight;
-  const availableX = CANVAS_WIDTH - nextWidth;
-  const availableY = CANVAS_HEIGHT - nextHeight;
+  if (imageWidth === 0 || imageHeight === 0) {
+    return {
+      imageWidth: 0,
+      imageHeight: 0,
+      imageX: 0,
+      imageY: 0,
+    };
+  }
+
+  const baseHeight = CANVAS_HEIGHT;
+  const baseWidth = (imageWidth / imageHeight) * baseHeight;
+  const nextWidth = baseWidth * imageScale;
+  const nextHeight = baseHeight * imageScale;
+  const centeredX = (CANVAS_WIDTH - nextWidth) / 2;
+  const centeredY = (CANVAS_HEIGHT - nextHeight) / 2;
 
   return {
     imageWidth: nextWidth,
     imageHeight: nextHeight,
-    imageX: availableX * offsetX,
-    imageY: availableY * offsetY,
+    imageX: centeredX + imageOffsetX,
+    imageY: centeredY + imageOffsetY,
   };
 }
