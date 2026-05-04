@@ -22,18 +22,17 @@ export function TemplateCard({ template }: TemplateCardProps) {
       <img
         src={template.previewImage}
         alt={template.name}
-        className="relative z-20 aspect-video w-full object-cover brightness-75 grayscale"
+        className="relative z-20 aspect-video w-full object-cover brightness-55 grayscale"
       />
-      <CardHeader className="grid auto-rows-min grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1.5 p-4">
-        <CardTitle className="text-base">{template.name}</CardTitle>
-        <CardAction className="col-start-2 col-end-3 row-start-1 row-end-3 self-start justify-self-end">
+      <CardHeader>
+        {/* FIXME: shadcn did not export CardAction */}
+        {/* <CardAction>
           <Badge variant="secondary">{template.tag}</Badge>
-        </CardAction>
-        <CardDescription className="col-span-2 leading-6">
-          {template.description}
-        </CardDescription>
+        </CardAction> */}
+        <CardTitle>{template.name}</CardTitle>
+        <CardDescription>{template.description}</CardDescription>
       </CardHeader>
-      <CardFooter className="p-4 pt-4">
+      <CardFooter>
         <Button asChild className="w-full">
           <Link to={template.path}>查看模板</Link>
         </Button>
