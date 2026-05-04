@@ -23,8 +23,13 @@ export const MAX_FILE_SIZE = 6 * 1024 * 1024;
 
 export const akRecruitTemplateSpec = {
   nameFontSize: 120,
+  nameFontWeight: 900,
+  nameLineHeight: 1,
   enNameFontSize: 48,
+  enNameLineHeight: 1,
+  enNameUppercase: true,
   introFontSize: 36,
+  introTextAlign: "left" as const,
   textStrokeWidth: 3,
   textStrokeColor: "rgba(0, 0, 0, 0.9)",
   textColor: "#ffffff",
@@ -39,7 +44,7 @@ export const akRecruitTemplateSpec = {
   professionWidth: 260,
   professionGap: 4,
   professionTopOffset: 10,
-  enNameTopOffset: 132,
+  enNameTopOffset: 120,
   introWidth: 1280,
   introLineHeight: 48,
   introBottom: 36,

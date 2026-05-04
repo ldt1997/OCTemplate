@@ -165,24 +165,29 @@ export function AkRecruitPreview({
 
           <div className="flex flex-col items-start">
             <div
-              className="font-black leading-none"
+              className="leading-none"
               style={{
                 ...posterNameStyle,
                 fontSize: akRecruitTemplateSpec.nameFontSize,
+                fontWeight: akRecruitTemplateSpec.nameFontWeight,
+                lineHeight: akRecruitTemplateSpec.nameLineHeight,
                 color: akRecruitTemplateSpec.textColor,
               }}
             >
               {form.name || " "}
             </div>
             <div
-              className="uppercase leading-none"
+              className="leading-none"
               style={{
                 ...posterEnNameStyle,
                 fontSize: akRecruitTemplateSpec.enNameFontSize,
+                lineHeight: akRecruitTemplateSpec.enNameLineHeight,
                 color: akRecruitTemplateSpec.textColor,
               }}
             >
-              {form.enName || " "}
+              {akRecruitTemplateSpec.enNameUppercase
+                ? form.enName.toUpperCase()
+                : form.enName || " "}
             </div>
           </div>
         </div>
@@ -197,7 +202,13 @@ export function AkRecruitPreview({
       />
 
       <div
-        className="absolute left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left"
+        className={`absolute left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 ${
+          akRecruitTemplateSpec.introTextAlign === "left"
+            ? "text-left"
+            : akRecruitTemplateSpec.introTextAlign === "center"
+              ? "text-center"
+              : "text-right"
+        }`}
         style={{
           ...posterIntroStyle,
           fontSize: akRecruitTemplateSpec.introFontSize,

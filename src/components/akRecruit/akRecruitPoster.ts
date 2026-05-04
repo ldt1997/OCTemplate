@@ -224,15 +224,18 @@ export async function exportRecruitImage(form: RecruitFormState) {
   }
 
   if (form.enName) {
+    const exportEnName = akRecruitTemplateSpec.enNameUppercase
+      ? form.enName.toUpperCase()
+      : form.enName;
     ctx.font = EN_NAME_FONT;
     ctx.lineWidth = akRecruitTemplateSpec.textStrokeWidth;
     ctx.strokeText(
-      form.enName,
+      exportEnName,
       infoLayout.textLeft,
       infoLayout.rowTop + akRecruitTemplateSpec.enNameTopOffset,
     );
     ctx.fillText(
-      form.enName,
+      exportEnName,
       infoLayout.textLeft,
       infoLayout.rowTop + akRecruitTemplateSpec.enNameTopOffset,
     );
@@ -257,7 +260,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
   if (introLines.length > 0) {
     ctx.font = INTRO_FONT;
     ctx.fillStyle = akRecruitTemplateSpec.textColor;
-    ctx.textAlign = "left";
+    ctx.textAlign = akRecruitTemplateSpec.introTextAlign;
     const introX = (CANVAS_WIDTH - akRecruitTemplateSpec.introWidth) / 2;
     const introY =
       CANVAS_HEIGHT -

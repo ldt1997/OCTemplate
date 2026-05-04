@@ -175,7 +175,7 @@ export function AkRecruitPage() {
           导出
         </Button>
       }
-      contentClassName="h-[calc(100vh-65px)] overflow-hidden bg-[#f5f5f5]"
+      contentClassName="h-[calc(100vh-65px)] overflow-hidden bg-muted"
     >
       <div className="relative flex h-full">
         <aside className="hidden h-full w-80 shrink-0 border-r bg-background lg:block">
