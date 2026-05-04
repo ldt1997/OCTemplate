@@ -34,13 +34,20 @@ async function ensureRecruitFontsLoaded() {
   ]);
 }
 
-function wrapIntroLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
+function wrapIntroLines(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+) {
   const lines: string[] = [];
   let currentLine = "";
 
   for (const char of text) {
     const nextLine = `${currentLine}${char}`;
-    if (ctx.measureText(nextLine).width <= maxWidth || currentLine.length === 0) {
+    if (
+      ctx.measureText(nextLine).width <= maxWidth ||
+      currentLine.length === 0
+    ) {
       currentLine = nextLine;
       continue;
     }
@@ -63,7 +70,9 @@ async function exportRecruitImage(form: RecruitFormState) {
     loadImage(akRecruitAssets.starImage),
   ]);
 
-  const professionMark = form.profession ? await loadImage(professionAssetMap[form.profession]) : null;
+  const professionMark = form.profession
+    ? await loadImage(professionAssetMap[form.profession])
+    : null;
   const uploadedImage = form.imageUrl ? await loadImage(form.imageUrl) : null;
 
   await ensureRecruitFontsLoaded();
@@ -78,7 +87,13 @@ async function exportRecruitImage(form: RecruitFormState) {
   }
 
   ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  ctx.drawImage(organizationMark, 342, 190, 500, (organizationMark.height / organizationMark.width) * 500);
+  ctx.drawImage(
+    organizationMark,
+    342,
+    190,
+    500,
+    (organizationMark.height / organizationMark.width) * 500,
+  );
 
   if (uploadedImage) {
     const layout = getImageLayout(
@@ -88,12 +103,21 @@ async function exportRecruitImage(form: RecruitFormState) {
       form.offsetX,
       form.offsetY,
     );
-    ctx.drawImage(uploadedImage, layout.imageX, layout.imageY, layout.imageWidth, layout.imageHeight);
+    ctx.drawImage(
+      uploadedImage,
+      layout.imageX,
+      layout.imageY,
+      layout.imageWidth,
+      layout.imageHeight,
+    );
   }
 
   const starSize = 90;
   const starOverlap = 35;
-  const starsWidth = form.rarity > 0 ? starSize * form.rarity - starOverlap * (form.rarity - 1) : 0;
+  const starsWidth =
+    form.rarity > 0
+      ? starSize * form.rarity - starOverlap * (form.rarity - 1)
+      : 0;
 
   ctx.textBaseline = "top";
 
@@ -121,8 +145,15 @@ async function exportRecruitImage(form: RecruitFormState) {
   }
 
   if (professionMark) {
-    const professionHeight = (professionMark.height / professionMark.width) * professionWidth;
-    ctx.drawImage(professionMark, blockLeft, rowTop + 10, professionWidth, professionHeight);
+    const professionHeight =
+      (professionMark.height / professionMark.width) * professionWidth;
+    ctx.drawImage(
+      professionMark,
+      blockLeft,
+      rowTop + 10,
+      professionWidth,
+      professionHeight,
+    );
   }
 
   ctx.lineJoin = "round";
@@ -143,7 +174,12 @@ async function exportRecruitImage(form: RecruitFormState) {
     ctx.fillText(form.enName, textLeft, rowTop + 132);
   }
 
-  const gradient = ctx.createLinearGradient(0, CANVAS_HEIGHT * 0.95, 0, CANVAS_HEIGHT * 0.78);
+  const gradient = ctx.createLinearGradient(
+    0,
+    CANVAS_HEIGHT * 0.95,
+    0,
+    CANVAS_HEIGHT * 0.78,
+  );
   gradient.addColorStop(0, "rgba(0, 0, 0, 0.92)");
   gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
   ctx.fillStyle = gradient;
@@ -233,7 +269,7 @@ export function AkRecruitPage() {
     }
 
     if (nextFile.size > MAX_FILE_SIZE) {
-      setImageError("图片大小不能超过 5MB。");
+      setImageError("图片大小不能超过 6MB。");
       event.target.value = "";
       return;
     }
@@ -282,26 +318,26 @@ export function AkRecruitPage() {
             form={form}
             imageError={imageError}
             onFileChange={handleFileChange}
-            onTextChange={(field, value) => setForm((current) => ({ ...current, [field]: value }))}
+            onTextChange={(field, value) =>
+              setForm((current) => ({ ...current, [field]: value }))
+            }
             onSliderChange={(field, value) =>
               setForm((current) => ({
                 ...current,
                 [field]: field === "rarity" ? Math.round(value) : value,
               }))
             }
-            onOrganizationChange={(value) => setForm((current) => ({ ...current, organization: value }))}
-            onProfessionChange={(value) => setForm((current) => ({ ...current, profession: value }))}
+            onOrganizationChange={(value) =>
+              setForm((current) => ({ ...current, organization: value }))
+            }
+            onProfessionChange={(value) =>
+              setForm((current) => ({ ...current, profession: value }))
+            }
           />
         </aside>
 
         <section className="relative min-w-0 flex-1">
-          <AkRecruitCanvas
-            hint={
-              <div className="absolute left-4 top-4 z-10 rounded-full bg-background/90 px-3 py-1 text-xs text-muted-foreground shadow-sm">
-                滚轮或双指缩放，拖动画布查看细节
-              </div>
-            }
-          >
+          <AkRecruitCanvas>
             <AkRecruitPreview form={form} imageSize={imageSize} />
           </AkRecruitCanvas>
 
@@ -309,15 +345,21 @@ export function AkRecruitPage() {
             form={form}
             imageError={imageError}
             onFileChange={handleFileChange}
-            onTextChange={(field, value) => setForm((current) => ({ ...current, [field]: value }))}
+            onTextChange={(field, value) =>
+              setForm((current) => ({ ...current, [field]: value }))
+            }
             onSliderChange={(field, value) =>
               setForm((current) => ({
                 ...current,
                 [field]: field === "rarity" ? Math.round(value) : value,
               }))
             }
-            onOrganizationChange={(value) => setForm((current) => ({ ...current, organization: value }))}
-            onProfessionChange={(value) => setForm((current) => ({ ...current, profession: value }))}
+            onOrganizationChange={(value) =>
+              setForm((current) => ({ ...current, organization: value }))
+            }
+            onProfessionChange={(value) =>
+              setForm((current) => ({ ...current, profession: value }))
+            }
           />
         </section>
       </div>

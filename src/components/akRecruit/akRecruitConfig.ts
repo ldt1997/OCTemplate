@@ -19,7 +19,7 @@ import vanguardImage from "@/assets/akrecruit/Vanguard.webp";
 
 export const CANVAS_WIDTH = 1920;
 export const CANVAS_HEIGHT = 1080;
-export const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export const MAX_FILE_SIZE = 6 * 1024 * 1024;
 
 export const TEXTAREA_CLASSNAME =
   "flex min-h-28 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
@@ -98,7 +98,7 @@ export const professionAssetMap: Record<ProfessionValue, string> = {
 export const initialFormState: RecruitFormState = {
   imageFile: null,
   imageUrl: null,
-  scale: 0.5,
+  scale: 1,
   offsetX: 0.5,
   offsetY: 0.5,
   organization: "lungmen",

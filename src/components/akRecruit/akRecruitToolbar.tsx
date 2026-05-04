@@ -59,7 +59,7 @@ export function AkRecruitToolbar({
                   onChange={onFileChange}
                 />
                 <FieldDescription>
-                  支持 PNG / JPEG，最大 5MB{form.imageFile ? `，当前文件：${form.imageFile.name}` : ""}
+                  支持 PNG / JPEG，最大 6MB{form.imageFile ? `，当前文件：${form.imageFile.name}` : ""}
                 </FieldDescription>
                 {imageError ? (
                   <p className="text-sm text-destructive">{imageError}</p>
@@ -71,8 +71,8 @@ export function AkRecruitToolbar({
               label="图片缩放"
               value={form.scale}
               min={0.1}
-              max={1}
-              step={0.01}
+              max={2}
+              step={0.1}
               displayValue={form.scale.toFixed(2)}
               onValueChange={(value) => onSliderChange("scale", value)}
             />

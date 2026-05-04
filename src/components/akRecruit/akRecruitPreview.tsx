@@ -74,12 +74,12 @@ export function AkRecruitPreview({ form, imageSize }: AkRecruitPreviewProps) {
               key={`star-${index}`}
               src={akRecruitAssets.starImage}
               alt=""
-              className={`h-[90px] w-[90px] ${index === 0 ? "" : "-ml-[35px]"}`}
+              className={`h-[152px] w-[152px] ${index === 0 ? "" : "-ml-[35px]"}`}
             />
           ))}
         </div>
 
-        <div className="mt-[18px] flex items-start gap-1">
+        <div className="mt-[-24px] flex items-start gap-1">
           {professionAsset ? (
             <img
               src={professionAsset}
