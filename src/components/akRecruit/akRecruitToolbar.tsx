@@ -2,7 +2,6 @@ import type { ChangeEvent } from "react";
 import {
   organizationOptions,
   professionOptions,
-  TEXTAREA_CLASSNAME,
   type OrganizationValue,
   type ProfessionValue,
   type RecruitFormState,
@@ -26,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type AkRecruitToolbarProps = {
@@ -135,23 +135,18 @@ export function AkRecruitToolbar({
             <Field>
               <FieldLabel>星级</FieldLabel>
               <FieldContent>
-                <Select
-                  value={String(form.rarity)}
-                  onValueChange={(value) =>
-                    onSliderChange("rarity", Number(value))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="选择星级" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[1, 2, 3, 4, 5, 6].map((value) => (
-                      <SelectItem key={value} value={String(value)}>
-                        {value} 星
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="space-y-3">
+                  <Slider
+                    value={[form.rarity]}
+                    min={1}
+                    max={6}
+                    step={1}
+                    onValueChange={(value) =>
+                      onSliderChange("rarity", value[0] ?? form.rarity)
+                    }
+                  />
+                  <FieldDescription>{form.rarity} 星</FieldDescription>
+                </div>
               </FieldContent>
             </Field>
           </FieldGroup>
@@ -196,9 +191,8 @@ export function AkRecruitToolbar({
             <Field>
               <FieldLabel htmlFor="character-intro">开场白</FieldLabel>
               <FieldContent>
-                <textarea
+                <Textarea
                   id="character-intro"
-                  className={TEXTAREA_CLASSNAME}
                   value={form.intro}
                   placeholder="100字以内"
                   maxLength={100}
