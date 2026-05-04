@@ -35,6 +35,7 @@ type AkRecruitToolbarProps = {
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onTextChange: (field: "name" | "enName" | "intro", value: string) => void;
   onSliderChange: (field: "rarity", value: number) => void;
+  onImageScaleChange: (value: number) => void;
   onOrganizationChange: (value: OrganizationValue) => void;
   onProfessionChange: (value: ProfessionValue | "") => void;
 };
@@ -46,6 +47,7 @@ export function AkRecruitToolbar({
   onFileChange,
   onTextChange,
   onSliderChange,
+  onImageScaleChange,
   onOrganizationChange,
   onProfessionChange,
 }: AkRecruitToolbarProps) {
@@ -53,7 +55,7 @@ export function AkRecruitToolbar({
     {
       key: "appearance",
       label: "立绘",
-      desc: "滚轮或双指缩放，拖动调整位置",
+      desc: "使用滑杆缩放，直接拖动预览中的立绘调整位置",
       content: (
         <FieldSet>
           <FieldGroup>
@@ -73,6 +75,29 @@ export function AkRecruitToolbar({
                 {imageError ? (
                   <p className="text-sm text-destructive">{imageError}</p>
                 ) : null}
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>缩放</FieldLabel>
+              <FieldContent>
+                <div className="space-y-3">
+                  <Slider
+                    value={[form.imageScale]}
+                    min={0.5}
+                    max={3}
+                    step={0.01}
+                    disabled={!form.imageUrl}
+                    onValueChange={(value) =>
+                      onImageScaleChange(value[0] ?? form.imageScale)
+                    }
+                  />
+                  <FieldDescription>
+                    {form.imageUrl
+                      ? `${Math.round(form.imageScale * 100)}%`
+                      : "上传图片后可调整缩放"}
+                  </FieldDescription>
+                </div>
               </FieldContent>
             </Field>
           </FieldGroup>

@@ -161,6 +161,7 @@ export function AkRecruitPage() {
       updateForm({ [field]: value } as Partial<RecruitFormState>),
     onSliderChange: (field: "rarity", value: number) =>
       updateForm({ [field]: Math.round(value) } as Partial<RecruitFormState>),
+    onImageScaleChange: (imageScale: number) => updateForm({ imageScale }),
     onOrganizationChange: (organization: RecruitFormState["organization"]) =>
       updateForm({ organization }),
     onProfessionChange: (profession: RecruitFormState["profession"]) =>
