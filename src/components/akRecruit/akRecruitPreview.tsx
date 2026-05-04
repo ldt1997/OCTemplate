@@ -16,7 +16,6 @@ import {
   ensureRecruitFontsLoaded,
   getRecruitInfoLayout,
   recruitPosterMetrics,
-  wrapRecruitIntroLines,
 } from "@/components/akRecruit/akRecruitPoster";
 import { useAkRecruitImageTransform } from "@/components/akRecruit/useAkRecruitImageTransform";
 
@@ -50,14 +49,10 @@ export function AkRecruitPreview({
     return getBaseImageLayout(imageSize.width, imageSize.height);
   }, [imageSize]);
 
-  const infoLayout = useMemo(() => getRecruitInfoLayout(form), [
-    fontsReady,
-    form,
-  ]);
-  const introLines = useMemo(() => wrapRecruitIntroLines(form.intro), [
-    fontsReady,
-    form.intro,
-  ]);
+  const infoLayout = useMemo(
+    () => getRecruitInfoLayout(form),
+    [fontsReady, form],
+  );
   const { imageRef, isDragging, overlayHandlers } = useAkRecruitImageTransform({
     enabled: Boolean(form.imageUrl),
     previewScale,
@@ -96,7 +91,11 @@ export function AkRecruitPreview({
         src={organizationAssetMap[form.organization]}
         alt=""
         className="pointer-events-none absolute select-none"
-        style={{ left: 342, top: 190, width: 500 }}
+        style={{
+          left: recruitPosterMetrics.organizationLeft,
+          top: recruitPosterMetrics.organizationTop,
+          width: recruitPosterMetrics.organizationWidth,
+        }}
       />
 
       {form.imageUrl && baseLayout ? (
@@ -146,10 +145,11 @@ export function AkRecruitPreview({
               key={`star-${index}`}
               src={akRecruitAssets.starImage}
               alt=""
-              className={index === 0 ? "" : "-ml-[35px]"}
+              className={index === 0 ? "" : ""}
               style={{
                 width: recruitPosterMetrics.starSize,
                 height: recruitPosterMetrics.starSize,
+                marginLeft: index === 0 ? 0 : -recruitPosterMetrics.starOverlap,
               }}
             />
           ))}
@@ -198,24 +198,17 @@ export function AkRecruitPreview({
       />
 
       <div
-        className="absolute left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left text-[36px] leading-[1.35] text-white"
+        className="absolute left-1/2 z-[2] overflow-hidden whitespace-nowrap text-left text-[36px] leading-[48px] text-white"
         style={{
           ...posterIntroStyle,
-          bottom:
-            recruitPosterMetrics.introBottom +
-            Math.max(introLines.length - 1, 0) *
-              recruitPosterMetrics.introLineHeight,
+          bottom: recruitPosterMetrics.introBottom,
+          width: recruitPosterMetrics.introWidth,
+          height: recruitPosterMetrics.introHeight,
+          maxWidth: "calc(100% - 96px)",
+          transform: "translateX(-50%)",
         }}
       >
-        {introLines.map((line, index) => (
-          <p
-            key={`${line}-${index}`}
-            className="m-0"
-            style={{ lineHeight: `${recruitPosterMetrics.introLineHeight}px` }}
-          >
-            {line}
-          </p>
-        ))}
+        {form.intro}
       </div>
     </div>
   );
