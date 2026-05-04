@@ -132,11 +132,11 @@ const initialFormState: RecruitFormState = {
   offsetX: 0.5,
   offsetY: 0.5,
   organization: "lungmen",
-  profession: "",
+  profession: "vanguard",
   rarity: 6,
-  name: "",
-  enName: "",
-  intro: "",
+  name: "中文名称",
+  enName: "English Name",
+  intro: "这是一行开场白",
 };
 
 const initialTransform: CanvasTransform = {
@@ -242,7 +242,7 @@ async function exportRecruitImage(form: RecruitFormState) {
 
   ctx.textBaseline = "top";
 
-  const professionWidth = professionMark ? 150 : 0;
+  const professionWidth = professionMark ? 260 : 0;
   const professionGap = professionMark ? 4 : 0;
 
   ctx.font = '120px "Source Han Serif CN"';
@@ -267,7 +267,7 @@ async function exportRecruitImage(form: RecruitFormState) {
 
   if (professionMark) {
     const professionHeight = (professionMark.height / professionMark.width) * professionWidth;
-    ctx.drawImage(professionMark, blockLeft, rowTop + 26, professionWidth, professionHeight);
+    ctx.drawImage(professionMark, blockLeft, rowTop + 10, professionWidth, professionHeight);
   }
 
   ctx.lineJoin = "round";
@@ -297,12 +297,13 @@ async function exportRecruitImage(form: RecruitFormState) {
   if (form.intro) {
     ctx.font = '36px "Recruit Intro Sans"';
     ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "center";
-    const introLines = wrapIntroLines(ctx, form.intro, CANVAS_WIDTH * 0.8);
+    ctx.textAlign = "left";
+    const introLines = wrapIntroLines(ctx, form.intro, 1280);
     const lineHeight = 48;
-    const introY = CANVAS_HEIGHT - 120 - introLines.length * lineHeight;
+    const introX = (CANVAS_WIDTH - 1280) / 2;
+    const introY = CANVAS_HEIGHT - 36 - introLines.length * lineHeight;
     introLines.forEach((line, index) => {
-      ctx.fillText(line, CANVAS_WIDTH / 2, introY + index * lineHeight);
+      ctx.fillText(line, introX, introY + index * lineHeight);
     });
   }
 
@@ -381,7 +382,7 @@ function PreviewPoster({
             <img
               src={professionAsset}
               alt=""
-              className="mt-6 h-auto w-[150px] shrink-0"
+              className="mt-2 h-auto w-[260px] shrink-0"
             />
           ) : null}
 
@@ -411,7 +412,7 @@ function PreviewPoster({
       />
 
       <div
-        className="absolute bottom-[120px] left-1/2 w-[80%] -translate-x-1/2 text-center text-[36px] leading-[1.35] text-white"
+        className="absolute bottom-9 left-1/2 w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left text-[36px] leading-[1.35] text-white"
         style={posterIntroStyle}
       >
         {form.intro}
@@ -965,7 +966,7 @@ export function AkRecruitPage() {
         <section className="relative min-w-0 flex-1">
           <div
             ref={viewportRef}
-            className={`relative flex h-full items-center justify-center overflow-hidden touch-none px-4 py-4 lg:px-10 lg:py-8 ${pointerStateRef.current.mode === "pan" ? "cursor-grabbing" : "cursor-grab"}`}
+            className={`relative flex h-full items-center justify-center overflow-hidden touch-none px-4 py-4 lg:items-start lg:px-10 lg:py-6 ${pointerStateRef.current.mode === "pan" ? "cursor-grabbing" : "cursor-grab"}`}
             onWheel={handleWheel}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
