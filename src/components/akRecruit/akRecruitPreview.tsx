@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   akRecruitAssets,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
-  clamp,
   getBaseImageLayout,
   organizationAssetMap,
   posterEnNameStyle,
@@ -13,6 +12,13 @@ import {
   type ImageSize,
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
+import {
+  ensureRecruitFontsLoaded,
+  getRecruitInfoLayout,
+  recruitPosterMetrics,
+  wrapRecruitIntroLines,
+} from "@/components/akRecruit/akRecruitPoster";
+import { useAkRecruitImageTransform } from "@/components/akRecruit/useAkRecruitImageTransform";
 
 type AkRecruitPreviewProps = {
   form: RecruitFormState;
@@ -34,34 +40,7 @@ export function AkRecruitPreview({
   const professionAsset = form.profession
     ? professionAssetMap[form.profession]
     : null;
-  const imageRef = useRef<HTMLImageElement | null>(null);
-  const wheelCommitTimeoutRef = useRef<number | null>(null);
-  const isInteractingRef = useRef(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const interactionRef = useRef<{
-    mode: "idle" | "drag" | "pinch";
-    startX: number;
-    startY: number;
-    originX: number;
-    originY: number;
-    initialScale: number;
-    initialDistance: number;
-    pointers: Map<number, { x: number; y: number }>;
-  }>({
-    mode: "idle",
-    startX: 0,
-    startY: 0,
-    originX: 0,
-    originY: 0,
-    initialScale: 1,
-    initialDistance: 0,
-    pointers: new Map(),
-  });
-  const liveTransformRef = useRef({
-    imageScale: form.imageScale,
-    imageOffsetX: form.imageOffsetX,
-    imageOffsetY: form.imageOffsetY,
-  });
+  const [fontsReady, setFontsReady] = useState(false);
 
   const baseLayout = useMemo(() => {
     if (!imageSize) {
@@ -71,167 +50,38 @@ export function AkRecruitPreview({
     return getBaseImageLayout(imageSize.width, imageSize.height);
   }, [imageSize]);
 
-  const syncNodeTransform = () => {
-    const node = imageRef.current;
-    if (!node) {
-      return;
-    }
-
-    const { imageScale, imageOffsetX, imageOffsetY } = liveTransformRef.current;
-    node.style.transform = `translate3d(${imageOffsetX}px, ${imageOffsetY}px, 0) scale(${imageScale})`;
-  };
-
-  const commitTransform = () => {
-    onImageTransformCommit({ ...liveTransformRef.current });
-  };
-
-  useEffect(() => {
-    if (isInteractingRef.current) {
-      return;
-    }
-
-    liveTransformRef.current = {
+  const infoLayout = useMemo(() => getRecruitInfoLayout(form), [
+    fontsReady,
+    form,
+  ]);
+  const introLines = useMemo(() => wrapRecruitIntroLines(form.intro), [
+    fontsReady,
+    form.intro,
+  ]);
+  const { imageRef, isDragging, overlayHandlers } = useAkRecruitImageTransform({
+    enabled: Boolean(form.imageUrl),
+    previewScale,
+    value: {
       imageScale: form.imageScale,
       imageOffsetX: form.imageOffsetX,
       imageOffsetY: form.imageOffsetY,
-    };
-    syncNodeTransform();
-  }, [form.imageOffsetX, form.imageOffsetY, form.imageScale, form.imageUrl]);
+    },
+    onCommit: onImageTransformCommit,
+  });
 
   useEffect(() => {
-    return () => {
-      if (wheelCommitTimeoutRef.current !== null) {
-        window.clearTimeout(wheelCommitTimeoutRef.current);
+    let active = true;
+
+    void ensureRecruitFontsLoaded().then(() => {
+      if (active) {
+        setFontsReady(true);
       }
+    });
+
+    return () => {
+      active = false;
     };
   }, []);
-
-  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    if (!form.imageUrl) {
-      return;
-    }
-
-    event.preventDefault();
-    liveTransformRef.current = {
-      ...liveTransformRef.current,
-      imageScale: clamp(
-        liveTransformRef.current.imageScale + (event.deltaY < 0 ? 0.08 : -0.08),
-        0.5,
-        3,
-      ),
-    };
-    syncNodeTransform();
-
-    if (wheelCommitTimeoutRef.current !== null) {
-      window.clearTimeout(wheelCommitTimeoutRef.current);
-    }
-
-    wheelCommitTimeoutRef.current = window.setTimeout(() => {
-      commitTransform();
-    }, 120);
-  };
-
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!form.imageUrl) {
-      return;
-    }
-
-    event.preventDefault();
-    isInteractingRef.current = true;
-    const state = interactionRef.current;
-    state.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-
-    if (state.pointers.size === 2) {
-      const [first, second] = Array.from(state.pointers.values());
-      state.mode = "pinch";
-      state.initialScale = liveTransformRef.current.imageScale;
-      state.initialDistance = Math.hypot(
-        second.x - first.x,
-        second.y - first.y,
-      );
-      setIsDragging(false);
-      return;
-    }
-
-    state.mode = "drag";
-    setIsDragging(true);
-    state.startX = event.clientX;
-    state.startY = event.clientY;
-    state.originX = liveTransformRef.current.imageOffsetX;
-    state.originY = liveTransformRef.current.imageOffsetY;
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const state = interactionRef.current;
-    if (!state.pointers.has(event.pointerId)) {
-      return;
-    }
-
-    state.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-
-    if (state.mode === "pinch" && state.pointers.size >= 2) {
-      const [first, second] = Array.from(state.pointers.values());
-      const distance = Math.hypot(second.x - first.x, second.y - first.y);
-      if (state.initialDistance > 0) {
-        liveTransformRef.current = {
-          ...liveTransformRef.current,
-          imageScale: clamp(
-            state.initialScale * (distance / state.initialDistance),
-            0.5,
-            3,
-          ),
-        };
-        syncNodeTransform();
-      }
-      return;
-    }
-
-    if (state.mode === "drag") {
-      liveTransformRef.current = {
-        ...liveTransformRef.current,
-        imageOffsetX:
-          state.originX + (event.clientX - state.startX) / previewScale,
-        imageOffsetY:
-          state.originY + (event.clientY - state.startY) / previewScale,
-      };
-      syncNodeTransform();
-    }
-  };
-
-  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
-    const state = interactionRef.current;
-    state.pointers.delete(event.pointerId);
-
-    if (state.pointers.size >= 2) {
-      const [first, second] = Array.from(state.pointers.values());
-      state.mode = "pinch";
-      state.initialScale = liveTransformRef.current.imageScale;
-      state.initialDistance = Math.hypot(
-        second.x - first.x,
-        second.y - first.y,
-      );
-      setIsDragging(false);
-      return;
-    }
-
-    if (state.pointers.size === 1) {
-      const [remaining] = Array.from(state.pointers.values());
-      state.mode = "drag";
-      state.startX = remaining.x;
-      state.startY = remaining.y;
-      state.originX = liveTransformRef.current.imageOffsetX;
-      state.originY = liveTransformRef.current.imageOffsetY;
-      setIsDragging(true);
-      return;
-    }
-
-    state.mode = "idle";
-    isInteractingRef.current = false;
-    setIsDragging(false);
-    commitTransform();
-  };
 
   return (
     <div
@@ -276,36 +126,49 @@ export function AkRecruitPreview({
               : "cursor-grab"
             : "cursor-default"
         }`}
-        onWheel={handleWheel}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerEnd}
-        onPointerCancel={handlePointerEnd}
+        {...overlayHandlers}
       />
 
       <div
-        className="absolute left-1/2 z-[2] flex -translate-x-1/2 flex-col items-start"
-        style={{ top: 586 }}
+        className="absolute z-[2]"
+        style={{
+          left: infoLayout.blockLeft,
+          top: recruitPosterMetrics.infoTop,
+          width: infoLayout.blockWidth,
+        }}
       >
-        <div className="ml-4 flex items-center">
+        <div
+          className="flex items-center"
+          style={{ paddingLeft: recruitPosterMetrics.starLeftPadding }}
+        >
           {Array.from({ length: form.rarity }).map((_, index) => (
             <img
               key={`star-${index}`}
               src={akRecruitAssets.starImage}
               alt=""
-              className={`h-[152px] w-[152px] ${
-                index === 0 ? "" : "-ml-[35px]"
-              }`}
+              className={index === 0 ? "" : "-ml-[35px]"}
+              style={{
+                width: recruitPosterMetrics.starSize,
+                height: recruitPosterMetrics.starSize,
+              }}
             />
           ))}
         </div>
 
-        <div className="mt-[-24px] flex items-start gap-1">
+        <div
+          className="flex items-start"
+          style={{ marginTop: recruitPosterMetrics.infoGap }}
+        >
           {professionAsset ? (
             <img
               src={professionAsset}
               alt=""
-              className="mt-2 h-auto w-[260px] shrink-0"
+              className="h-auto shrink-0"
+              style={{
+                width: recruitPosterMetrics.professionWidth,
+                marginTop: recruitPosterMetrics.professionTopOffset,
+                marginRight: recruitPosterMetrics.professionGap,
+              }}
             />
           ) : null}
 
@@ -335,10 +198,24 @@ export function AkRecruitPreview({
       />
 
       <div
-        className="absolute bottom-9 left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left text-[36px] leading-[1.35] text-white"
-        style={posterIntroStyle}
+        className="absolute left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left text-[36px] leading-[1.35] text-white"
+        style={{
+          ...posterIntroStyle,
+          bottom:
+            recruitPosterMetrics.introBottom +
+            Math.max(introLines.length - 1, 0) *
+              recruitPosterMetrics.introLineHeight,
+        }}
       >
-        {form.intro}
+        {introLines.map((line, index) => (
+          <p
+            key={`${line}-${index}`}
+            className="m-0"
+            style={{ lineHeight: `${recruitPosterMetrics.introLineHeight}px` }}
+          >
+            {line}
+          </p>
+        ))}
       </div>
     </div>
   );

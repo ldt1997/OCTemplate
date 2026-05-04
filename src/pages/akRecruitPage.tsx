@@ -2,204 +2,20 @@ import { type ChangeEvent, useEffect, useState } from "react";
 import { Download } from "lucide-react";
 import { AkRecruitCanvas } from "@/components/akRecruit/akRecruitCanvas";
 import {
-  akRecruitAssets,
-  CANVAS_HEIGHT,
-  CANVAS_WIDTH,
-  getImageLayout,
   initialFormState,
   MAX_FILE_SIZE,
-  organizationAssetMap,
-  professionAssetMap,
   type ImageSize,
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
+import {
+  ensureRecruitFontsLoaded,
+  exportRecruitImage,
+  loadImage,
+} from "@/components/akRecruit/akRecruitPoster";
 import { AkRecruitPreview } from "@/components/akRecruit/akRecruitPreview";
 import { AkRecruitToolbar } from "@/components/akRecruit/akRecruitToolbar";
 import { AppLayout } from "@/components/layout/appLayout";
 import { Button } from "@/components/ui/button";
-
-async function loadImage(src: string) {
-  const image = new Image();
-  image.decoding = "async";
-  image.src = src;
-  await image.decode();
-  return image;
-}
-
-async function ensureRecruitFontsLoaded() {
-  await Promise.all([
-    document.fonts.load('120px "Source Han Serif CN"'),
-    document.fonts.load('48px "Novecento Wide"'),
-    document.fonts.load('36px "Recruit Intro Sans"'),
-  ]);
-}
-
-function wrapIntroLines(
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number,
-) {
-  const lines: string[] = [];
-  let currentLine = "";
-
-  for (const char of text) {
-    const nextLine = `${currentLine}${char}`;
-    if (
-      ctx.measureText(nextLine).width <= maxWidth ||
-      currentLine.length === 0
-    ) {
-      currentLine = nextLine;
-      continue;
-    }
-
-    lines.push(currentLine);
-    currentLine = char;
-  }
-
-  if (currentLine) {
-    lines.push(currentLine);
-  }
-
-  return lines;
-}
-
-async function exportRecruitImage(form: RecruitFormState) {
-  const [background, organizationMark, starMark] = await Promise.all([
-    loadImage(akRecruitAssets.bgImage),
-    loadImage(organizationAssetMap[form.organization]),
-    loadImage(akRecruitAssets.starImage),
-  ]);
-
-  const professionMark = form.profession
-    ? await loadImage(professionAssetMap[form.profession])
-    : null;
-  const uploadedImage = form.imageUrl ? await loadImage(form.imageUrl) : null;
-
-  await ensureRecruitFontsLoaded();
-
-  const canvas = document.createElement("canvas");
-  canvas.width = CANVAS_WIDTH;
-  canvas.height = CANVAS_HEIGHT;
-  const ctx = canvas.getContext("2d");
-
-  if (!ctx) {
-    throw new Error("当前环境不支持导出画布。");
-  }
-
-  ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  ctx.drawImage(
-    organizationMark,
-    342,
-    190,
-    500,
-    (organizationMark.height / organizationMark.width) * 500,
-  );
-
-  if (uploadedImage) {
-    const layout = getImageLayout(
-      uploadedImage.width,
-      uploadedImage.height,
-      form.imageScale,
-      form.imageOffsetX,
-      form.imageOffsetY,
-    );
-    ctx.drawImage(
-      uploadedImage,
-      layout.imageX,
-      layout.imageY,
-      layout.imageWidth,
-      layout.imageHeight,
-    );
-  }
-
-  const starSize = 90;
-  const starOverlap = 35;
-  const starsWidth =
-    form.rarity > 0
-      ? starSize * form.rarity - starOverlap * (form.rarity - 1)
-      : 0;
-
-  ctx.textBaseline = "top";
-
-  const professionWidth = professionMark ? 260 : 0;
-  const professionGap = professionMark ? 4 : 0;
-
-  ctx.font = '120px "Source Han Serif CN"';
-  const nameWidth = ctx.measureText(form.name || " ").width;
-
-  ctx.font = '48px "Novecento Wide"';
-  const enNameWidth = ctx.measureText(form.enName || " ").width;
-
-  const textColumnWidth = Math.max(nameWidth, enNameWidth);
-  const infoRowWidth = professionWidth + professionGap + textColumnWidth;
-  const blockWidth = Math.max(starsWidth + 16, infoRowWidth);
-  const blockLeft = CANVAS_WIDTH / 2 - blockWidth / 2;
-  const starsLeft = blockLeft + 16;
-  const infoTop = 586;
-  const rowTop = infoTop + starSize + 18;
-  const textLeft = blockLeft + professionWidth + professionGap;
-
-  for (let index = 0; index < form.rarity; index += 1) {
-    const currentX = starsLeft + index * (starSize - starOverlap);
-    ctx.drawImage(starMark, currentX, infoTop, starSize, starSize);
-  }
-
-  if (professionMark) {
-    const professionHeight =
-      (professionMark.height / professionMark.width) * professionWidth;
-    ctx.drawImage(
-      professionMark,
-      blockLeft,
-      rowTop + 10,
-      professionWidth,
-      professionHeight,
-    );
-  }
-
-  ctx.lineJoin = "round";
-  ctx.strokeStyle = "rgba(0, 0, 0, 0.92)";
-  ctx.fillStyle = "#ffffff";
-
-  if (form.name) {
-    ctx.font = '120px "Source Han Serif CN"';
-    ctx.lineWidth = 6;
-    ctx.strokeText(form.name, textLeft, rowTop);
-    ctx.fillText(form.name, textLeft, rowTop);
-  }
-
-  if (form.enName) {
-    ctx.font = '48px "Novecento Wide"';
-    ctx.lineWidth = 3;
-    ctx.strokeText(form.enName, textLeft, rowTop + 132);
-    ctx.fillText(form.enName, textLeft, rowTop + 132);
-  }
-
-  const gradient = ctx.createLinearGradient(
-    0,
-    CANVAS_HEIGHT * 0.95,
-    0,
-    CANVAS_HEIGHT * 0.78,
-  );
-  gradient.addColorStop(0, "rgba(0, 0, 0, 0.92)");
-  gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, CANVAS_HEIGHT * 0.74, CANVAS_WIDTH, CANVAS_HEIGHT * 0.26);
-
-  if (form.intro) {
-    ctx.font = '36px "Recruit Intro Sans"';
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "left";
-    const introLines = wrapIntroLines(ctx, form.intro, 1280);
-    const lineHeight = 48;
-    const introX = (CANVAS_WIDTH - 1280) / 2;
-    const introY = CANVAS_HEIGHT - 36 - introLines.length * lineHeight;
-    introLines.forEach((line, index) => {
-      ctx.fillText(line, introX, introY + index * lineHeight);
-    });
-  }
-
-  return canvas.toDataURL("image/png");
-}
 
 export function AkRecruitPage() {
   const [form, setForm] = useState(initialFormState);
@@ -243,12 +59,20 @@ export function AkRecruitPage() {
     };
   }, [form.imageUrl]);
 
+  const updateForm = (
+    updater: Partial<RecruitFormState> | ((current: RecruitFormState) => RecruitFormState),
+  ) => {
+    setForm((current) =>
+      typeof updater === "function" ? updater(current) : { ...current, ...updater },
+    );
+  };
+
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nextFile = event.target.files?.[0] ?? null;
 
     if (!nextFile) {
       setImageError(null);
-      setForm((current) => {
+      updateForm((current) => {
         if (current.imageUrl) {
           URL.revokeObjectURL(current.imageUrl);
         }
@@ -279,7 +103,7 @@ export function AkRecruitPage() {
 
     const nextUrl = URL.createObjectURL(nextFile);
     setImageError(null);
-    setForm((current) => {
+    updateForm((current) => {
       if (current.imageUrl) {
         URL.revokeObjectURL(current.imageUrl);
       }
@@ -308,6 +132,20 @@ export function AkRecruitPage() {
     }
   };
 
+  const toolbarProps = {
+    form,
+    imageError,
+    onFileChange: handleFileChange,
+    onTextChange: (field: "name" | "enName" | "intro", value: string) =>
+      updateForm({ [field]: value } as Partial<RecruitFormState>),
+    onSliderChange: (field: "rarity", value: number) =>
+      updateForm({ [field]: Math.round(value) } as Partial<RecruitFormState>),
+    onOrganizationChange: (organization: RecruitFormState["organization"]) =>
+      updateForm({ organization }),
+    onProfessionChange: (profession: RecruitFormState["profession"]) =>
+      updateForm({ profession }),
+  };
+
   return (
     <AppLayout
       headerActions={
@@ -320,36 +158,11 @@ export function AkRecruitPage() {
     >
       <div className="relative flex h-full">
         <aside className="hidden h-full w-80 shrink-0 border-r bg-background lg:block">
-          <AkRecruitToolbar
-            form={form}
-            imageError={imageError}
-            onFileChange={handleFileChange}
-            onTextChange={(field, value) =>
-              setForm((current) => ({ ...current, [field]: value }))
-            }
-            onSliderChange={(field, value) =>
-              setForm((current) => ({
-                ...current,
-                [field]: Math.round(value),
-              }))
-            }
-            onOrganizationChange={(value) =>
-              setForm((current) => ({ ...current, organization: value }))
-            }
-            onProfessionChange={(value) =>
-              setForm((current) => ({ ...current, profession: value }))
-            }
-          />
+          <AkRecruitToolbar variant="desktop" {...toolbarProps} />
         </aside>
 
         <section className="relative min-w-0 flex-1">
-          <AkRecruitCanvas
-            hint={
-              <div className="absolute left-4 top-4 z-10 rounded-full bg-background/90 px-3 py-1 text-xs text-muted-foreground shadow-sm">
-                滚轮或双指缩放图片，拖动调整位置
-              </div>
-            }
-          >
+          <AkRecruitCanvas>
             {(previewScale) => (
               <AkRecruitPreview
                 form={form}
@@ -365,26 +178,7 @@ export function AkRecruitPage() {
             )}
           </AkRecruitCanvas>
 
-          <AkRecruitToolbar
-            form={form}
-            imageError={imageError}
-            onFileChange={handleFileChange}
-            onTextChange={(field, value) =>
-              setForm((current) => ({ ...current, [field]: value }))
-            }
-            onSliderChange={(field, value) =>
-              setForm((current) => ({
-                ...current,
-                [field]: Math.round(value),
-              }))
-            }
-            onOrganizationChange={(value) =>
-              setForm((current) => ({ ...current, organization: value }))
-            }
-            onProfessionChange={(value) =>
-              setForm((current) => ({ ...current, profession: value }))
-            }
-          />
+          <AkRecruitToolbar variant="mobile" {...toolbarProps} />
         </section>
       </div>
     </AppLayout>

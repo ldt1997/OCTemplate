@@ -28,6 +28,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type AkRecruitToolbarProps = {
+  variant: "desktop" | "mobile";
   form: RecruitFormState;
   imageError: string | null;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -38,6 +39,7 @@ type AkRecruitToolbarProps = {
 };
 
 export function AkRecruitToolbar({
+  variant,
   form,
   imageError,
   onFileChange,
@@ -213,7 +215,7 @@ export function AkRecruitToolbar({
 
   return (
     <>
-      <div className="hidden h-full lg:block">
+      {variant === "desktop" ? (
         <div className="flex h-full flex-col bg-background p-4">
           <div className="mb-4">
             <h2 className="text-lg font-semibold">模板参数</h2>
@@ -237,42 +239,42 @@ export function AkRecruitToolbar({
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="absolute inset-x-3 bottom-3 z-20 lg:hidden">
+          <Tabs
+            defaultValue={sections[0].key}
+            className="rounded-2xl border bg-background/95 p-3 shadow-xl backdrop-blur"
+          >
+            <TabsList className="grid h-auto w-full grid-cols-3">
+              {sections.map((section) => (
+                <TabsTrigger
+                  key={section.key}
+                  value={section.key}
+                  className="px-2 py-2 text-xs"
+                >
+                  {section.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-      <div className="absolute inset-x-3 bottom-3 z-20 lg:hidden">
-        <Tabs
-          defaultValue={sections[0].key}
-          className="rounded-2xl border bg-background/95 p-3 shadow-xl backdrop-blur"
-        >
-          <TabsList className="grid h-auto w-full grid-cols-3">
             {sections.map((section) => (
-              <TabsTrigger
+              <TabsContent
                 key={section.key}
                 value={section.key}
-                className="px-2 py-2 text-xs"
+                className="mt-4"
               >
-                {section.label}
-              </TabsTrigger>
+                <div className="rounded-xl border p-4">
+                  <FieldTitle>{section.label}</FieldTitle>
+                  <FieldDescription className="mt-1">
+                    {section.desc}
+                  </FieldDescription>
+                  <div className="mt-4">{section.content}</div>
+                </div>
+              </TabsContent>
             ))}
-          </TabsList>
-
-          {sections.map((section) => (
-            <TabsContent
-              key={section.key}
-              value={section.key}
-              className="mt-4"
-            >
-              <div className="rounded-xl border p-4">
-                <FieldTitle>{section.label}</FieldTitle>
-                <FieldDescription className="mt-1">
-                  {section.desc}
-                </FieldDescription>
-                <div className="mt-4">{section.content}</div>
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
-      </div>
+          </Tabs>
+        </div>
+      )}
     </>
   );
 }
