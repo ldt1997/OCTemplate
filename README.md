@@ -31,6 +31,7 @@
 - 不重构已有结构，不引入新库
 - 保持当前代码风格，只修改相关文件
 - 对于导出的图片，画布缩放和不同的屏幕分辨率下应保持导出图片的尺寸固定，且元素的相对位置和大小保持不变
+- 暂时静态资源存放：/temp_assets，请将他们存放在合适的位置，并在最后删除这个临时文件夹
 
 ## 当前要开发的新功能
 
@@ -55,8 +56,187 @@ Figma原型：
     - 画布：背景颜色不设置，padding为0，默认占满剩余宽度
         - 预览模版模块：默认占满画布宽度
 
-- 组件功能：
-    - 
+#### 组件功能和详情
+1. ToolBar表单配置项
+配置修改后实时生效。
+```json
+{
+  legend: "形象设置",
+  desc: "调整人物图片的显示效果与位置",
+  fields: [
+    {
+      component: "Input",
+      type: "file",
+      label: "人物图片",
+      id: "image",
+      options: null,
+      placeholder: "上传图片",
+      constraints: {
+        accept: "image/png, image/jpeg",
+        maxSize: "5MB"
+      },
+      default: null
+    },
+    {
+      component: "Slider",
+      label: "图片缩放",
+      id: "scale",
+      options: {
+        min: 0.1,
+        max: 1,
+        step: 0.01
+      },
+      placeholder: null,
+      constraints: null,
+      default: 0.5
+    },
+    {
+      component: "Slider",
+      label: "水平偏移 (X)",
+      id: "offsetX",
+      options: {
+        min: 0,
+        max: 1,
+        step: 0.01
+      },
+      placeholder: null,
+      constraints: null,
+      default: 0.5
+    },
+    {
+      component: "Slider",
+      label: "垂直偏移 (Y)",
+      id: "offsetY",
+      options: {
+        min: 0,
+        max: 1,
+        step: 0.01
+      },
+      placeholder: null,
+      constraints: null,
+      default: 0.5
+    }
+  ]
+}
+```
+
+```json
+{
+  legend: "角色信息",
+  desc: "选择角色星级职业和所属组织",
+  fields: [
+    {
+      component: "Select",
+      label: "所属组织",
+      id: "organization",
+      options: [
+  { label: "罗德岛", value: "rhodes_island" },
+  { label: "莱茵生命", value: "rhine" },
+  { label: "龙门", value: "lungmen" },
+  { label: "深海猎人", value: "abyssal_hunters" },
+  { label: "企鹅物流", value: "penguin_logistics" },
+  { label: "黑钢国际", value: "black_steel" },
+  { label: "莱塔尼亚", value: "leithania" }
+],
+      placeholder: "选择组织",
+      constraints: null,
+      default: "lungmen"
+    },
+    {
+      component: "Select",
+      label: "职业",
+      id: "profession",
+      options: [
+  { label: "先锋", value: "vanguard" },
+  { label: "近卫", value: "guard" },
+  { label: "重装", value: "defender" },
+  { label: "狙击", value: "sniper" },
+  { label: "术师", value: "caster" },
+  { label: "医疗", value: "medic" },
+  { label: "辅助", value: "supporter" },
+  { label: "特种", value: "specialist" }
+],
+      placeholder: "选择职业",
+      constraints: null,
+      default: null
+    },
+    {
+      component: "Slider",
+      label: "星级",
+      id: "rarity",
+      options: {
+        min: 1,
+        max: 6,
+        step: 1
+      },
+      placeholder: null,
+      constraints: null,
+      default: 6
+    }
+  ]
+}
+```
+
+```json
+{
+  legend: "文本信息",
+  desc: "设置角色展示文本",
+  fields: [
+    {
+      component: "Input",
+      label: "名称",
+      id: "name",
+      options: null,
+      placeholder: "10个字以内",
+      constraints: {
+        maxLength: 10
+      },
+      default: ""
+    },
+    {
+      component: "Input",
+      label: "英文名称",
+      id: "enName",
+      options: null,
+      placeholder: "20个字以内",
+      constraints: {
+        maxLength: 20
+      },
+      default: ""
+    },
+    {
+      component: "Textarea",
+      label: "开场白",
+      id: "intro",
+      options: null,
+      placeholder: "100字以内",
+      constraints: {
+        maxLength: 100
+      },
+      default: ""
+    }
+  ]
+}
+```
+
+2. 画布：支持滚轮（浏览器）和双指（移动端）缩放。支持拖动画布，拖动时鼠标变为抓取手的形状。该缩放和移动应在模版图片外部，不应影响画布内容布局。
+
+3. 模版图片部分：尺寸固定为1920*1080px，超出画布的内容需要隐藏。所需静态资源和字体暂时存放在/temp_assets。图层信息依次为：
+- bg.webp：背景图片，占满画布。
+- 所属组织（organization）：对应图片资源为 organization_white.webp (需要维护一个映射)。图片宽度为500px，位置固定为X：342，Y：190
+- 人物图片（image），默认和画布同高，位于画布垂直居中
+- 角色信息（charinfo）：位于画布水平居中，Y：586。内部从上至下流式布局，左侧居中
+    - stars：左侧margin 16px，星星从左至右流式排列，水平gap -35px
+    - 角色名称和职业：左右flex排列，gap 4px
+        - 角色职业（profession），对应图片为profession.webp(需要维护一个映射)
+        - 角色名称：上下排列，左对齐
+            - 中文名称（name）：字体：Source han Serif CN，weight：heavy，size：120px；color：white；border：1px，black，solid
+            - 英文名称（enName）：字体：Novensento wide，weight：Normal，size：48px；color：white；border：1px，black，solid
+- 底部文本遮罩：100%宽，只有底部5%为黑色，到顶部渐变到透明
+- 文本（intro）：固定宽度80，水平居中，距离底部120 margin，字体：Hei，regular，size：36px，白色
+
+4. 导出：点击后下载当前模版图片到本地。导出尺寸为1920*1080，该方法应同时兼容浏览器和移动端，无元素错位。命名为akrecruit_当前时间戳,格式为png。
+
 
 ## 5. UI 风格
 整体视觉风格：
@@ -78,8 +258,7 @@ Figma原型：
 现在请只完成第一阶段：
 
 第一阶段目标：
-- 初始化项目结构
-- 创建基础页面
+- 初始化页面结构
 - 创建基础 layout
 - 创建核心组件
 
