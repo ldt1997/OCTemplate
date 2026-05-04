@@ -27,6 +27,11 @@ type RecruitInfoLayout = {
 const measureCanvas = document.createElement("canvas");
 const measureContext = measureCanvas.getContext("2d");
 
+function getFontPixelSize(font: string) {
+  const match = font.match(/(\d+(?:\.\d+)?)px/);
+  return match ? Number(match[1]) : 0;
+}
+
 function measureTextWidth(text: string, font: string) {
   if (!measureContext) {
     return 0;
@@ -34,6 +39,27 @@ function measureTextWidth(text: string, font: string) {
 
   measureContext.font = font;
   return measureContext.measureText(text || " ").width;
+}
+
+function drawTopAlignedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  topY: number,
+  font: string,
+) {
+  ctx.save();
+  ctx.font = font;
+  ctx.textBaseline = "alphabetic";
+
+  const metrics = ctx.measureText(text || " ");
+  const fallbackAscent = getFontPixelSize(font) * 0.88;
+  const ascent = metrics.actualBoundingBoxAscent || fallbackAscent;
+  const baselineY = topY + ascent;
+
+  ctx.strokeText(text, x, baselineY);
+  ctx.fillText(text, x, baselineY);
+  ctx.restore();
 }
 
 export async function loadImage(src: string) {
@@ -184,8 +210,6 @@ export async function exportRecruitImage(form: RecruitFormState) {
     );
   }
 
-  ctx.textBaseline = "top";
-
   for (let index = 0; index < form.rarity; index += 1) {
     const currentX =
       infoLayout.starsLeft +
@@ -217,27 +241,27 @@ export async function exportRecruitImage(form: RecruitFormState) {
   ctx.fillStyle = akRecruitTemplateSpec.textColor;
 
   if (form.name) {
-    ctx.font = NAME_FONT;
     ctx.lineWidth = akRecruitTemplateSpec.textStrokeWidth;
-    ctx.strokeText(form.name, infoLayout.textLeft, infoLayout.rowTop);
-    ctx.fillText(form.name, infoLayout.textLeft, infoLayout.rowTop);
+    drawTopAlignedText(
+      ctx,
+      form.name,
+      infoLayout.textLeft,
+      infoLayout.rowTop,
+      NAME_FONT,
+    );
   }
 
   if (form.enName) {
     const exportEnName = akRecruitTemplateSpec.enNameUppercase
       ? form.enName.toUpperCase()
       : form.enName;
-    ctx.font = EN_NAME_FONT;
     ctx.lineWidth = akRecruitTemplateSpec.textStrokeWidth;
-    ctx.strokeText(
+    drawTopAlignedText(
+      ctx,
       exportEnName,
       infoLayout.textLeft,
       infoLayout.rowTop + akRecruitTemplateSpec.enNameTopOffset,
-    );
-    ctx.fillText(
-      exportEnName,
-      infoLayout.textLeft,
-      infoLayout.rowTop + akRecruitTemplateSpec.enNameTopOffset,
+      EN_NAME_FONT,
     );
   }
 
@@ -261,6 +285,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
     ctx.font = INTRO_FONT;
     ctx.fillStyle = akRecruitTemplateSpec.textColor;
     ctx.textAlign = akRecruitTemplateSpec.introTextAlign;
+    ctx.textBaseline = "top";
     const introX = (CANVAS_WIDTH - akRecruitTemplateSpec.introWidth) / 2;
     const introY =
       CANVAS_HEIGHT -
