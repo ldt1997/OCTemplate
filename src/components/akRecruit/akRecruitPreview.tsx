@@ -35,7 +35,6 @@ export function AkRecruitPreview({
     ? professionAssetMap[form.profession]
     : null;
   const imageRef = useRef<HTMLImageElement | null>(null);
-  const frameRef = useRef<number | null>(null);
   const wheelCommitTimeoutRef = useRef<number | null>(null);
   const isInteractingRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -82,17 +81,6 @@ export function AkRecruitPreview({
     node.style.transform = `translate3d(${imageOffsetX}px, ${imageOffsetY}px, 0) scale(${imageScale})`;
   };
 
-  const scheduleNodeTransform = () => {
-    if (frameRef.current !== null) {
-      return;
-    }
-
-    frameRef.current = window.requestAnimationFrame(() => {
-      frameRef.current = null;
-      syncNodeTransform();
-    });
-  };
-
   const commitTransform = () => {
     onImageTransformCommit({ ...liveTransformRef.current });
   };
@@ -112,16 +100,17 @@ export function AkRecruitPreview({
 
   useEffect(() => {
     return () => {
-      if (frameRef.current !== null) {
-        window.cancelAnimationFrame(frameRef.current);
-      }
       if (wheelCommitTimeoutRef.current !== null) {
         window.clearTimeout(wheelCommitTimeoutRef.current);
       }
     };
   }, []);
 
-  const handleWheel = (event: React.WheelEvent<HTMLImageElement>) => {
+  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    if (!form.imageUrl) {
+      return;
+    }
+
     event.preventDefault();
     liveTransformRef.current = {
       ...liveTransformRef.current,
@@ -131,7 +120,7 @@ export function AkRecruitPreview({
         3,
       ),
     };
-    scheduleNodeTransform();
+    syncNodeTransform();
 
     if (wheelCommitTimeoutRef.current !== null) {
       window.clearTimeout(wheelCommitTimeoutRef.current);
@@ -142,7 +131,12 @@ export function AkRecruitPreview({
     }, 120);
   };
 
-  const handlePointerDown = (event: React.PointerEvent<HTMLImageElement>) => {
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!form.imageUrl) {
+      return;
+    }
+
+    event.preventDefault();
     isInteractingRef.current = true;
     const state = interactionRef.current;
     state.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -168,7 +162,8 @@ export function AkRecruitPreview({
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
-  const handlePointerMove = (event: React.PointerEvent<HTMLImageElement>) => {
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
     const state = interactionRef.current;
     if (!state.pointers.has(event.pointerId)) {
       return;
@@ -188,7 +183,7 @@ export function AkRecruitPreview({
             3,
           ),
         };
-        scheduleNodeTransform();
+        syncNodeTransform();
       }
       return;
     }
@@ -201,11 +196,11 @@ export function AkRecruitPreview({
         imageOffsetY:
           state.originY + (event.clientY - state.startY) / previewScale,
       };
-      scheduleNodeTransform();
+      syncNodeTransform();
     }
   };
 
-  const handlePointerEnd = (event: React.PointerEvent<HTMLImageElement>) => {
+  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
     const state = interactionRef.current;
     state.pointers.delete(event.pointerId);
 
@@ -259,27 +254,37 @@ export function AkRecruitPreview({
           ref={imageRef}
           src={form.imageUrl}
           alt="上传的角色图片"
-          className={`absolute select-none touch-none ${
-            isDragging ? "cursor-grabbing" : "cursor-grab"
-          }`}
+          draggable={false}
+          className="pointer-events-none absolute select-none"
           style={{
             left: baseLayout.baseX,
             top: baseLayout.baseY,
             width: baseLayout.baseWidth,
             height: baseLayout.baseHeight,
             transformOrigin: "center center",
+            willChange: "transform",
           }}
-          onWheel={handleWheel}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerEnd}
-          onPointerCancel={handlePointerEnd}
-          onPointerLeave={handlePointerEnd}
+          onDragStart={(event) => event.preventDefault()}
         />
       ) : null}
 
       <div
-        className="absolute left-1/2 flex -translate-x-1/2 flex-col items-start"
+        className={`absolute inset-0 z-[1] touch-none ${
+          form.imageUrl
+            ? isDragging
+              ? "cursor-grabbing"
+              : "cursor-grab"
+            : "cursor-default"
+        }`}
+        onWheel={handleWheel}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={handlePointerEnd}
+      />
+
+      <div
+        className="absolute left-1/2 z-[2] flex -translate-x-1/2 flex-col items-start"
         style={{ top: 586 }}
       >
         <div className="ml-4 flex items-center">
@@ -322,7 +327,7 @@ export function AkRecruitPreview({
       </div>
 
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[26%]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-[26%]"
         style={{
           background:
             "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.58) 18%, rgba(0,0,0,0) 100%)",
@@ -330,7 +335,7 @@ export function AkRecruitPreview({
       />
 
       <div
-        className="absolute bottom-9 left-1/2 w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left text-[36px] leading-[1.35] text-white"
+        className="absolute bottom-9 left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left text-[36px] leading-[1.35] text-white"
         style={posterIntroStyle}
       >
         {form.intro}
