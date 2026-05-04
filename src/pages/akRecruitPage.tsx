@@ -1,5 +1,4 @@
 import { type ChangeEvent, useEffect, useState } from "react";
-import { Download } from "lucide-react";
 import { AkRecruitCanvas } from "@/components/akRecruit/akRecruitCanvas";
 import {
   initialFormState,
@@ -16,15 +15,31 @@ import { AkRecruitPreview } from "@/components/akRecruit/akRecruitPreview";
 import { AkRecruitToolbar } from "@/components/akRecruit/akRecruitToolbar";
 import { AppLayout } from "@/components/layout/appLayout";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 export function AkRecruitPage() {
   const [form, setForm] = useState(initialFormState);
   const [imageSize, setImageSize] = useState<ImageSize | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [fontsReady, setFontsReady] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
-    void ensureRecruitFontsLoaded();
+    let active = true;
+
+    void ensureRecruitFontsLoaded()
+      .then(() => {
+        if (active) {
+          setFontsReady(true);
+        }
+      })
+      .catch((error) => {
+        console.error("字体加载失败", error);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -60,10 +75,14 @@ export function AkRecruitPage() {
   }, [form.imageUrl]);
 
   const updateForm = (
-    updater: Partial<RecruitFormState> | ((current: RecruitFormState) => RecruitFormState),
+    updater:
+      | Partial<RecruitFormState>
+      | ((current: RecruitFormState) => RecruitFormState),
   ) => {
     setForm((current) =>
-      typeof updater === "function" ? updater(current) : { ...current, ...updater },
+      typeof updater === "function"
+        ? updater(current)
+        : { ...current, ...updater },
     );
   };
 
@@ -127,6 +146,8 @@ export function AkRecruitPage() {
       link.href = dataUrl;
       link.download = `akrecruit_${Date.now()}.png`;
       link.click();
+    } catch (error) {
+      console.error("导出失败", error);
     } finally {
       setIsExporting(false);
     }
@@ -149,9 +170,9 @@ export function AkRecruitPage() {
   return (
     <AppLayout
       headerActions={
-        <Button onClick={handleExport} disabled={isExporting}>
-          <Download />
-          {isExporting ? "导出中..." : "导出"}
+        <Button onClick={handleExport} disabled={isExporting || !fontsReady}>
+          {isExporting && <Spinner data-icon="inline-start" />}
+          导出
         </Button>
       }
       contentClassName="h-[calc(100vh-65px)] overflow-hidden bg-[#f5f5f5]"
@@ -166,6 +187,7 @@ export function AkRecruitPage() {
             {(previewScale) => (
               <AkRecruitPreview
                 form={form}
+                fontsReady={fontsReady}
                 imageSize={imageSize}
                 previewScale={previewScale}
                 onImageTransformCommit={(next) =>

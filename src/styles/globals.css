@@ -18,8 +18,8 @@
   }
 
   @font-face {
-    font-family: "Recruit Intro Sans";
-    src: local("PingFang SC"), local("Microsoft YaHei");
+    font-family: "Source Han Sans TW";
+    src: url("../assets/akrecruit/SourceHanSansTW-Regular.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
   }

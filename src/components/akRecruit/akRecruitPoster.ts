@@ -10,7 +10,10 @@ import {
 
 const NAME_FONT = '120px "Source Han Serif CN"';
 const EN_NAME_FONT = '48px "Novecento Wide"';
-const INTRO_FONT = '36px "Recruit Intro Sans"';
+const INTRO_FONT = '36px "Source Han Sans TW", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif';
+const INTRO_FONT_LOAD = '36px "Source Han Sans TW"';
+
+let recruitFontsReadyPromise: Promise<void> | null = null;
 
 export const recruitPosterMetrics = {
   organizationLeft: 342,
@@ -55,19 +58,37 @@ function measureTextWidth(text: string, font: string) {
 }
 
 export async function loadImage(src: string) {
+  return loadImageWithLabel(src, src);
+}
+
+export async function loadImageWithLabel(src: string, label: string) {
   const image = new Image();
-  image.decoding = "async";
-  image.src = src;
-  await image.decode();
-  return image;
+
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    image.onload = () => {
+      resolve(image);
+    };
+    image.onerror = () => {
+      reject(new Error(`图片加载失败: ${label}`));
+    };
+    image.src = src;
+
+    if (image.complete && image.naturalWidth > 0) {
+      resolve(image);
+    }
+  });
 }
 
 export async function ensureRecruitFontsLoaded() {
-  await Promise.all([
-    document.fonts.load(NAME_FONT),
-    document.fonts.load(EN_NAME_FONT),
-    document.fonts.load(INTRO_FONT),
-  ]);
+  if (!recruitFontsReadyPromise) {
+    recruitFontsReadyPromise = Promise.all([
+      document.fonts.load(NAME_FONT),
+      document.fonts.load(EN_NAME_FONT),
+      document.fonts.load(INTRO_FONT_LOAD),
+    ]).then(() => undefined);
+  }
+
+  await recruitFontsReadyPromise;
 }
 
 export function getRecruitInfoLayout(form: RecruitFormState): RecruitInfoLayout {
@@ -133,14 +154,16 @@ export function wrapRecruitIntroLines(text: string) {
 
 export async function exportRecruitImage(form: RecruitFormState) {
   const [background, organizationMark, starMark] = await Promise.all([
-    loadImage(akRecruitAssets.bgImage),
-    loadImage(organizationAssetMap[form.organization]),
-    loadImage(akRecruitAssets.starImage),
+    loadImageWithLabel(akRecruitAssets.bgImage, "背景图"),
+    loadImageWithLabel(organizationAssetMap[form.organization], "组织标识"),
+    loadImageWithLabel(akRecruitAssets.starImage, "星标"),
   ]);
   const professionMark = form.profession
-    ? await loadImage(professionAssetMap[form.profession])
+    ? await loadImageWithLabel(professionAssetMap[form.profession], "职业标识")
     : null;
-  const uploadedImage = form.imageUrl ? await loadImage(form.imageUrl) : null;
+  const uploadedImage = form.imageUrl
+    ? await loadImageWithLabel(form.imageUrl, "上传图片")
+    : null;
 
   await ensureRecruitFontsLoaded();
 

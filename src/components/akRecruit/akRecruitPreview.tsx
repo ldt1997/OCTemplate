@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   akRecruitAssets,
   CANVAS_HEIGHT,
@@ -13,7 +13,6 @@ import {
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
 import {
-  ensureRecruitFontsLoaded,
   getRecruitInfoLayout,
   recruitPosterMetrics,
   wrapRecruitIntroLines,
@@ -23,6 +22,7 @@ import { useAkRecruitImageTransform } from "@/components/akRecruit/useAkRecruitI
 type AkRecruitPreviewProps = {
   form: RecruitFormState;
   imageSize: ImageSize | null;
+  fontsReady: boolean;
   previewScale: number;
   onImageTransformCommit: (
     next: Partial<
@@ -33,6 +33,7 @@ type AkRecruitPreviewProps = {
 
 export function AkRecruitPreview({
   form,
+  fontsReady,
   imageSize,
   previewScale,
   onImageTransformCommit,
@@ -40,7 +41,6 @@ export function AkRecruitPreview({
   const professionAsset = form.profession
     ? professionAssetMap[form.profession]
     : null;
-  const [fontsReady, setFontsReady] = useState(false);
 
   const baseLayout = useMemo(() => {
     if (!imageSize) {
@@ -68,20 +68,6 @@ export function AkRecruitPreview({
     },
     onCommit: onImageTransformCommit,
   });
-
-  useEffect(() => {
-    let active = true;
-
-    void ensureRecruitFontsLoaded().then(() => {
-      if (active) {
-        setFontsReady(true);
-      }
-    });
-
-    return () => {
-      active = false;
-    };
-  }, []);
 
   return (
     <div

@@ -129,7 +129,7 @@ export const posterEnNameStyle: CSSProperties = {
 };
 
 export const posterIntroStyle: CSSProperties = {
-  fontFamily: '"Recruit Intro Sans", "Microsoft YaHei", sans-serif',
+  fontFamily: '"Source Han Sans TW", "Microsoft YaHei", sans-serif',
 };
 
 export const akRecruitAssets = {
