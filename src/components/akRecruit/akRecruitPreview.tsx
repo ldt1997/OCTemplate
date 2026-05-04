@@ -177,7 +177,7 @@ export function AkRecruitPreview({
               {form.name || " "}
             </div>
             <div
-              className="leading-none"
+              className="whitespace-nowrap leading-none"
               style={{
                 ...posterEnNameStyle,
                 fontSize: akRecruitTemplateSpec.enNameFontSize,

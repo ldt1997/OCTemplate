@@ -96,9 +96,15 @@ export async function ensureRecruitFontsLoaded() {
   await recruitFontsReadyPromise;
 }
 
-export function getRecruitInfoLayout(form: RecruitFormState): RecruitInfoLayout {
-  const professionWidth = form.profession ? akRecruitTemplateSpec.professionWidth : 0;
-  const professionGap = form.profession ? akRecruitTemplateSpec.professionGap : 0;
+export function getRecruitInfoLayout(
+  form: RecruitFormState,
+): RecruitInfoLayout {
+  const professionWidth = form.profession
+    ? akRecruitTemplateSpec.professionWidth
+    : 0;
+  const professionGap = form.profession
+    ? akRecruitTemplateSpec.professionGap
+    : 0;
   const starsWidth =
     form.rarity > 0
       ? akRecruitTemplateSpec.starSize * form.rarity -
@@ -106,7 +112,7 @@ export function getRecruitInfoLayout(form: RecruitFormState): RecruitInfoLayout 
       : 0;
   const textColumnWidth = Math.max(
     measureTextWidth(form.name, NAME_FONT),
-    measureTextWidth(form.enName, EN_NAME_FONT),
+    measureTextWidth(form.enName?.toUpperCase() || "", EN_NAME_FONT),
   );
   const infoRowWidth = professionWidth + professionGap + textColumnWidth;
   const blockWidth = Math.max(
@@ -139,7 +145,8 @@ export function wrapRecruitIntroLines(text: string) {
   for (const char of text) {
     const nextLine = `${currentLine}${char}`;
     if (
-      measureContext.measureText(nextLine).width <= akRecruitTemplateSpec.introWidth ||
+      measureContext.measureText(nextLine).width <=
+        akRecruitTemplateSpec.introWidth ||
       currentLine.length === 0
     ) {
       currentLine = nextLine;
@@ -213,7 +220,8 @@ export async function exportRecruitImage(form: RecruitFormState) {
   for (let index = 0; index < form.rarity; index += 1) {
     const currentX =
       infoLayout.starsLeft +
-      index * (akRecruitTemplateSpec.starSize - akRecruitTemplateSpec.starOverlap);
+      index *
+        (akRecruitTemplateSpec.starSize - akRecruitTemplateSpec.starOverlap);
     ctx.drawImage(
       starMark,
       currentX,
