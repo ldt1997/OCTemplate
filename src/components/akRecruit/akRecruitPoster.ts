@@ -26,7 +26,7 @@ export const recruitPosterMetrics = {
   professionTopOffset: 10,
   enNameTopOffset: 132,
   introWidth: 1280,
-  introHeight: 48,
+  introLineHeight: 48,
   introBottom: 36,
   gradientTop: CANVAS_HEIGHT * 0.74,
   gradientHeight: CANVAS_HEIGHT * 0.26,
@@ -101,6 +101,36 @@ export function getRecruitInfoLayout(form: RecruitFormState): RecruitInfoLayout 
   };
 }
 
+export function wrapRecruitIntroLines(text: string) {
+  if (!measureContext || !text) {
+    return [];
+  }
+
+  measureContext.font = INTRO_FONT;
+  const lines: string[] = [];
+  let currentLine = "";
+
+  for (const char of text) {
+    const nextLine = `${currentLine}${char}`;
+    if (
+      measureContext.measureText(nextLine).width <= recruitPosterMetrics.introWidth ||
+      currentLine.length === 0
+    ) {
+      currentLine = nextLine;
+      continue;
+    }
+
+    lines.push(currentLine);
+    currentLine = char;
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines;
+}
+
 export async function exportRecruitImage(form: RecruitFormState) {
   const [background, organizationMark, starMark] = await Promise.all([
     loadImage(akRecruitAssets.bgImage),
@@ -124,6 +154,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
   }
 
   const infoLayout = getRecruitInfoLayout(form);
+  const introLines = wrapRecruitIntroLines(form.intro);
   ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   ctx.drawImage(
     organizationMark,
@@ -221,7 +252,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
     recruitPosterMetrics.gradientHeight,
   );
 
-  if (form.intro) {
+  if (introLines.length > 0) {
     ctx.font = INTRO_FONT;
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "left";
@@ -229,19 +260,15 @@ export async function exportRecruitImage(form: RecruitFormState) {
     const introY =
       CANVAS_HEIGHT -
       recruitPosterMetrics.introBottom -
-      recruitPosterMetrics.introHeight;
+      introLines.length * recruitPosterMetrics.introLineHeight;
 
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(
-      introX,
-      introY,
-      recruitPosterMetrics.introWidth,
-      recruitPosterMetrics.introHeight,
-    );
-    ctx.clip();
-    ctx.fillText(form.intro, introX, introY);
-    ctx.restore();
+    introLines.forEach((line, index) => {
+      ctx.fillText(
+        line,
+        introX,
+        introY + index * recruitPosterMetrics.introLineHeight,
+      );
+    });
   }
 
   return canvas.toDataURL("image/png");

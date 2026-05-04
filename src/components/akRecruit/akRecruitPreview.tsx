@@ -16,6 +16,7 @@ import {
   ensureRecruitFontsLoaded,
   getRecruitInfoLayout,
   recruitPosterMetrics,
+  wrapRecruitIntroLines,
 } from "@/components/akRecruit/akRecruitPoster";
 import { useAkRecruitImageTransform } from "@/components/akRecruit/useAkRecruitImageTransform";
 
@@ -52,6 +53,10 @@ export function AkRecruitPreview({
   const infoLayout = useMemo(
     () => getRecruitInfoLayout(form),
     [fontsReady, form],
+  );
+  const introLines = useMemo(
+    () => wrapRecruitIntroLines(form.intro),
+    [fontsReady, form.intro],
   );
   const { imageRef, isDragging, overlayHandlers } = useAkRecruitImageTransform({
     enabled: Boolean(form.imageUrl),
@@ -180,7 +185,7 @@ export function AkRecruitPreview({
               {form.name || " "}
             </div>
             <div
-              className="mt-2 text-5xl uppercase leading-none text-white"
+              className="text-5xl uppercase leading-none text-white"
               style={posterEnNameStyle}
             >
               {form.enName || " "}
@@ -198,17 +203,21 @@ export function AkRecruitPreview({
       />
 
       <div
-        className="absolute left-1/2 z-[2] overflow-hidden whitespace-nowrap text-left text-[36px] leading-[48px] text-white"
+        className="absolute left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left text-[36px] leading-[1.35] text-white"
         style={{
           ...posterIntroStyle,
           bottom: recruitPosterMetrics.introBottom,
-          width: recruitPosterMetrics.introWidth,
-          height: recruitPosterMetrics.introHeight,
-          maxWidth: "calc(100% - 96px)",
-          transform: "translateX(-50%)",
         }}
       >
-        {form.intro}
+        {introLines.map((line, index) => (
+          <p
+            key={`${line}-${index}`}
+            className="m-0"
+            style={{ lineHeight: `${recruitPosterMetrics.introLineHeight}px` }}
+          >
+            {line}
+          </p>
+        ))}
       </div>
     </div>
   );
