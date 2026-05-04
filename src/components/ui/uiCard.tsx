@@ -20,7 +20,7 @@ export const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-4", className)}
+    className={cn("grid auto-rows-min grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1.5 p-4", className)}
     {...props}
   />
 ));
@@ -33,7 +33,7 @@ export const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn("text-xl font-semibold leading-none tracking-tight", className)}
+    className={cn("text-base font-semibold leading-none tracking-tight", className)}
     {...props}
   />
 ));
@@ -46,7 +46,7 @@ export const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm leading-6 text-muted-foreground", className)}
+    className={cn("col-span-2 text-sm leading-6 text-muted-foreground", className)}
     {...props}
   />
 ));

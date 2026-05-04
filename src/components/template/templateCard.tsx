@@ -25,10 +25,10 @@ export function TemplateCard({ template }: TemplateCardProps) {
         className="relative z-20 aspect-video w-full object-cover brightness-75 grayscale"
       />
       <CardHeader>
+        <CardTitle>{template.name}</CardTitle>
         <CardAction>
           <Badge variant="secondary">{template.tag}</Badge>
         </CardAction>
-        <CardTitle>{template.name}</CardTitle>
         <CardDescription>{template.description}</CardDescription>
       </CardHeader>
       <CardFooter>
