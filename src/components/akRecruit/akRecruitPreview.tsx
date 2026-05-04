@@ -9,12 +9,12 @@ import {
   posterIntroStyle,
   posterNameStyle,
   professionAssetMap,
+  akRecruitTemplateSpec,
   type ImageSize,
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
 import {
   getRecruitInfoLayout,
-  recruitPosterMetrics,
   wrapRecruitIntroLines,
 } from "@/components/akRecruit/akRecruitPoster";
 import { useAkRecruitImageTransform } from "@/components/akRecruit/useAkRecruitImageTransform";
@@ -83,9 +83,9 @@ export function AkRecruitPreview({
         alt=""
         className="pointer-events-none absolute select-none"
         style={{
-          left: recruitPosterMetrics.organizationLeft,
-          top: recruitPosterMetrics.organizationTop,
-          width: recruitPosterMetrics.organizationWidth,
+          left: akRecruitTemplateSpec.organizationLeft,
+          top: akRecruitTemplateSpec.organizationTop,
+          width: akRecruitTemplateSpec.organizationWidth,
         }}
       />
 
@@ -123,13 +123,13 @@ export function AkRecruitPreview({
         className="absolute z-[2]"
         style={{
           left: infoLayout.blockLeft,
-          top: recruitPosterMetrics.infoTop,
+          top: akRecruitTemplateSpec.infoTop,
           width: infoLayout.blockWidth,
         }}
       >
         <div
           className="flex items-center"
-          style={{ paddingLeft: recruitPosterMetrics.starLeftPadding }}
+          style={{ paddingLeft: akRecruitTemplateSpec.starLeftPadding }}
         >
           {Array.from({ length: form.rarity }).map((_, index) => (
             <img
@@ -138,9 +138,9 @@ export function AkRecruitPreview({
               alt=""
               className={index === 0 ? "" : ""}
               style={{
-                width: recruitPosterMetrics.starSize,
-                height: recruitPosterMetrics.starSize,
-                marginLeft: index === 0 ? 0 : -recruitPosterMetrics.starOverlap,
+                width: akRecruitTemplateSpec.starSize,
+                height: akRecruitTemplateSpec.starSize,
+                marginLeft: index === 0 ? 0 : -akRecruitTemplateSpec.starOverlap,
               }}
             />
           ))}
@@ -148,7 +148,7 @@ export function AkRecruitPreview({
 
         <div
           className="flex items-start"
-          style={{ marginTop: recruitPosterMetrics.infoGap }}
+          style={{ marginTop: akRecruitTemplateSpec.infoGap }}
         >
           {professionAsset ? (
             <img
@@ -156,23 +156,31 @@ export function AkRecruitPreview({
               alt=""
               className="h-auto shrink-0"
               style={{
-                width: recruitPosterMetrics.professionWidth,
-                marginTop: recruitPosterMetrics.professionTopOffset,
-                marginRight: recruitPosterMetrics.professionGap,
+                width: akRecruitTemplateSpec.professionWidth,
+                marginTop: akRecruitTemplateSpec.professionTopOffset,
+                marginRight: akRecruitTemplateSpec.professionGap,
               }}
             />
           ) : null}
 
           <div className="flex flex-col items-start">
             <div
-              className="text-[120px] font-black leading-none text-white"
-              style={posterNameStyle}
+              className="font-black leading-none"
+              style={{
+                ...posterNameStyle,
+                fontSize: akRecruitTemplateSpec.nameFontSize,
+                color: akRecruitTemplateSpec.textColor,
+              }}
             >
               {form.name || " "}
             </div>
             <div
-              className="text-5xl uppercase leading-none text-white"
-              style={posterEnNameStyle}
+              className="uppercase leading-none"
+              style={{
+                ...posterEnNameStyle,
+                fontSize: akRecruitTemplateSpec.enNameFontSize,
+                color: akRecruitTemplateSpec.textColor,
+              }}
             >
               {form.enName || " "}
             </div>
@@ -189,17 +197,19 @@ export function AkRecruitPreview({
       />
 
       <div
-        className="absolute left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left text-[36px] leading-[1.35] text-white"
+        className="absolute left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 text-left"
         style={{
           ...posterIntroStyle,
-          bottom: recruitPosterMetrics.introBottom,
+          fontSize: akRecruitTemplateSpec.introFontSize,
+          color: akRecruitTemplateSpec.textColor,
+          bottom: akRecruitTemplateSpec.introBottom,
         }}
       >
         {introLines.map((line, index) => (
           <p
             key={`${line}-${index}`}
             className="m-0"
-            style={{ lineHeight: `${recruitPosterMetrics.introLineHeight}px` }}
+            style={{ lineHeight: `${akRecruitTemplateSpec.introLineHeight}px` }}
           >
             {line}
           </p>

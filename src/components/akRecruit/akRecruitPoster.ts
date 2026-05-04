@@ -5,37 +5,16 @@ import {
   getImageLayout,
   organizationAssetMap,
   professionAssetMap,
+  akRecruitTemplateSpec,
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
 
-const NAME_FONT = '120px "Source Han Serif CN"';
-const EN_NAME_FONT = '48px "Novecento Wide"';
-const INTRO_FONT = '36px "Source Han Sans TW", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif';
-const INTRO_FONT_LOAD = '36px "Source Han Sans TW"';
+const NAME_FONT = `${akRecruitTemplateSpec.nameFontSize}px "Source Han Serif CN"`;
+const EN_NAME_FONT = `${akRecruitTemplateSpec.enNameFontSize}px "Novecento Wide"`;
+const INTRO_FONT = `${akRecruitTemplateSpec.introFontSize}px "Source Han Sans TW", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif`;
+const INTRO_FONT_LOAD = `${akRecruitTemplateSpec.introFontSize}px "Source Han Sans TW"`;
 
 let recruitFontsReadyPromise: Promise<void> | null = null;
-
-export const recruitPosterMetrics = {
-  organizationLeft: 342,
-  organizationTop: 190,
-  organizationWidth: 500,
-  starSize: 152,
-  starOverlap: 35,
-  starLeftPadding: 52,
-  infoTop: 586,
-  infoGap: -24,
-  professionWidth: 260,
-  professionGap: 4,
-  professionTopOffset: 10,
-  enNameTopOffset: 132,
-  introWidth: 1280,
-  introLineHeight: 48,
-  introBottom: 36,
-  gradientTop: CANVAS_HEIGHT * 0.74,
-  gradientHeight: CANVAS_HEIGHT * 0.26,
-  gradientStartY: CANVAS_HEIGHT * 0.95,
-  gradientEndY: CANVAS_HEIGHT * 0.78,
-} as const;
 
 type RecruitInfoLayout = {
   blockLeft: number;
@@ -92,12 +71,12 @@ export async function ensureRecruitFontsLoaded() {
 }
 
 export function getRecruitInfoLayout(form: RecruitFormState): RecruitInfoLayout {
-  const professionWidth = form.profession ? recruitPosterMetrics.professionWidth : 0;
-  const professionGap = form.profession ? recruitPosterMetrics.professionGap : 0;
+  const professionWidth = form.profession ? akRecruitTemplateSpec.professionWidth : 0;
+  const professionGap = form.profession ? akRecruitTemplateSpec.professionGap : 0;
   const starsWidth =
     form.rarity > 0
-      ? recruitPosterMetrics.starSize * form.rarity -
-        recruitPosterMetrics.starOverlap * (form.rarity - 1)
+      ? akRecruitTemplateSpec.starSize * form.rarity -
+        akRecruitTemplateSpec.starOverlap * (form.rarity - 1)
       : 0;
   const textColumnWidth = Math.max(
     measureTextWidth(form.name, NAME_FONT),
@@ -105,7 +84,7 @@ export function getRecruitInfoLayout(form: RecruitFormState): RecruitInfoLayout 
   );
   const infoRowWidth = professionWidth + professionGap + textColumnWidth;
   const blockWidth = Math.max(
-    starsWidth + recruitPosterMetrics.starLeftPadding,
+    starsWidth + akRecruitTemplateSpec.starLeftPadding,
     infoRowWidth,
   );
   const blockLeft = CANVAS_WIDTH / 2 - blockWidth / 2;
@@ -113,11 +92,11 @@ export function getRecruitInfoLayout(form: RecruitFormState): RecruitInfoLayout 
   return {
     blockLeft,
     blockWidth,
-    starsLeft: blockLeft + recruitPosterMetrics.starLeftPadding,
+    starsLeft: blockLeft + akRecruitTemplateSpec.starLeftPadding,
     rowTop:
-      recruitPosterMetrics.infoTop +
-      recruitPosterMetrics.starSize +
-      recruitPosterMetrics.infoGap,
+      akRecruitTemplateSpec.infoTop +
+      akRecruitTemplateSpec.starSize +
+      akRecruitTemplateSpec.infoGap,
     textLeft: blockLeft + professionWidth + professionGap,
   };
 }
@@ -134,7 +113,7 @@ export function wrapRecruitIntroLines(text: string) {
   for (const char of text) {
     const nextLine = `${currentLine}${char}`;
     if (
-      measureContext.measureText(nextLine).width <= recruitPosterMetrics.introWidth ||
+      measureContext.measureText(nextLine).width <= akRecruitTemplateSpec.introWidth ||
       currentLine.length === 0
     ) {
       currentLine = nextLine;
@@ -181,11 +160,11 @@ export async function exportRecruitImage(form: RecruitFormState) {
   ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   ctx.drawImage(
     organizationMark,
-    recruitPosterMetrics.organizationLeft,
-    recruitPosterMetrics.organizationTop,
-    recruitPosterMetrics.organizationWidth,
+    akRecruitTemplateSpec.organizationLeft,
+    akRecruitTemplateSpec.organizationTop,
+    akRecruitTemplateSpec.organizationWidth,
     (organizationMark.height / organizationMark.width) *
-      recruitPosterMetrics.organizationWidth,
+      akRecruitTemplateSpec.organizationWidth,
   );
 
   if (uploadedImage) {
@@ -210,86 +189,86 @@ export async function exportRecruitImage(form: RecruitFormState) {
   for (let index = 0; index < form.rarity; index += 1) {
     const currentX =
       infoLayout.starsLeft +
-      index * (recruitPosterMetrics.starSize - recruitPosterMetrics.starOverlap);
+      index * (akRecruitTemplateSpec.starSize - akRecruitTemplateSpec.starOverlap);
     ctx.drawImage(
       starMark,
       currentX,
-      recruitPosterMetrics.infoTop,
-      recruitPosterMetrics.starSize,
-      recruitPosterMetrics.starSize,
+      akRecruitTemplateSpec.infoTop,
+      akRecruitTemplateSpec.starSize,
+      akRecruitTemplateSpec.starSize,
     );
   }
 
   if (professionMark) {
     const professionHeight =
       (professionMark.height / professionMark.width) *
-      recruitPosterMetrics.professionWidth;
+      akRecruitTemplateSpec.professionWidth;
     ctx.drawImage(
       professionMark,
       infoLayout.blockLeft,
-      infoLayout.rowTop + recruitPosterMetrics.professionTopOffset,
-      recruitPosterMetrics.professionWidth,
+      infoLayout.rowTop + akRecruitTemplateSpec.professionTopOffset,
+      akRecruitTemplateSpec.professionWidth,
       professionHeight,
     );
   }
 
   ctx.lineJoin = "round";
-  ctx.strokeStyle = "rgba(0, 0, 0, 0.92)";
-  ctx.fillStyle = "#ffffff";
+  ctx.strokeStyle = akRecruitTemplateSpec.textStrokeColor;
+  ctx.fillStyle = akRecruitTemplateSpec.textColor;
 
   if (form.name) {
     ctx.font = NAME_FONT;
-    ctx.lineWidth = 6;
+    ctx.lineWidth = akRecruitTemplateSpec.textStrokeWidth;
     ctx.strokeText(form.name, infoLayout.textLeft, infoLayout.rowTop);
     ctx.fillText(form.name, infoLayout.textLeft, infoLayout.rowTop);
   }
 
   if (form.enName) {
     ctx.font = EN_NAME_FONT;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = akRecruitTemplateSpec.textStrokeWidth;
     ctx.strokeText(
       form.enName,
       infoLayout.textLeft,
-      infoLayout.rowTop + recruitPosterMetrics.enNameTopOffset,
+      infoLayout.rowTop + akRecruitTemplateSpec.enNameTopOffset,
     );
     ctx.fillText(
       form.enName,
       infoLayout.textLeft,
-      infoLayout.rowTop + recruitPosterMetrics.enNameTopOffset,
+      infoLayout.rowTop + akRecruitTemplateSpec.enNameTopOffset,
     );
   }
 
   const gradient = ctx.createLinearGradient(
     0,
-    recruitPosterMetrics.gradientStartY,
+    akRecruitTemplateSpec.gradientStartY,
     0,
-    recruitPosterMetrics.gradientEndY,
+    akRecruitTemplateSpec.gradientEndY,
   );
   gradient.addColorStop(0, "rgba(0, 0, 0, 0.92)");
   gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
   ctx.fillStyle = gradient;
   ctx.fillRect(
     0,
-    recruitPosterMetrics.gradientTop,
+    akRecruitTemplateSpec.gradientTop,
     CANVAS_WIDTH,
-    recruitPosterMetrics.gradientHeight,
+    akRecruitTemplateSpec.gradientHeight,
   );
 
   if (introLines.length > 0) {
     ctx.font = INTRO_FONT;
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = akRecruitTemplateSpec.textColor;
     ctx.textAlign = "left";
-    const introX = (CANVAS_WIDTH - recruitPosterMetrics.introWidth) / 2;
+    const introX = (CANVAS_WIDTH - akRecruitTemplateSpec.introWidth) / 2;
     const introY =
       CANVAS_HEIGHT -
-      recruitPosterMetrics.introBottom -
-      introLines.length * recruitPosterMetrics.introLineHeight;
+      akRecruitTemplateSpec.introBottom -
+      introLines.length * akRecruitTemplateSpec.introLineHeight;
 
     introLines.forEach((line, index) => {
       ctx.fillText(
         line,
         introX,
-        introY + index * recruitPosterMetrics.introLineHeight,
+        introY + index * akRecruitTemplateSpec.introLineHeight,
       );
     });
   }

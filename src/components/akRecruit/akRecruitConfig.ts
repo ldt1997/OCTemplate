@@ -21,6 +21,34 @@ export const CANVAS_WIDTH = 1920;
 export const CANVAS_HEIGHT = 1080;
 export const MAX_FILE_SIZE = 6 * 1024 * 1024;
 
+export const akRecruitTemplateSpec = {
+  nameFontSize: 120,
+  enNameFontSize: 48,
+  introFontSize: 36,
+  textStrokeWidth: 3,
+  textStrokeColor: "rgba(0, 0, 0, 0.9)",
+  textColor: "#ffffff",
+  organizationLeft: 342,
+  organizationTop: 190,
+  organizationWidth: 500,
+  starSize: 152,
+  starOverlap: 35,
+  starLeftPadding: 52,
+  infoTop: 586,
+  infoGap: -24,
+  professionWidth: 260,
+  professionGap: 4,
+  professionTopOffset: 10,
+  enNameTopOffset: 132,
+  introWidth: 1280,
+  introLineHeight: 48,
+  introBottom: 36,
+  gradientTop: CANVAS_HEIGHT * 0.74,
+  gradientHeight: CANVAS_HEIGHT * 0.26,
+  gradientStartY: CANVAS_HEIGHT * 0.95,
+  gradientEndY: CANVAS_HEIGHT * 0.78,
+} as const;
+
 export const organizationOptions = [
   { label: "罗德岛", value: "rhodes_island" },
   { label: "莱茵生命", value: "rhine" },
@@ -115,13 +143,13 @@ export const initialFormState: RecruitFormState = {
 
 export const posterNameStyle: CSSProperties = {
   fontFamily: '"Source Han Serif CN", serif',
-  WebkitTextStroke: "2px rgba(0, 0, 0, 0.9)",
+  WebkitTextStroke: `${akRecruitTemplateSpec.textStrokeWidth}px ${akRecruitTemplateSpec.textStrokeColor}`,
   paintOrder: "stroke fill",
 };
 
 export const posterEnNameStyle: CSSProperties = {
   fontFamily: '"Novecento Wide", sans-serif',
-  WebkitTextStroke: "1px rgba(0, 0, 0, 0.9)",
+  WebkitTextStroke: `${akRecruitTemplateSpec.textStrokeWidth}px ${akRecruitTemplateSpec.textStrokeColor}`,
   paintOrder: "stroke fill",
 };
 
