@@ -222,10 +222,7 @@ export function AkRecruitToolbar({
           <div className="min-h-0 flex-1 overflow-y-auto pr-1">
             <div className="space-y-6">
               {sections.map((section) => (
-                <section
-                  key={section.key}
-                  className="rounded-xl border bg-background p-4"
-                >
+                <section key={section.key} className="bg-background">
                   <FieldLegend>{section.label}</FieldLegend>
                   <FieldDescription>{section.desc}</FieldDescription>
                   <div className="mt-4">{section.content}</div>
@@ -258,7 +255,7 @@ export function AkRecruitToolbar({
                 value={section.key}
                 className="mt-4"
               >
-                <div className="rounded-xl border p-4">
+                <div>
                   <FieldTitle>{section.label}</FieldTitle>
                   <FieldDescription className="mt-1">
                     {section.desc}
