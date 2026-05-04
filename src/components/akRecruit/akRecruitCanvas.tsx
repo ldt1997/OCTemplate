@@ -1,7 +1,6 @@
 import type { PropsWithChildren, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import {
-  CANVAS_HEIGHT,
   CANVAS_WIDTH,
   clamp,
 } from "@/components/akRecruit/akRecruitConfig";
@@ -60,10 +59,7 @@ export function AkRecruitCanvas({ children, hint }: AkRecruitCanvasProps) {
         return;
       }
 
-      const nextScale = Math.min(
-        entry.contentRect.width / CANVAS_WIDTH,
-        entry.contentRect.height / CANVAS_HEIGHT,
-      );
+      const nextScale = entry.contentRect.width / CANVAS_WIDTH;
       setBaseScale(clamp(nextScale, 0.12, 1));
     });
 
@@ -159,7 +155,7 @@ export function AkRecruitCanvas({ children, hint }: AkRecruitCanvasProps) {
   return (
     <div
       ref={viewportRef}
-      className={`relative flex h-full items-center justify-center overflow-hidden touch-none px-4 py-4 lg:items-start lg:px-10 lg:py-6 ${
+      className={`relative flex h-full items-start justify-center overflow-hidden touch-none ${
         pointerStateRef.current.mode === "pan" ? "cursor-grabbing" : "cursor-grab"
       }`}
       onWheel={handleWheel}
@@ -174,7 +170,7 @@ export function AkRecruitCanvas({ children, hint }: AkRecruitCanvasProps) {
       <div
         style={{
           transform: `translate(${transform.x}px, ${transform.y}px) scale(${baseScale * transform.zoom})`,
-          transformOrigin: "center center",
+          transformOrigin: "top center",
         }}
       >
         {children}
