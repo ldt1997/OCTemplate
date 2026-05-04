@@ -53,7 +53,7 @@ export function AkRecruitToolbar({
     {
       key: "appearance",
       label: "立绘",
-      desc: "在预览区缩放并拖动人物图片",
+      desc: "滚轮或双指缩放，拖动调整位置",
       content: (
         <FieldSet>
           <FieldGroup>
@@ -67,7 +67,7 @@ export function AkRecruitToolbar({
                   onChange={onFileChange}
                 />
                 <FieldDescription>
-                  支持 PNG / JPEG，最大 6MB。滚轮或双指缩放，拖动调整位置
+                  支持 PNG / JPEG，最大 6MB
                   {form.imageFile ? `，当前文件：${form.imageFile.name}` : ""}
                 </FieldDescription>
                 {imageError ? (
