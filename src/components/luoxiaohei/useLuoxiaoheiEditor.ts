@@ -207,11 +207,15 @@ export function useLuoxiaoheiEditor() {
   const handleExport = async () => {
     try {
       setIsExporting(true);
-      const dataUrl = await exportLuoxiaoheiImage(form);
+      const imageBlob = await exportLuoxiaoheiImage(form);
+      const downloadUrl = URL.createObjectURL(imageBlob);
       const link = document.createElement("a");
-      link.href = dataUrl;
+      link.href = downloadUrl;
       link.download = `luoxiaohei_${Date.now()}.png`;
       link.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(downloadUrl);
+      }, 0);
     } catch (error) {
       console.error("导出失败", error);
     } finally {

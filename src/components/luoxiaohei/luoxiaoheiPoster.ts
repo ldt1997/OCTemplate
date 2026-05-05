@@ -286,5 +286,16 @@ export async function exportLuoxiaoheiImage(form: LuoxiaoheiFormState) {
     layout.logo.height,
   );
 
-  return canvas.toDataURL("image/png");
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((result) => {
+      if (result) {
+        resolve(result);
+        return;
+      }
+
+      reject(new Error("导出图片失败，未生成有效文件。"));
+    }, "image/png");
+  });
+
+  return blob;
 }
