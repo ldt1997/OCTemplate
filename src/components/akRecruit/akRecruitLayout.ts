@@ -209,3 +209,10 @@ export function getRecruitIntroTextAlign(
 ): RecruitIntroTextAlign {
   return lineCount <= 1 ? "center" : "left";
 }
+
+export function getRecruitIntroDrawX(
+  layout: RecruitIntroLayout,
+  textAlign: RecruitIntroTextAlign,
+) {
+  return textAlign === "center" ? layout.x + layout.width / 2 : layout.x;
+}

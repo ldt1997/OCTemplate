@@ -8,6 +8,7 @@ import {
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
 import {
+  getRecruitIntroDrawX,
   getRecruitGradientLayout,
   getRecruitIntroLayout,
   getRecruitIntroTextAlign,
@@ -111,6 +112,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
   const introLines = wrapRecruitIntroLines(form.intro);
   const introLayout = getRecruitIntroLayout(introLines.length);
   const introTextAlign = getRecruitIntroTextAlign(introLines.length);
+  const introDrawX = getRecruitIntroDrawX(introLayout, introTextAlign);
   const gradientLayout = getRecruitGradientLayout();
   ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   ctx.drawImage(
@@ -219,7 +221,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
     introLines.forEach((line, index) => {
       ctx.fillText(
         line,
-        introLayout.x,
+        introDrawX,
         introLayout.y + index * akRecruitTemplateSpec.introLineHeight,
       );
     });
