@@ -61,7 +61,7 @@ export function AkRecruitPage() {
                 </div>
               </DrawerTrigger>
 
-              <DrawerContent>
+              <DrawerContent overlayClassName="bg-transparent">
                 <div className="max-h-[min(70dvh,36rem)] overflow-y-auto">
                   <AkRecruitToolbar variant="mobile" {...toolbarProps} />
                 </div>
