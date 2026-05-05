@@ -14,6 +14,8 @@ import {
 import {
   formatHueLabel,
   formatRgbLabel,
+  getDisplayNameText,
+  getNameFrameLayout,
   getPosterLayout,
 } from "@/components/luoxiaohei/luoxiaoheiPoster";
 import { useLuoxiaoheiImageTransform } from "@/components/luoxiaohei/useLuoxiaoheiImageTransform";
@@ -36,7 +38,13 @@ export function LuoxiaoheiPreview({
   previewScale,
   onImageTransformCommit,
 }: LuoxiaoheiPreviewProps) {
-  const layout = useMemo(() => getPosterLayout(), []);
+  const layout = useMemo(
+    () => ({
+      ...getPosterLayout(),
+      nameFrame: getNameFrameLayout(form.name),
+    }),
+    [form.name],
+  );
   const baseLayout = useMemo(() => {
     if (!imageSize) {
       return null;
@@ -54,6 +62,10 @@ export function LuoxiaoheiPreview({
     },
     onCommit: onImageTransformCommit,
   });
+
+  const displayName = useMemo(() => getDisplayNameText(form.name), [form.name]);
+  const nameTextHeight =
+    displayName.length * luoxiaoheiTemplateSpec.nameFrameTextLineHeight;
 
   return (
     <div
@@ -202,23 +214,26 @@ export function LuoxiaoheiPreview({
         <img
           src={luoxiaoheiAssets.nameframeImage}
           alt=""
-          className="pointer-events-none h-full w-full select-none object-contain"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 select-none object-fill"
         />
         <div
-          className="absolute"
+          className="absolute left-1/2 top-1/2"
           style={{
             ...sourceHanNameStyle,
-            top: luoxiaoheiTemplateSpec.nameFrameTextTop,
-            right: luoxiaoheiTemplateSpec.nameFrameTextRight,
+            transform: "translate(-50%, -50%)",
             color: "#111111",
             fontSize: luoxiaoheiTemplateSpec.nameFontSize,
             fontWeight: luoxiaoheiTemplateSpec.nameFontWeight,
             writingMode: "vertical-rl",
             textOrientation: "mixed",
             lineHeight: `${luoxiaoheiTemplateSpec.nameFrameTextLineHeight}px`,
+            height: `${nameTextHeight}px`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {form.name || " "}
+          {displayName}
         </div>
       </div>
 

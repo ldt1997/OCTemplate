@@ -51,6 +51,20 @@ export type LuoxiaoheiPosterLayout = {
   };
 };
 
+export function getDisplayNameText(name: string) {
+  return (name || " ").trim() || " ";
+}
+
+export function getNameFrameHeight(name: string) {
+  const text = getDisplayNameText(name);
+  const contentHeight =
+    text.length * luoxiaoheiTemplateSpec.nameFrameTextLineHeight;
+  const paddedHeight =
+    contentHeight + luoxiaoheiTemplateSpec.nameFrameVerticalPadding * 2;
+
+  return Math.max(luoxiaoheiTemplateSpec.nameFrameMinHeight, paddedHeight);
+}
+
 export async function loadImage(src: string) {
   return loadImageWithLabel(src, src);
 }
@@ -90,6 +104,8 @@ export function formatHueLabel(hex: string) {
 }
 
 export function getPosterLayout(): LuoxiaoheiPosterLayout {
+  const nameFrameHeight = getNameFrameHeight("");
+
   return {
     leftBlock: {
       x: 0,
@@ -116,8 +132,17 @@ export function getPosterLayout(): LuoxiaoheiPosterLayout {
       x: luoxiaoheiTemplateSpec.nameFrameLeft,
       y: luoxiaoheiTemplateSpec.nameFrameTop,
       width: luoxiaoheiTemplateSpec.nameFrameWidth,
-      height: luoxiaoheiTemplateSpec.nameFrameHeight,
+      height: nameFrameHeight,
     },
+  };
+}
+
+export function getNameFrameLayout(name: string) {
+  return {
+    x: luoxiaoheiTemplateSpec.nameFrameLeft,
+    y: luoxiaoheiTemplateSpec.nameFrameTop,
+    width: luoxiaoheiTemplateSpec.nameFrameWidth,
+    height: getNameFrameHeight(name),
   };
 }
 
@@ -202,23 +227,14 @@ function drawVerticalName(
   ctx.save();
   ctx.font = NAME_FONT;
   ctx.fillStyle = "#111111";
-  ctx.textAlign = "left";
+  ctx.textAlign = "center";
   ctx.textBaseline = "top";
 
-  const maxChars = Math.max(
-    1,
-    Math.floor(
-      (frame.height - luoxiaoheiTemplateSpec.nameFrameTextTop * 2) /
-        luoxiaoheiTemplateSpec.nameFrameTextLineHeight,
-    ),
-  );
-  const displayText = (text || " ").slice(0, maxChars);
-  const textX =
-    frame.x +
-    frame.width -
-    luoxiaoheiTemplateSpec.nameFrameTextRight -
-    luoxiaoheiTemplateSpec.nameFontSize;
-  const textY = frame.y + luoxiaoheiTemplateSpec.nameFrameTextTop;
+  const displayText = getDisplayNameText(text);
+  const contentHeight =
+    displayText.length * luoxiaoheiTemplateSpec.nameFrameTextLineHeight;
+  const textX = frame.x + frame.width / 2;
+  const textY = frame.y + (frame.height - contentHeight) / 2;
 
   [...displayText].forEach((char, index) => {
     ctx.fillText(
@@ -263,7 +279,10 @@ export async function exportLuoxiaoheiImage(form: LuoxiaoheiFormState) {
     throw new Error("当前环境不支持导出画布。");
   }
 
-  const layout = getPosterLayout();
+  const layout = {
+    ...getPosterLayout(),
+    nameFrame: getNameFrameLayout(form.name),
+  };
   fillGradientBlock(
     context,
     layout.leftBlock.x,
