@@ -10,6 +10,7 @@ import {
 import {
   getRecruitGradientLayout,
   getRecruitIntroLayout,
+  getRecruitIntroTextAlign,
   getImageRenderLayout,
   getRecruitInfoLayout,
   wrapRecruitIntroLines,
@@ -109,6 +110,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
   const infoLayout = getRecruitInfoLayout(form);
   const introLines = wrapRecruitIntroLines(form.intro);
   const introLayout = getRecruitIntroLayout(introLines.length);
+  const introTextAlign = getRecruitIntroTextAlign(introLines.length);
   const gradientLayout = getRecruitGradientLayout();
   ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   ctx.drawImage(
@@ -212,7 +214,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
   if (introLines.length > 0) {
     ctx.font = INTRO_FONT;
     ctx.fillStyle = akRecruitTemplateSpec.textColor;
-    ctx.textAlign = akRecruitTemplateSpec.introTextAlign;
+    ctx.textAlign = introTextAlign;
     ctx.textBaseline = "top";
     introLines.forEach((line, index) => {
       ctx.fillText(

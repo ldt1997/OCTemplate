@@ -4,6 +4,7 @@ import starImage from "@/assets/akrecruit/star.svg";
 import abyssalHuntersImage from "@/assets/akrecruit/Abyssal_Hunters_white.webp";
 import blackSteelImage from "@/assets/akrecruit/Black_Steel_white.webp";
 import leithaniaImage from "@/assets/akrecruit/Leithania_white.webp";
+import higashiImage from "@/assets/akrecruit/Higashi_white.webp";
 import lungmenImage from "@/assets/akrecruit/lungmen.webp";
 import penguinLogisticsImage from "@/assets/akrecruit/Penguin_Logistics_white.webp";
 import rhineImage from "@/assets/akrecruit/Rhine_Lab_white.webp";
@@ -62,6 +63,7 @@ export const organizationOptions = [
   { label: "企鹅物流", value: "penguin_logistics" },
   { label: "黑钢国际", value: "black_steel" },
   { label: "莱塔尼亚", value: "leithania" },
+  { label: "东国", value: "higashi" },
 ] as const;
 
 export const professionOptions = [
@@ -105,6 +107,7 @@ export const organizationAssetMap: Record<OrganizationValue, string> = {
   penguin_logistics: penguinLogisticsImage,
   black_steel: blackSteelImage,
   leithania: leithaniaImage,
+  higashi: higashiImage,
 };
 
 export const professionAssetMap: Record<ProfessionValue, string> = {

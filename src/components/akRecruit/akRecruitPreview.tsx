@@ -16,6 +16,7 @@ import {
   getBaseImageLayout,
   getRecruitGradientLayout,
   getRecruitIntroLayout,
+  getRecruitIntroTextAlign,
   getRecruitInfoLayout,
   wrapRecruitIntroLines,
 } from "@/components/akRecruit/akRecruitLayout";
@@ -61,6 +62,10 @@ export function AkRecruitPreview({
   );
   const introLayout = useMemo(
     () => getRecruitIntroLayout(introLines.length),
+    [introLines.length],
+  );
+  const introTextAlign = useMemo(
+    () => getRecruitIntroTextAlign(introLines.length),
     [introLines.length],
   );
   const gradientLayout = useMemo(() => getRecruitGradientLayout(), []);
@@ -210,11 +215,7 @@ export function AkRecruitPreview({
 
       <div
         className={`absolute z-[2] ${
-          akRecruitTemplateSpec.introTextAlign === "left"
-            ? "text-left"
-            : akRecruitTemplateSpec.introTextAlign === "center"
-              ? "text-center"
-              : "text-right"
+          introTextAlign === "center" ? "text-center" : "text-left"
         }`}
         style={{
           ...posterIntroStyle,

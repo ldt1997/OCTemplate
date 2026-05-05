@@ -43,6 +43,8 @@ export type RecruitGradientLayout = {
   previewBackground: string;
 };
 
+export type RecruitIntroTextAlign = "left" | "center";
+
 const measureCanvas = document.createElement("canvas");
 const measureContext = measureCanvas.getContext("2d");
 
@@ -200,4 +202,10 @@ export function getRecruitGradientLayout(): RecruitGradientLayout {
     height: akRecruitTemplateSpec.gradientHeight,
     previewBackground: `linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.92) 19.23%, rgba(0, 0, 0, 0) ${transparentStop}%)`,
   };
+}
+
+export function getRecruitIntroTextAlign(
+  lineCount: number,
+): RecruitIntroTextAlign {
+  return lineCount <= 1 ? "center" : "left";
 }
