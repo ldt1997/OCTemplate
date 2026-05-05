@@ -20,7 +20,8 @@ import vanguardImage from "@/assets/akrecruit/Vanguard.webp";
 
 export const CANVAS_WIDTH = 1920;
 export const CANVAS_HEIGHT = 1080;
-export const MAX_FILE_SIZE = 6 * 1024 * 1024;
+export const MAX_FILE_SIZE_MB = 10;
+export const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 export const akRecruitTemplateSpec = {
   nameFontSize: 120,

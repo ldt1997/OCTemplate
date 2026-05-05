@@ -2,6 +2,7 @@ import { type ChangeEvent, useEffect, useState } from "react";
 import {
   initialFormState,
   MAX_FILE_SIZE,
+  MAX_FILE_SIZE_MB,
   type ImageSize,
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
@@ -115,7 +116,7 @@ export function useAkRecruitEditor() {
     }
 
     if (nextFile.size > MAX_FILE_SIZE) {
-      setImageError("图片大小不能超过 6MB。");
+      setImageError(`图片大小不能超过 ${MAX_FILE_SIZE_MB}MB。`);
       event.target.value = "";
       return;
     }

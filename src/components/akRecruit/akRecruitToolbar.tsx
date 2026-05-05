@@ -1,5 +1,6 @@
 import type { ChangeEvent } from "react";
 import {
+  MAX_FILE_SIZE_MB,
   organizationOptions,
   professionOptions,
   type OrganizationValue,
@@ -69,7 +70,7 @@ export function AkRecruitToolbar({
                   onChange={onFileChange}
                 />
                 <FieldDescription>
-                  支持 PNG / JPEG，最大 6MB
+                  支持 PNG / JPEG，最大 {MAX_FILE_SIZE_MB}MB
                   {form.imageFile ? `，当前文件：${form.imageFile.name}` : ""}
                 </FieldDescription>
                 {imageError ? (
