@@ -66,6 +66,27 @@ export function LuoxiaoheiPreview({
   const displayName = useMemo(() => getDisplayNameText(form.name), [form.name]);
   const nameTextHeight =
     displayName.length * luoxiaoheiTemplateSpec.nameFrameTextLineHeight;
+  const leftColorRgbLabel = useMemo(
+    () => formatRgbLabel(form.bgColor1),
+    [form.bgColor1],
+  );
+  const leftColorHueLabel = useMemo(
+    () => formatHueLabel(form.bgColor1),
+    [form.bgColor1],
+  );
+  const rightColorRgbLabel = useMemo(
+    () => formatRgbLabel(form.bgColor2),
+    [form.bgColor2],
+  );
+  const rightColorHueLabel = useMemo(
+    () => formatHueLabel(form.bgColor2),
+    [form.bgColor2],
+  );
+  const overlayCursorClass = form.imageUrl
+    ? isDragging
+      ? "cursor-grabbing"
+      : "cursor-grab"
+    : "cursor-default";
 
   return (
     <div
@@ -118,13 +139,7 @@ export function LuoxiaoheiPreview({
       ) : null}
 
       <div
-        className={`absolute inset-0 z-10 touch-none ${
-          form.imageUrl
-            ? isDragging
-              ? "cursor-grabbing"
-              : "cursor-grab"
-            : "cursor-default"
-        }`}
+        className={`absolute inset-0 z-10 touch-none ${overlayCursorClass}`}
         {...overlayHandlers}
       />
 
@@ -158,9 +173,9 @@ export function LuoxiaoheiPreview({
             fontFamily: 'Roboto, Arial, sans-serif',
           }}
         >
-          <span>{formatRgbLabel(form.bgColor1)}</span>
+          <span>{leftColorRgbLabel}</span>
           <span style={{ marginTop: luoxiaoheiTemplateSpec.colorMetaGap }}>
-            {formatHueLabel(form.bgColor1)}
+            {leftColorHueLabel}
           </span>
         </div>
       </div>
@@ -195,9 +210,9 @@ export function LuoxiaoheiPreview({
             fontFamily: 'Roboto, Arial, sans-serif',
           }}
         >
-          <span>{formatRgbLabel(form.bgColor2)}</span>
+          <span>{rightColorRgbLabel}</span>
           <span style={{ marginTop: luoxiaoheiTemplateSpec.colorMetaGap }}>
-            {formatHueLabel(form.bgColor2)}
+            {rightColorHueLabel}
           </span>
         </div>
       </div>
