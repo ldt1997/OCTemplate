@@ -22,24 +22,26 @@ export const luoxiaoheiTemplateSpec = {
   titleLineHeight: 198,
   titleLetterSpacing: 6,
   titlePaddingTop: 58,
-  titlePaddingSide: 40,
-  leftTextBottom: 404,
-  rightTextTop: 44,
+  titlePaddingSide: 10,
+  leftTextTop: 10,
+  rightTextTop: 10,
   colorMetaFontSize: 30,
   colorMetaLineHeight: 36,
   colorMetaGap: 6,
   titleMetaGap: 22,
-  bambooOpacity: 1,
+  bambooOpacity: 0.3,
   logoWidth: 604,
   logoHeight: 300,
   logoBottom: 58,
   nameFrameWidth: 360,
   nameFrameHeight: 382,
-  nameFrameBottom: 312,
+  nameFrameLeft: 760,
+  nameFrameTop: 1150,
   nameFontSize: 74,
-  nameFontWeight: 700,
-  nameFrameTextBottom: 98,
-  nameFrameTextSidePadding: 72,
+  nameFontWeight: 300,
+  nameFrameTextTop: 52,
+  nameFrameTextRight: 108,
+  nameFrameTextLineHeight: 66,
   previewShadow: "0 30px 60px rgba(15, 23, 42, 0.18)",
 } as const;
 
@@ -142,11 +144,11 @@ export const luoxiaoheiAssets = {
 };
 
 export const sourceHanTitleStyle: CSSProperties = {
-  fontFamily: '"Source Han Serif CN", serif',
+  fontFamily: '"Source Han Serif CN Light", serif',
 };
 
 export const sourceHanNameStyle: CSSProperties = {
-  fontFamily: '"Source Han Serif CN", serif',
+  fontFamily: '"Source Han Serif CN Light", serif',
 };
 
 export function clamp(value: number, min: number, max: number) {

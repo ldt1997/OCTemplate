@@ -9,11 +9,11 @@ import {
 } from "@/components/luoxiaohei/luoxiaoheiConfig";
 import { hexToRgbTuple } from "@/lib/chtColor";
 
-const TITLE_FONT = `${luoxiaoheiTemplateSpec.titleFontSize}px "Source Han Serif CN"`;
+const TITLE_FONT = `${luoxiaoheiTemplateSpec.titleFontSize}px "Source Han Serif CN Light"`;
 const COLOR_META_FONT = `${luoxiaoheiTemplateSpec.colorMetaFontSize}px Roboto, Arial, sans-serif`;
-const NAME_FONT = `${luoxiaoheiTemplateSpec.nameFontSize}px "Source Han Serif CN"`;
-const TITLE_FONT_LOAD = `${luoxiaoheiTemplateSpec.titleFontSize}px "Source Han Serif CN"`;
-const NAME_FONT_LOAD = `${luoxiaoheiTemplateSpec.nameFontSize}px "Source Han Serif CN"`;
+const NAME_FONT = `${luoxiaoheiTemplateSpec.nameFontSize}px "Source Han Serif CN Light"`;
+const TITLE_FONT_LOAD = `${luoxiaoheiTemplateSpec.titleFontSize}px "Source Han Serif CN Light"`;
+const NAME_FONT_LOAD = `${luoxiaoheiTemplateSpec.nameFontSize}px "Source Han Serif CN Light"`;
 
 let luoxiaoheiFontsReadyPromise: Promise<void> | null = null;
 
@@ -50,9 +50,6 @@ export type LuoxiaoheiPosterLayout = {
     height: number;
   };
 };
-
-const measureCanvas = document.createElement("canvas");
-const measureContext = measureCanvas.getContext("2d");
 
 export async function loadImage(src: string) {
   return loadImageWithLabel(src, src);
@@ -116,11 +113,8 @@ export function getPosterLayout(): LuoxiaoheiPosterLayout {
       height: luoxiaoheiTemplateSpec.logoHeight,
     },
     nameFrame: {
-      x: (CANVAS_WIDTH - luoxiaoheiTemplateSpec.nameFrameWidth) / 2,
-      y:
-        CANVAS_HEIGHT -
-        luoxiaoheiTemplateSpec.nameFrameBottom -
-        luoxiaoheiTemplateSpec.nameFrameHeight,
+      x: luoxiaoheiTemplateSpec.nameFrameLeft,
+      y: luoxiaoheiTemplateSpec.nameFrameTop,
       width: luoxiaoheiTemplateSpec.nameFrameWidth,
       height: luoxiaoheiTemplateSpec.nameFrameHeight,
     },
@@ -157,15 +151,6 @@ export function getImageRenderLayout(
       imageOffsetY -
       (nextHeight - baseLayout.baseHeight) / 2,
   };
-}
-
-function getMeasuredTextWidth(text: string, font: string) {
-  if (!measureContext) {
-    return 0;
-  }
-
-  measureContext.font = font;
-  return measureContext.measureText(text || " ").width;
 }
 
 function drawVerticalTitle(
@@ -209,7 +194,7 @@ function drawMetaText(
   ctx.restore();
 }
 
-function drawCenteredName(
+function drawVerticalName(
   ctx: CanvasRenderingContext2D,
   text: string,
   frame: LuoxiaoheiPosterLayout["nameFrame"],
@@ -217,26 +202,31 @@ function drawCenteredName(
   ctx.save();
   ctx.font = NAME_FONT;
   ctx.fillStyle = "#111111";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "alphabetic";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
 
-  const maxWidth =
-    frame.width - luoxiaoheiTemplateSpec.nameFrameTextSidePadding * 2;
-  const name = text || " ";
-  let displayText = name;
-
-  while (
-    displayText.length > 1 &&
-    getMeasuredTextWidth(displayText, NAME_FONT) > maxWidth
-  ) {
-    displayText = displayText.slice(0, -1);
-  }
-
-  ctx.fillText(
-    displayText,
-    frame.x + frame.width / 2,
-    frame.y + frame.height - luoxiaoheiTemplateSpec.nameFrameTextBottom,
+  const maxChars = Math.max(
+    1,
+    Math.floor(
+      (frame.height - luoxiaoheiTemplateSpec.nameFrameTextTop * 2) /
+        luoxiaoheiTemplateSpec.nameFrameTextLineHeight,
+    ),
   );
+  const displayText = (text || " ").slice(0, maxChars);
+  const textX =
+    frame.x +
+    frame.width -
+    luoxiaoheiTemplateSpec.nameFrameTextRight -
+    luoxiaoheiTemplateSpec.nameFontSize;
+  const textY = frame.y + luoxiaoheiTemplateSpec.nameFrameTextTop;
+
+  [...displayText].forEach((char, index) => {
+    ctx.fillText(
+      char,
+      textX,
+      textY + index * luoxiaoheiTemplateSpec.nameFrameTextLineHeight,
+    );
+  });
   ctx.restore();
 }
 
@@ -311,16 +301,8 @@ export async function exportLuoxiaoheiImage(form: LuoxiaoheiFormState) {
   const rightMetaColor = form.bgColor1;
   const leftTitleHeight =
     [...form.titleLeft].length * luoxiaoheiTemplateSpec.titleLineHeight;
-  const leftMetaTotalHeight =
-    luoxiaoheiTemplateSpec.titleMetaGap +
-    luoxiaoheiTemplateSpec.colorMetaLineHeight * 2 +
-    luoxiaoheiTemplateSpec.colorMetaGap;
   const leftTitleX = luoxiaoheiTemplateSpec.titlePaddingSide;
-  const leftTitleY =
-    CANVAS_HEIGHT -
-    luoxiaoheiTemplateSpec.leftTextBottom -
-    leftMetaTotalHeight -
-    leftTitleHeight;
+  const leftTitleY = luoxiaoheiTemplateSpec.leftTextTop;
 
   drawVerticalTitle(
     context,
@@ -394,7 +376,7 @@ export async function exportLuoxiaoheiImage(form: LuoxiaoheiFormState) {
     layout.nameFrame.width,
     layout.nameFrame.height,
   );
-  drawCenteredName(context, form.name, layout.nameFrame);
+  drawVerticalName(context, form.name, layout.nameFrame);
 
   context.drawImage(
     logo,

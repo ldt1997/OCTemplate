@@ -120,7 +120,7 @@ export function LuoxiaoheiPreview({
         className="absolute z-20 flex flex-col items-start"
         style={{
           left: luoxiaoheiTemplateSpec.titlePaddingSide,
-          bottom: luoxiaoheiTemplateSpec.leftTextBottom,
+          top: luoxiaoheiTemplateSpec.leftTextTop,
         }}
       >
         <div
@@ -205,16 +205,17 @@ export function LuoxiaoheiPreview({
           className="pointer-events-none h-full w-full select-none object-contain"
         />
         <div
-          className="absolute inset-x-0 text-center"
+          className="absolute"
           style={{
             ...sourceHanNameStyle,
-            bottom: luoxiaoheiTemplateSpec.nameFrameTextBottom,
-            paddingLeft: luoxiaoheiTemplateSpec.nameFrameTextSidePadding,
-            paddingRight: luoxiaoheiTemplateSpec.nameFrameTextSidePadding,
+            top: luoxiaoheiTemplateSpec.nameFrameTextTop,
+            right: luoxiaoheiTemplateSpec.nameFrameTextRight,
             color: "#111111",
             fontSize: luoxiaoheiTemplateSpec.nameFontSize,
             fontWeight: luoxiaoheiTemplateSpec.nameFontWeight,
-            lineHeight: 1.1,
+            writingMode: "vertical-rl",
+            textOrientation: "mixed",
+            lineHeight: `${luoxiaoheiTemplateSpec.nameFrameTextLineHeight}px`,
           }}
         >
           {form.name || " "}
