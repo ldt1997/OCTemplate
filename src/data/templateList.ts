@@ -1,6 +1,6 @@
 import type { TemplateItem } from "@/types/template";
 import akrecruitPreview from "@/assets/akrecruit/preview.png";
-import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.webp";
+import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.png";
 
 export const templateList: TemplateItem[] = [
   {

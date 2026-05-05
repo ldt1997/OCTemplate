@@ -21,7 +21,7 @@ export const luoxiaoheiTemplateSpec = {
   gradientStop: 0.5,
   titleFontSize: 220,
   titleLineHeight: 198,
-  titleLetterSpacing: 6,
+  titleLetterSpacing: 12,
   titlePaddingTop: 58,
   titlePaddingSide: 10,
   leftTextTop: 10,
@@ -133,7 +133,7 @@ export const initialFormState: LuoxiaoheiFormState = {
   bgColor2: fallbackPresetPairs[0].right.value,
   titleLeft: fallbackPresetPairs[0].left.key,
   titleRight: fallbackPresetPairs[0].right.key,
-  name: "罗小黑",
+  name: "小黑",
   logoColor: "black",
   selectedPresetId: fallbackPresetPairs[0].id,
 };

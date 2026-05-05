@@ -155,7 +155,7 @@ export function LuoxiaoheiToolbar({
                   {isExtractingColors
                     ? "正在根据上传图片提取推荐双色..."
                     : form.imageUrl
-                      ? "色卡已根据图片主题色自动生成"
+                      ? "已根据图片主题色自动生成"
                       : "当前显示的是默认推荐色卡"}
                 </FieldDescription>
                 {recommendationError ? (

@@ -16,11 +16,11 @@ type TemplateCardProps = {
 export function TemplateCard({ template }: TemplateCardProps) {
   return (
     <Card className="relative w-full overflow-hidden pt-0 shadow-card">
-      <div className="absolute inset-x-0 top-0 z-30 aspect-video bg-black/35" />
+      <div className="absolute inset-x-0 top-0 z-30 aspect-video" />
       <img
         src={template.previewImage}
         alt={template.name}
-        className="relative z-20 aspect-video w-full object-cover brightness-55 grayscale"
+        className="relative z-20 aspect-video w-full object-cover"
       />
       <CardHeader>
         {/* FIXME: shadcn did not export CardAction */}
