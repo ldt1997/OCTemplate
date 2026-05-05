@@ -16,6 +16,7 @@ export const MAX_FILE_SIZE = 8 * 1024 * 1024;
 
 export const luoxiaoheiTemplateSpec = {
   imageAreaHeightRatio: 0.7,
+  imageAreaMaxWidth: CANVAS_WIDTH,
   colorBlockWidth: CANVAS_WIDTH / 2,
   gradientStop: 0.5,
   titleFontSize: 220,
@@ -163,8 +164,11 @@ export function getBaseImageLayout(
     return null;
   }
 
-  const baseHeight = CANVAS_HEIGHT * luoxiaoheiTemplateSpec.imageAreaHeightRatio;
-  const baseWidth = (imageWidth / imageHeight) * baseHeight;
+  const maxHeight = CANVAS_HEIGHT * luoxiaoheiTemplateSpec.imageAreaHeightRatio;
+  const maxWidth = luoxiaoheiTemplateSpec.imageAreaMaxWidth;
+  const scale = Math.min(maxWidth / imageWidth, maxHeight / imageHeight);
+  const baseWidth = imageWidth * scale;
+  const baseHeight = imageHeight * scale;
 
   return {
     baseWidth,
