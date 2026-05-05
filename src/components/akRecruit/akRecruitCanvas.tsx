@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
-import { CANVAS_WIDTH, clamp } from "@/components/akRecruit/akRecruitConfig";
+import { CANVAS_WIDTH } from "@/components/akRecruit/akRecruitConfig";
+import { clamp } from "@/components/akRecruit/akRecruitLayout";
 
 type AkRecruitCanvasProps = {
   hint?: ReactNode;

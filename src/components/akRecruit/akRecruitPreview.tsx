@@ -3,7 +3,6 @@ import {
   akRecruitAssets,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
-  getBaseImageLayout,
   organizationAssetMap,
   posterEnNameStyle,
   posterIntroStyle,
@@ -14,9 +13,10 @@ import {
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
 import {
+  getBaseImageLayout,
   getRecruitInfoLayout,
   wrapRecruitIntroLines,
-} from "@/components/akRecruit/akRecruitPoster";
+} from "@/components/akRecruit/akRecruitLayout";
 import { useAkRecruitImageTransform } from "@/components/akRecruit/useAkRecruitImageTransform";
 
 type AkRecruitPreviewProps = {

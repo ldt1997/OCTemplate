@@ -2,12 +2,16 @@ import {
   akRecruitAssets,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
-  getImageLayout,
   organizationAssetMap,
   professionAssetMap,
   akRecruitTemplateSpec,
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
+import {
+  getImageRenderLayout,
+  getRecruitInfoLayout,
+  wrapRecruitIntroLines,
+} from "@/components/akRecruit/akRecruitLayout";
 
 const NAME_FONT = `${akRecruitTemplateSpec.nameFontSize}px "Source Han Serif CN"`;
 const EN_NAME_FONT = `${akRecruitTemplateSpec.enNameFontSize}px "Novecento Wide"`;
@@ -16,29 +20,9 @@ const INTRO_FONT_LOAD = `${akRecruitTemplateSpec.introFontSize}px "Source Han Sa
 
 let recruitFontsReadyPromise: Promise<void> | null = null;
 
-type RecruitInfoLayout = {
-  blockLeft: number;
-  blockWidth: number;
-  starsLeft: number;
-  rowTop: number;
-  textLeft: number;
-};
-
-const measureCanvas = document.createElement("canvas");
-const measureContext = measureCanvas.getContext("2d");
-
 function getFontPixelSize(font: string) {
   const match = font.match(/(\d+(?:\.\d+)?)px/);
   return match ? Number(match[1]) : 0;
-}
-
-function measureTextWidth(text: string, font: string) {
-  if (!measureContext) {
-    return 0;
-  }
-
-  measureContext.font = font;
-  return measureContext.measureText(text || " ").width;
 }
 
 function drawTopAlignedText(
@@ -96,74 +80,6 @@ export async function ensureRecruitFontsLoaded() {
   await recruitFontsReadyPromise;
 }
 
-export function getRecruitInfoLayout(
-  form: RecruitFormState,
-): RecruitInfoLayout {
-  const professionWidth = form.profession
-    ? akRecruitTemplateSpec.professionWidth
-    : 0;
-  const professionGap = form.profession
-    ? akRecruitTemplateSpec.professionGap
-    : 0;
-  const starsWidth =
-    form.rarity > 0
-      ? akRecruitTemplateSpec.starSize * form.rarity -
-        akRecruitTemplateSpec.starOverlap * (form.rarity - 1)
-      : 0;
-  const textColumnWidth = Math.max(
-    measureTextWidth(form.name, NAME_FONT),
-    measureTextWidth(form.enName?.toUpperCase() || "", EN_NAME_FONT),
-  );
-  const infoRowWidth = professionWidth + professionGap + textColumnWidth;
-  const blockWidth = Math.max(
-    starsWidth + akRecruitTemplateSpec.starLeftPadding,
-    infoRowWidth,
-  );
-  const blockLeft = CANVAS_WIDTH / 2 - blockWidth / 2;
-
-  return {
-    blockLeft,
-    blockWidth,
-    starsLeft: blockLeft + akRecruitTemplateSpec.starLeftPadding,
-    rowTop:
-      akRecruitTemplateSpec.infoTop +
-      akRecruitTemplateSpec.starSize +
-      akRecruitTemplateSpec.infoGap,
-    textLeft: blockLeft + professionWidth + professionGap,
-  };
-}
-
-export function wrapRecruitIntroLines(text: string) {
-  if (!measureContext || !text) {
-    return [];
-  }
-
-  measureContext.font = INTRO_FONT;
-  const lines: string[] = [];
-  let currentLine = "";
-
-  for (const char of text) {
-    const nextLine = `${currentLine}${char}`;
-    if (
-      measureContext.measureText(nextLine).width <=
-        akRecruitTemplateSpec.introWidth ||
-      currentLine.length === 0
-    ) {
-      currentLine = nextLine;
-      continue;
-    }
-
-    lines.push(currentLine);
-    currentLine = char;
-  }
-
-  if (currentLine) {
-    lines.push(currentLine);
-  }
-
-  return lines;
-}
-
 export async function exportRecruitImage(form: RecruitFormState) {
   const [background, organizationMark, starMark] = await Promise.all([
     loadImageWithLabel(akRecruitAssets.bgImage, "背景图"),
@@ -201,7 +117,7 @@ export async function exportRecruitImage(form: RecruitFormState) {
   );
 
   if (uploadedImage) {
-    const layout = getImageLayout(
+    const layout = getImageRenderLayout(
       uploadedImage.width,
       uploadedImage.height,
       form.imageScale,

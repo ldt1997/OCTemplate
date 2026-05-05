@@ -92,20 +92,6 @@ export type RecruitFormState = {
   intro: string;
 };
 
-export type RenderLayout = {
-  imageWidth: number;
-  imageHeight: number;
-  imageX: number;
-  imageY: number;
-};
-
-export type BaseImageLayout = {
-  baseWidth: number;
-  baseHeight: number;
-  baseX: number;
-  baseY: number;
-};
-
 export type ImageSize = {
   width: number;
   height: number;
@@ -166,58 +152,3 @@ export const akRecruitAssets = {
   bgImage,
   starImage,
 };
-
-export function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-export function getImageLayout(
-  imageWidth: number,
-  imageHeight: number,
-  imageScale: number,
-  imageOffsetX: number,
-  imageOffsetY: number,
-): RenderLayout {
-  const baseLayout = getBaseImageLayout(imageWidth, imageHeight);
-  if (!baseLayout) {
-    return {
-      imageWidth: 0,
-      imageHeight: 0,
-      imageX: 0,
-      imageY: 0,
-    };
-  }
-
-  const nextWidth = baseLayout.baseWidth * imageScale;
-  const nextHeight = baseLayout.baseHeight * imageScale;
-  const nextX =
-    baseLayout.baseX + imageOffsetX - (nextWidth - baseLayout.baseWidth) / 2;
-  const nextY =
-    baseLayout.baseY + imageOffsetY - (nextHeight - baseLayout.baseHeight) / 2;
-
-  return {
-    imageWidth: nextWidth,
-    imageHeight: nextHeight,
-    imageX: nextX,
-    imageY: nextY,
-  };
-}
-
-export function getBaseImageLayout(
-  imageWidth: number,
-  imageHeight: number,
-): BaseImageLayout | null {
-  if (imageWidth === 0 || imageHeight === 0) {
-    return null;
-  }
-
-  const baseHeight = CANVAS_HEIGHT;
-  const baseWidth = (imageWidth / imageHeight) * baseHeight;
-
-  return {
-    baseWidth,
-    baseHeight,
-    baseX: (CANVAS_WIDTH - baseWidth) / 2,
-    baseY: (CANVAS_HEIGHT - baseHeight) / 2,
-  };
-}
