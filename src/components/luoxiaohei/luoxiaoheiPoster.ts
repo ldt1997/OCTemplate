@@ -17,6 +17,11 @@ const NAME_FONT_LOAD = `${luoxiaoheiTemplateSpec.nameFontSize}px "Source Han Ser
 
 let luoxiaoheiFontsReadyPromise: Promise<void> | null = null;
 
+function getFontPixelSize(font: string) {
+  const match = font.match(/(\d+(?:\.\d+)?)px/);
+  return match ? Number(match[1]) : 0;
+}
+
 export type ImageRenderLayout = {
   imageWidth: number;
   imageHeight: number;
@@ -189,14 +194,16 @@ function drawVerticalTitle(
   ctx.font = TITLE_FONT;
   ctx.fillStyle = color;
   ctx.textAlign = "left";
-  ctx.textBaseline = "top";
+  ctx.textBaseline = "alphabetic";
 
   [...text].forEach((char, index) => {
-    ctx.fillText(
-      char,
-      x,
-      startY + index * luoxiaoheiTemplateSpec.titleLineHeight,
-    );
+    const metrics = ctx.measureText(char || " ");
+    const fallbackAscent = getFontPixelSize(TITLE_FONT) * 0.88;
+    const ascent = metrics.actualBoundingBoxAscent || fallbackAscent;
+    const baselineY =
+      startY + index * luoxiaoheiTemplateSpec.titleLineHeight + ascent;
+
+    ctx.fillText(char, x, baselineY);
   });
 
   ctx.restore();
@@ -296,7 +303,10 @@ export async function exportLuoxiaoheiImage(form: LuoxiaoheiFormState) {
     form.bgColor2,
   );
 
+  context.save();
+  context.globalAlpha = luoxiaoheiTemplateSpec.bambooOpacity;
   context.drawImage(bamboo, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  context.restore();
 
   if (uploadedImage) {
     const imageLayout = getImageRenderLayout(
