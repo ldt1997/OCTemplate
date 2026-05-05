@@ -29,6 +29,7 @@ export function LuoxiaoheiPage() {
   const [form, setForm] = useState(initialFormState);
   const [imageSize, setImageSize] = useState<ImageSize | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [exportError, setExportError] = useState<string | null>(null);
   const [recommendationError, setRecommendationError] = useState<string | null>(
     null,
   );
@@ -213,6 +214,7 @@ export function LuoxiaoheiPage() {
   const handleExport = async () => {
     try {
       setIsExporting(true);
+      setExportError(null);
       const dataUrl = await exportLuoxiaoheiImage(form);
       const link = document.createElement("a");
       link.href = dataUrl;
@@ -220,6 +222,10 @@ export function LuoxiaoheiPage() {
       link.click();
     } catch (error) {
       console.error("导出失败", error);
+      const message =
+        error instanceof Error ? error.message : "未知错误，请重试。";
+      setExportError(message);
+      window.alert(`导出失败：${message}`);
     } finally {
       setIsExporting(false);
     }
@@ -260,6 +266,12 @@ export function LuoxiaoheiPage() {
         </aside>
 
         <section className="relative min-w-0 flex-1">
+          {exportError ? (
+            <div className="absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] border border-destructive/30 bg-background/95 px-3 py-2 text-sm text-destructive shadow-sm backdrop-blur">
+              导出失败：{exportError}
+            </div>
+          ) : null}
+
           <LuoxiaoheiCanvas>
             {(previewScale) => (
               <LuoxiaoheiPreview
