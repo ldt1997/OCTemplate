@@ -8,6 +8,8 @@ import {
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
 import {
+  getRecruitGradientLayout,
+  getRecruitIntroLayout,
   getImageRenderLayout,
   getRecruitInfoLayout,
   wrapRecruitIntroLines,
@@ -106,6 +108,8 @@ export async function exportRecruitImage(form: RecruitFormState) {
 
   const infoLayout = getRecruitInfoLayout(form);
   const introLines = wrapRecruitIntroLines(form.intro);
+  const introLayout = getRecruitIntroLayout(introLines.length);
+  const gradientLayout = getRecruitGradientLayout();
   ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   ctx.drawImage(
     organizationMark,
@@ -200,9 +204,9 @@ export async function exportRecruitImage(form: RecruitFormState) {
   ctx.fillStyle = gradient;
   ctx.fillRect(
     0,
-    akRecruitTemplateSpec.gradientTop,
+    gradientLayout.top,
     CANVAS_WIDTH,
-    akRecruitTemplateSpec.gradientHeight,
+    gradientLayout.height,
   );
 
   if (introLines.length > 0) {
@@ -210,17 +214,11 @@ export async function exportRecruitImage(form: RecruitFormState) {
     ctx.fillStyle = akRecruitTemplateSpec.textColor;
     ctx.textAlign = akRecruitTemplateSpec.introTextAlign;
     ctx.textBaseline = "top";
-    const introX = (CANVAS_WIDTH - akRecruitTemplateSpec.introWidth) / 2;
-    const introY =
-      CANVAS_HEIGHT -
-      akRecruitTemplateSpec.introBottom -
-      introLines.length * akRecruitTemplateSpec.introLineHeight;
-
     introLines.forEach((line, index) => {
       ctx.fillText(
         line,
-        introX,
-        introY + index * akRecruitTemplateSpec.introLineHeight,
+        introLayout.x,
+        introLayout.y + index * akRecruitTemplateSpec.introLineHeight,
       );
     });
   }

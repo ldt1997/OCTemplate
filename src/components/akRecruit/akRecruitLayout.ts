@@ -31,6 +31,18 @@ export type RecruitInfoLayout = {
   textLeft: number;
 };
 
+export type RecruitIntroLayout = {
+  x: number;
+  y: number;
+  width: number;
+};
+
+export type RecruitGradientLayout = {
+  top: number;
+  height: number;
+  previewBackground: string;
+};
+
 const measureCanvas = document.createElement("canvas");
 const measureContext = measureCanvas.getContext("2d");
 
@@ -164,4 +176,28 @@ export function wrapRecruitIntroLines(text: string) {
   }
 
   return lines;
+}
+
+export function getRecruitIntroLayout(lineCount: number): RecruitIntroLayout {
+  return {
+    x: (CANVAS_WIDTH - akRecruitTemplateSpec.introWidth) / 2,
+    y:
+      CANVAS_HEIGHT -
+      akRecruitTemplateSpec.introBottom -
+      lineCount * akRecruitTemplateSpec.introLineHeight,
+    width: akRecruitTemplateSpec.introWidth,
+  };
+}
+
+export function getRecruitGradientLayout(): RecruitGradientLayout {
+  const transparentStop =
+    ((CANVAS_HEIGHT - akRecruitTemplateSpec.gradientEndY) /
+      akRecruitTemplateSpec.gradientHeight) *
+    100;
+
+  return {
+    top: akRecruitTemplateSpec.gradientTop,
+    height: akRecruitTemplateSpec.gradientHeight,
+    previewBackground: `linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.92) 19.23%, rgba(0, 0, 0, 0) ${transparentStop}%)`,
+  };
 }

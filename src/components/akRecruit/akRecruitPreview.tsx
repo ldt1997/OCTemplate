@@ -14,6 +14,8 @@ import {
 } from "@/components/akRecruit/akRecruitConfig";
 import {
   getBaseImageLayout,
+  getRecruitGradientLayout,
+  getRecruitIntroLayout,
   getRecruitInfoLayout,
   wrapRecruitIntroLines,
 } from "@/components/akRecruit/akRecruitLayout";
@@ -57,6 +59,11 @@ export function AkRecruitPreview({
     () => wrapRecruitIntroLines(form.intro),
     [form.intro],
   );
+  const introLayout = useMemo(
+    () => getRecruitIntroLayout(introLines.length),
+    [introLines.length],
+  );
+  const gradientLayout = useMemo(() => getRecruitGradientLayout(), []);
   const { imageRef, isDragging, overlayHandlers } = useAkRecruitImageTransform({
     enabled: Boolean(form.imageUrl),
     previewScale,
@@ -193,15 +200,16 @@ export function AkRecruitPreview({
       </div>
 
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-[26%]"
+        className="pointer-events-none absolute inset-x-0 z-[2]"
         style={{
-          background:
-            "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.58) 18%, rgba(0,0,0,0) 100%)",
+          top: gradientLayout.top,
+          height: gradientLayout.height,
+          background: gradientLayout.previewBackground,
         }}
       />
 
       <div
-        className={`absolute left-1/2 z-[2] w-[1280px] max-w-[calc(100%-96px)] -translate-x-1/2 ${
+        className={`absolute z-[2] ${
           akRecruitTemplateSpec.introTextAlign === "left"
             ? "text-left"
             : akRecruitTemplateSpec.introTextAlign === "center"
@@ -212,7 +220,9 @@ export function AkRecruitPreview({
           ...posterIntroStyle,
           fontSize: akRecruitTemplateSpec.introFontSize,
           color: akRecruitTemplateSpec.textColor,
-          bottom: akRecruitTemplateSpec.introBottom,
+          left: introLayout.x,
+          top: introLayout.y,
+          width: introLayout.width,
         }}
       >
         {introLines.map((line, index) => (
