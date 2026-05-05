@@ -225,5 +225,14 @@ export async function exportRecruitImage(form: RecruitFormState) {
     });
   }
 
-  return canvas.toDataURL("image/png");
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error("图片导出失败。"));
+        return;
+      }
+
+      resolve(blob);
+    }, "image/png");
+  });
 }
