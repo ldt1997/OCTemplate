@@ -29,6 +29,17 @@ export type ImageRenderLayout = {
   imageY: number;
 };
 
+type CroppedImageDrawParams = {
+  sx: number;
+  sy: number;
+  sWidth: number;
+  sHeight: number;
+  dx: number;
+  dy: number;
+  dWidth: number;
+  dHeight: number;
+};
+
 export type LuoxiaoheiPosterLayout = {
   leftBlock: {
     x: number;
@@ -183,6 +194,44 @@ export function getImageRenderLayout(
   };
 }
 
+export function getCroppedImageDrawParams(
+  sourceWidth: number,
+  sourceHeight: number,
+  renderLayout: ImageRenderLayout,
+): CroppedImageDrawParams | null {
+  const clipLeft = Math.max(0, renderLayout.imageX);
+  const clipTop = Math.max(0, renderLayout.imageY);
+  const clipRight = Math.min(
+    CANVAS_WIDTH,
+    renderLayout.imageX + renderLayout.imageWidth,
+  );
+  const clipBottom = Math.min(
+    CANVAS_HEIGHT,
+    renderLayout.imageY + renderLayout.imageHeight,
+  );
+
+  const visibleWidth = clipRight - clipLeft;
+  const visibleHeight = clipBottom - clipTop;
+
+  if (visibleWidth <= 0 || visibleHeight <= 0) {
+    return null;
+  }
+
+  const scaleX = sourceWidth / renderLayout.imageWidth;
+  const scaleY = sourceHeight / renderLayout.imageHeight;
+
+  return {
+    sx: (clipLeft - renderLayout.imageX) * scaleX,
+    sy: (clipTop - renderLayout.imageY) * scaleY,
+    sWidth: visibleWidth * scaleX,
+    sHeight: visibleHeight * scaleY,
+    dx: clipLeft,
+    dy: clipTop,
+    dWidth: visibleWidth,
+    dHeight: visibleHeight,
+  };
+}
+
 function drawVerticalTitle(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -316,14 +365,25 @@ export async function exportLuoxiaoheiImage(form: LuoxiaoheiFormState) {
       form.imageOffsetX,
       form.imageOffsetY,
     );
-
-    context.drawImage(
-      uploadedImage,
-      imageLayout.imageX,
-      imageLayout.imageY,
-      imageLayout.imageWidth,
-      imageLayout.imageHeight,
+    const croppedDrawParams = getCroppedImageDrawParams(
+      uploadedImage.width,
+      uploadedImage.height,
+      imageLayout,
     );
+
+    if (croppedDrawParams) {
+      context.drawImage(
+        uploadedImage,
+        croppedDrawParams.sx,
+        croppedDrawParams.sy,
+        croppedDrawParams.sWidth,
+        croppedDrawParams.sHeight,
+        croppedDrawParams.dx,
+        croppedDrawParams.dy,
+        croppedDrawParams.dWidth,
+        croppedDrawParams.dHeight,
+      );
+    }
   }
 
   const leftMetaColor = form.bgColor2;
