@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
-  clamp,
 } from "@/components/luoxiaohei/luoxiaoheiConfig";
+import { clamp } from "@/components/luoxiaohei/luoxiaoheiLayout";
 
 type LuoxiaoheiCanvasProps = {
   children: (previewScale: number) => ReactNode;

@@ -1,13 +1,20 @@
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
-  getBaseImageLayout,
   logoAssetMap,
   luoxiaoheiAssets,
   luoxiaoheiTemplateSpec,
   type LuoxiaoheiFormState,
 } from "@/components/luoxiaohei/luoxiaoheiConfig";
-import { hexToRgbTuple } from "@/lib/chtColor";
+import {
+  formatHueLabel,
+  formatRgbLabel,
+  getDisplayNameText,
+  getImageRenderLayout,
+  getNameFrameLayout,
+  getPosterLayout,
+  type LuoxiaoheiPosterLayout,
+} from "@/components/luoxiaohei/luoxiaoheiLayout";
 
 const TITLE_FONT = `${luoxiaoheiTemplateSpec.titleFontSize}px "Source Han Serif CN Light"`;
 const COLOR_META_FONT = `${luoxiaoheiTemplateSpec.colorMetaFontSize}px Roboto, Arial, sans-serif`;
@@ -20,54 +27,6 @@ let luoxiaoheiFontsReadyPromise: Promise<void> | null = null;
 function getFontPixelSize(font: string) {
   const match = font.match(/(\d+(?:\.\d+)?)px/);
   return match ? Number(match[1]) : 0;
-}
-
-export type ImageRenderLayout = {
-  imageWidth: number;
-  imageHeight: number;
-  imageX: number;
-  imageY: number;
-};
-
-export type LuoxiaoheiPosterLayout = {
-  leftBlock: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  rightBlock: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  logo: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  nameFrame: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-};
-
-export function getDisplayNameText(name: string) {
-  return (name || " ").trim() || " ";
-}
-
-export function getNameFrameHeight(name: string) {
-  const text = getDisplayNameText(name);
-  const contentHeight =
-    text.length * luoxiaoheiTemplateSpec.nameFrameTextLineHeight;
-  const paddedHeight =
-    contentHeight + luoxiaoheiTemplateSpec.nameFrameVerticalPadding * 2;
-
-  return Math.max(luoxiaoheiTemplateSpec.nameFrameMinHeight, paddedHeight);
 }
 
 export async function loadImage(src: string) {
@@ -97,90 +56,6 @@ export async function ensureLuoxiaoheiFontsLoaded() {
   }
 
   await luoxiaoheiFontsReadyPromise;
-}
-
-export function formatRgbLabel(hex: string) {
-  const [red, green, blue] = hexToRgbTuple(hex);
-  return `RGB ${red} ${green} ${blue}`;
-}
-
-export function formatHueLabel(hex: string) {
-  return hex.trim().replace("#", "").toLowerCase();
-}
-
-export function getPosterLayout(): LuoxiaoheiPosterLayout {
-  const nameFrameHeight = getNameFrameHeight("");
-
-  return {
-    leftBlock: {
-      x: 0,
-      y: 0,
-      width: luoxiaoheiTemplateSpec.colorBlockWidth,
-      height: CANVAS_HEIGHT,
-    },
-    rightBlock: {
-      x: luoxiaoheiTemplateSpec.colorBlockWidth,
-      y: 0,
-      width: luoxiaoheiTemplateSpec.colorBlockWidth,
-      height: CANVAS_HEIGHT,
-    },
-    logo: {
-      x: (CANVAS_WIDTH - luoxiaoheiTemplateSpec.logoWidth) / 2,
-      y:
-        CANVAS_HEIGHT -
-        luoxiaoheiTemplateSpec.logoBottom -
-        luoxiaoheiTemplateSpec.logoHeight,
-      width: luoxiaoheiTemplateSpec.logoWidth,
-      height: luoxiaoheiTemplateSpec.logoHeight,
-    },
-    nameFrame: {
-      x: luoxiaoheiTemplateSpec.nameFrameLeft,
-      y: luoxiaoheiTemplateSpec.nameFrameTop,
-      width: luoxiaoheiTemplateSpec.nameFrameWidth,
-      height: nameFrameHeight,
-    },
-  };
-}
-
-export function getNameFrameLayout(name: string) {
-  return {
-    x: luoxiaoheiTemplateSpec.nameFrameLeft,
-    y: luoxiaoheiTemplateSpec.nameFrameTop,
-    width: luoxiaoheiTemplateSpec.nameFrameWidth,
-    height: getNameFrameHeight(name),
-  };
-}
-
-export function getImageRenderLayout(
-  imageWidth: number,
-  imageHeight: number,
-  imageScale: number,
-  imageOffsetX: number,
-  imageOffsetY: number,
-): ImageRenderLayout {
-  const baseLayout = getBaseImageLayout(imageWidth, imageHeight);
-  if (!baseLayout) {
-    return {
-      imageWidth: 0,
-      imageHeight: 0,
-      imageX: 0,
-      imageY: 0,
-    };
-  }
-
-  const nextWidth = baseLayout.baseWidth * imageScale;
-  const nextHeight = baseLayout.baseHeight * imageScale;
-
-  return {
-    imageWidth: nextWidth,
-    imageHeight: nextHeight,
-    imageX:
-      baseLayout.baseX + imageOffsetX - (nextWidth - baseLayout.baseWidth) / 2,
-    imageY:
-      baseLayout.baseY +
-      imageOffsetY -
-      (nextHeight - baseLayout.baseHeight) / 2,
-  };
 }
 
 function drawVerticalTitle(

@@ -7,7 +7,7 @@ import logoRedImage from "@/assets/luoxiaohei/luoxiaoheilogo_red.webp";
 import logoWhiteImage from "@/assets/luoxiaohei/luoxiaoheilogo_white.webp";
 import logoYellowImage from "@/assets/luoxiaohei/luoxiaoheilogo_yellow.webp";
 import nameframeImage from "@/assets/luoxiaohei/nameframe.png";
-import { chtPalette, type PaletteColor } from "@/lib/chtColor";
+import { chtPalette } from "@/lib/chtColor";
 import type { ColorPair } from "@/lib/colorRecommendation";
 
 export const CANVAS_WIDTH = 1080;
@@ -71,13 +71,6 @@ export type LuoxiaoheiFormState = {
 export type ImageSize = {
   width: number;
   height: number;
-};
-
-export type BaseImageLayout = {
-  baseWidth: number;
-  baseHeight: number;
-  baseX: number;
-  baseY: number;
 };
 
 export const logoColorOptions: Array<{
@@ -150,37 +143,3 @@ export const sourceHanTitleStyle: CSSProperties = {
 export const sourceHanNameStyle: CSSProperties = {
   fontFamily: '"Source Han Serif CN Light", serif',
 };
-
-export function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-export function getBaseImageLayout(
-  imageWidth: number,
-  imageHeight: number,
-): BaseImageLayout | null {
-  if (imageWidth === 0 || imageHeight === 0) {
-    return null;
-  }
-
-  const maxHeight = CANVAS_HEIGHT * luoxiaoheiTemplateSpec.imageAreaHeightRatio;
-  const maxWidth = luoxiaoheiTemplateSpec.imageAreaMaxWidth;
-  const scale = Math.min(maxWidth / imageWidth, maxHeight / imageHeight);
-  const baseWidth = imageWidth * scale;
-  const baseHeight = imageHeight * scale;
-
-  return {
-    baseWidth,
-    baseHeight,
-    baseX: (CANVAS_WIDTH - baseWidth) / 2,
-    baseY: (CANVAS_HEIGHT - baseHeight) / 2,
-  };
-}
-
-export function getPaletteColorByHex(hex: string): PaletteColor | null {
-  return (
-    chtPalette.find(
-      (item) => item.value.toLowerCase() === hex.trim().toLowerCase(),
-    ) ?? null
-  );
-}

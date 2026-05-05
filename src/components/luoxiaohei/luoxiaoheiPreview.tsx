@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
-  getBaseImageLayout,
   logoAssetMap,
   luoxiaoheiAssets,
   luoxiaoheiTemplateSpec,
@@ -14,10 +13,11 @@ import {
 import {
   formatHueLabel,
   formatRgbLabel,
+  getBaseImageLayout,
   getDisplayNameText,
   getNameFrameLayout,
   getPosterLayout,
-} from "@/components/luoxiaohei/luoxiaoheiPoster";
+} from "@/components/luoxiaohei/luoxiaoheiLayout";
 import { useLuoxiaoheiImageTransform } from "@/components/luoxiaohei/useLuoxiaoheiImageTransform";
 
 type LuoxiaoheiPreviewProps = {
