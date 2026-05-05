@@ -7,7 +7,7 @@ import {
 
 const NAME_FONT = `${akRecruitTemplateSpec.nameFontSize}px "Source Han Serif CN"`;
 const EN_NAME_FONT = `${akRecruitTemplateSpec.enNameFontSize}px "Novecento Wide"`;
-const INTRO_FONT = `${akRecruitTemplateSpec.introFontSize}px "Source Han Sans TW", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif`;
+const INTRO_FONT = `${akRecruitTemplateSpec.introFontSize}px "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif`;
 
 export type ImageRenderLayout = {
   imageWidth: number;

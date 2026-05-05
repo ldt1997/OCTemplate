@@ -25,8 +25,8 @@
   }
 
   @font-face {
-    font-family: "Source Han Sans TW";
-    src: url("../assets/akrecruit/SourceHanSansTW-Regular.otf") format("opentype");
+    font-family: "Source Han Sans SC";
+    src: url("../assets/akrecruit/SourceHanSansSC-Normal.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
   }

@@ -148,7 +148,7 @@ export const posterEnNameStyle: CSSProperties = {
 };
 
 export const posterIntroStyle: CSSProperties = {
-  fontFamily: '"Source Han Sans TW", "Microsoft YaHei", sans-serif',
+  fontFamily: '"Source Han Sans SC", "Microsoft YaHei", sans-serif',
 };
 
 export const akRecruitAssets = {
