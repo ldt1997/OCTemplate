@@ -22,18 +22,17 @@ import { useAkRecruitImageTransform } from "@/components/akRecruit/useAkRecruitI
 type AkRecruitPreviewProps = {
   form: RecruitFormState;
   imageSize: ImageSize | null;
-  fontsReady: boolean;
   previewScale: number;
   onImageTransformCommit: (
-    next: Partial<
-      Pick<RecruitFormState, "imageScale" | "imageOffsetX" | "imageOffsetY">
+    next: Pick<
+      RecruitFormState,
+      "imageScale" | "imageOffsetX" | "imageOffsetY"
     >,
   ) => void;
 };
 
 export function AkRecruitPreview({
   form,
-  fontsReady,
   imageSize,
   previewScale,
   onImageTransformCommit,
@@ -52,11 +51,11 @@ export function AkRecruitPreview({
 
   const infoLayout = useMemo(
     () => getRecruitInfoLayout(form),
-    [fontsReady, form],
+    [form],
   );
   const introLines = useMemo(
     () => wrapRecruitIntroLines(form.intro),
-    [fontsReady, form.intro],
+    [form.intro],
   );
   const { imageRef, isDragging, overlayHandlers } = useAkRecruitImageTransform({
     enabled: Boolean(form.imageUrl),

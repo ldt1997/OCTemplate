@@ -158,8 +158,9 @@ export function useAkRecruitEditor() {
   };
 
   const handleImageTransformCommit = (
-    next: Partial<
-      Pick<RecruitFormState, "imageScale" | "imageOffsetX" | "imageOffsetY">
+    next: Pick<
+      RecruitFormState,
+      "imageScale" | "imageOffsetX" | "imageOffsetY"
     >,
   ) => {
     updateForm(next);

@@ -39,7 +39,6 @@ export function AkRecruitPage() {
             {(previewScale) => (
               <AkRecruitPreview
                 form={form}
-                fontsReady={fontsReady}
                 imageSize={imageSize}
                 previewScale={previewScale}
                 onImageTransformCommit={handleImageTransformCommit}
