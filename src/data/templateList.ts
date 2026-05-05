@@ -1,5 +1,6 @@
 import type { TemplateItem } from "@/types/template";
 import akrecruitPreview from "@/assets/akrecruit/preview.png";
+import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.webp";
 
 export const templateList: TemplateItem[] = [
   {
@@ -9,5 +10,13 @@ export const templateList: TemplateItem[] = [
     description: "上传立绘和文案，一键生成干员招募页面",
     path: "/akrecruit",
     previewImage: akrecruitPreview,
+  },
+  {
+    id: "luoxiaohei",
+    name: "罗小黑人物双色海报",
+    tag: "罗小黑",
+    description: "上传图片并提取主题双色，一键生成风格统一的人物海报",
+    path: "/luoxiaohei",
+    previewImage: luoxiaoheiPreview,
   },
 ];
