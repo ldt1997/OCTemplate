@@ -1,7 +1,7 @@
 import type { ChangeEvent } from "react";
 import {
   MAX_FILE_SIZE_MB,
-  organizationOptions,
+  organizationOptionGroups,
   professionOptions,
   type OrganizationValue,
   type ProfessionValue,
@@ -21,7 +21,9 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -108,12 +110,12 @@ export function AkRecruitToolbar({
     {
       key: "role",
       label: "角色",
-      desc: "选择角色星级职业和所属组织",
+      desc: "选择角色星级职业和所属阵营",
       content: (
         <FieldSet>
           <FieldGroup>
             <Field>
-              <FieldLabel>所属组织</FieldLabel>
+              <FieldLabel>阵营</FieldLabel>
               <FieldContent>
                 <Select
                   value={form.organization}
@@ -122,13 +124,18 @@ export function AkRecruitToolbar({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="选择组织" />
+                    <SelectValue placeholder="选择阵营" />
                   </SelectTrigger>
                   <SelectContent>
-                    {organizationOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
+                    {organizationOptionGroups.map((group) => (
+                      <SelectGroup key={group.label}>
+                        <SelectLabel>{group.label}</SelectLabel>
+                        {group.options.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
                     ))}
                   </SelectContent>
                 </Select>

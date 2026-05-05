@@ -1,22 +1,43 @@
 import type { CSSProperties } from "react";
 import bgImage from "@/assets/akrecruit/bg.webp";
 import starImage from "@/assets/akrecruit/star.svg";
+import aegirImage from "@/assets/akrecruit/AEGIR.webp";
 import abyssalHuntersImage from "@/assets/akrecruit/Abyssal_Hunters_white.webp";
+import bolivarImage from "@/assets/akrecruit/BOLIVAR.webp";
 import blackSteelImage from "@/assets/akrecruit/Black_Steel_white.webp";
+import columbiaImage from "@/assets/akrecruit/Columbian_Union.webp";
+import followersImage from "@/assets/akrecruit/Followers.webp";
+import glasgowImage from "@/assets/akrecruit/GLASGOW.webp";
 import leithaniaImage from "@/assets/akrecruit/Leithania_white.webp";
-import higashiImage from "@/assets/akrecruit/Higashi_white.webp";
+import higashiImage from "@/assets/akrecruit/Higashi.webp";
+import iberiaImage from "@/assets/akrecruit/IBERIA.webp";
+import kazdelImage from "@/assets/akrecruit/KAZDEL.webp";
+import kazimierzImage from "@/assets/akrecruit/Kazimierz.webp";
+import kjeragImage from "@/assets/akrecruit/Kjerag.webp";
+import lateranoImage from "@/assets/akrecruit/Laterano.webp";
 import lungmenImage from "@/assets/akrecruit/lungmen.webp";
-import penguinLogisticsImage from "@/assets/akrecruit/Penguin_Logistics_white.webp";
+import minosImage from "@/assets/akrecruit/MINOS.webp";
+import penguinLogisticsImage from "@/assets/akrecruit/Penguin_Logistics.webp";
+import rimBillitonImage from "@/assets/akrecruit/RIM_Billiton.webp";
+import reunionMovementImage from "@/assets/akrecruit/Reunion_Movement.webp";
 import rhineImage from "@/assets/akrecruit/Rhine_Lab_white.webp";
 import rhodesIslandImage from "@/assets/akrecruit/rhodes_island_white.webp";
+import samiImage from "@/assets/akrecruit/Sami.webp";
+import sargonImage from "@/assets/akrecruit/Sargon.webp";
+import siracusaImage from "@/assets/akrecruit/Siracusa.webp";
+import ursusStudentSelfGovernmentGroupImage from "@/assets/akrecruit/URSUS_student_self-government_group.webp";
+import ursusImage from "@/assets/akrecruit/Ursus.webp";
+import victoriaImage from "@/assets/akrecruit/Victoria.webp";
 import casterImage from "@/assets/akrecruit/Caster.webp";
 import defenderImage from "@/assets/akrecruit/Defender.webp";
 import guardImage from "@/assets/akrecruit/guard.webp";
 import medicImage from "@/assets/akrecruit/Medic.webp";
+import raytheanImage from "@/assets/akrecruit/raythean.webp";
 import sniperImage from "@/assets/akrecruit/Sniper.webp";
 import specialistImage from "@/assets/akrecruit/Specialist.webp";
 import supporterImage from "@/assets/akrecruit/Supporter.webp";
 import vanguardImage from "@/assets/akrecruit/Vanguard.webp";
+import yenImage from "@/assets/akrecruit/Yen.webp";
 
 export const CANVAS_WIDTH = 1920;
 export const CANVAS_HEIGHT = 1080;
@@ -56,15 +77,49 @@ export const akRecruitTemplateSpec = {
   gradientEndY: CANVAS_HEIGHT * 0.78,
 } as const;
 
-export const organizationOptions = [
-  { label: "罗德岛", value: "rhodes_island" },
-  { label: "莱茵生命", value: "rhine" },
-  { label: "龙门", value: "lungmen" },
-  { label: "深海猎人", value: "abyssal_hunters" },
-  { label: "企鹅物流", value: "penguin_logistics" },
-  { label: "黑钢国际", value: "black_steel" },
-  { label: "莱塔尼亚", value: "leithania" },
-  { label: "东国", value: "higashi" },
+export const organizationOptionGroups = [
+  {
+    label: "团体 / 组织 / 公司",
+    options: [
+      { label: "罗德岛", value: "rhodes_island" },
+      { label: "整合运动", value: "reunion_movement" },
+      { label: "企鹅物流", value: "penguin_logistics" },
+      { label: "莱茵生命", value: "rhine" },
+      { label: "黑钢国际", value: "black_steel" },
+      { label: "格拉斯哥帮", value: "glasgow" },
+      { label: "使徒", value: "followers" },
+      { label: "深海猎人", value: "abyssal_hunters" },
+      { label: "乌萨斯学生自治团", value: "ursus_student_self_government_group" },
+      { label: "雷神工业", value: "raythean" },
+    ],
+  },
+  {
+    label: "国家",
+    options: [
+      { label: "维多利亚", value: "victoria" },
+      { label: "乌萨斯", value: "ursus" },
+      { label: "谢拉格", value: "kjerag" },
+      { label: "卡西米尔", value: "kazimierz" },
+      { label: "拉特兰", value: "laterano" },
+      { label: "炎国", value: "yen" },
+      { label: "东国", value: "higashi" },
+      { label: "哥伦比亚", value: "columbia" },
+      { label: "玻利瓦尔", value: "bolivar" },
+      { label: "雷姆必拓", value: "rim_billiton" },
+      { label: "莱塔尼亚", value: "leithania" },
+      { label: "卡兹戴尔", value: "kazdel" },
+      { label: "萨尔贡", value: "sargon" },
+      { label: "萨米", value: "sami" },
+      { label: "叙拉古", value: "siracusa" },
+      { label: "米诺斯", value: "minos" },
+      { label: "伊比利亚", value: "iberia" },
+      { label: "阿戈尔", value: "aegir" },
+    ],
+  },
+  {
+    label: "城市 / 城邦",
+    options: [{ label: "龙门", value: "lungmen" }],
+  },
 ] as const;
 
 export const professionOptions = [
@@ -78,7 +133,8 @@ export const professionOptions = [
   { label: "特种", value: "specialist" },
 ] as const;
 
-export type OrganizationValue = (typeof organizationOptions)[number]["value"];
+export type OrganizationValue =
+  (typeof organizationOptionGroups)[number]["options"][number]["value"];
 export type ProfessionValue = (typeof professionOptions)[number]["value"];
 
 export type RecruitFormState = {
@@ -101,14 +157,35 @@ export type ImageSize = {
 };
 
 export const organizationAssetMap: Record<OrganizationValue, string> = {
+  aegir: aegirImage,
+  bolivar: bolivarImage,
+  columbia: columbiaImage,
+  followers: followersImage,
+  glasgow: glasgowImage,
+  iberia: iberiaImage,
+  kazdel: kazdelImage,
+  kazimierz: kazimierzImage,
+  kjerag: kjeragImage,
+  laterano: lateranoImage,
   rhodes_island: rhodesIslandImage,
   rhine: rhineImage,
   lungmen: lungmenImage,
+  minos: minosImage,
+  reunion_movement: reunionMovementImage,
+  rim_billiton: rimBillitonImage,
+  raythean: raytheanImage,
   abyssal_hunters: abyssalHuntersImage,
   penguin_logistics: penguinLogisticsImage,
   black_steel: blackSteelImage,
   leithania: leithaniaImage,
   higashi: higashiImage,
+  sami: samiImage,
+  sargon: sargonImage,
+  siracusa: siracusaImage,
+  ursus: ursusImage,
+  ursus_student_self_government_group: ursusStudentSelfGovernmentGroupImage,
+  victoria: victoriaImage,
+  yen: yenImage,
 };
 
 export const professionAssetMap: Record<ProfessionValue, string> = {
@@ -128,7 +205,7 @@ export const initialFormState: RecruitFormState = {
   imageScale: 1,
   imageOffsetX: 0,
   imageOffsetY: 0,
-  organization: "lungmen",
+  organization: "rhodes_island",
   profession: "vanguard",
   rarity: 6,
   name: "中文名称",
