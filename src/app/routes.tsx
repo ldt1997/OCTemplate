@@ -1,18 +1,37 @@
+import { Suspense, lazy } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { AkRecruitPage } from "@/pages/akRecruitPage";
 import { HomePage } from "@/pages/homePage";
-import { LuoxiaoheiPage } from "@/pages/luoxiaoheiPage";
+
+const AkRecruitPage = lazy(async () => {
+  const module = await import("@/pages/akRecruitPage");
+  return { default: module.AkRecruitPage };
+});
+
+const LuoxiaoheiPage = lazy(async () => {
+  const module = await import("@/pages/luoxiaoheiPage");
+  return { default: module.LuoxiaoheiPage };
+});
+
+function RouteFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-6 text-sm text-muted-foreground">
+      正在加载模板资源...
+    </div>
+  );
+}
 
 export function AppRoutes() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/akrecruit" element={<AkRecruitPage />} />
-        <Route path="/luoxiaohei" element={<LuoxiaoheiPage />} />
-        <Route path="*" element={<Navigate replace to="/" />} />
-      </Routes>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/akrecruit" element={<AkRecruitPage />} />
+          <Route path="/luoxiaohei" element={<LuoxiaoheiPage />} />
+          <Route path="*" element={<Navigate replace to="/" />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

@@ -1,3 +1,4 @@
+import "@/styles/akRecruit-fonts.css";
 import { SlidersHorizontal } from "lucide-react";
 import { AkRecruitCanvas } from "@/components/akRecruit/akRecruitCanvas";
 import { AkRecruitPreview } from "@/components/akRecruit/akRecruitPreview";

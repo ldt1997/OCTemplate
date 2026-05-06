@@ -1,3 +1,4 @@
+import "@/styles/luoxiaohei-fonts.css";
 import { SlidersHorizontal } from "lucide-react";
 import { LuoxiaoheiCanvas } from "@/components/luoxiaohei/luoxiaoheiCanvas";
 import { LuoxiaoheiPreview } from "@/components/luoxiaohei/luoxiaoheiPreview";
