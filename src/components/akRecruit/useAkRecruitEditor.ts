@@ -183,6 +183,13 @@ export function useAkRecruitEditor() {
       onFileChange: handleFileChange,
       onTextChange: (field: "name" | "enName" | "intro", value: string) =>
         updateForm({ [field]: value } as Partial<RecruitFormState>),
+      onToggleChange: (
+        field:
+          | "isNewOperator"
+          | "showSeniorVoucher"
+          | "showHeadhuntingContract",
+        value: boolean,
+      ) => updateForm({ [field]: value } as Partial<RecruitFormState>),
       onSliderChange: (field: "rarity", value: number) =>
         updateForm({ [field]: Math.round(value) } as Partial<RecruitFormState>),
       onImageScaleChange: (imageScale: number) => updateForm({ imageScale }),

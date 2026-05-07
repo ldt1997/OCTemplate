@@ -7,6 +7,7 @@ import {
   type ProfessionValue,
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldContent,
@@ -37,6 +38,10 @@ type AkRecruitToolbarProps = {
   imageError: string | null;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onTextChange: (field: "name" | "enName" | "intro", value: string) => void;
+  onToggleChange: (
+    field: "isNewOperator" | "showSeniorVoucher" | "showHeadhuntingContract",
+    value: boolean,
+  ) => void;
   onSliderChange: (field: "rarity", value: number) => void;
   onImageScaleChange: (value: number) => void;
   onOrganizationChange: (value: OrganizationValue) => void;
@@ -49,6 +54,7 @@ export function AkRecruitToolbar({
   imageError,
   onFileChange,
   onTextChange,
+  onToggleChange,
   onSliderChange,
   onImageScaleChange,
   onOrganizationChange,
@@ -179,6 +185,45 @@ export function AkRecruitToolbar({
                     }
                   />
                   <FieldDescription>{form.rarity} 星</FieldDescription>
+                </div>
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldContent>
+                <div className="flex flex-wrap items-center gap-4 pt-1">
+                  <label className="flex items-center gap-2 text-sm">
+                    <Checkbox
+                      checked={form.isNewOperator}
+                      onCheckedChange={(checked) =>
+                        onToggleChange("isNewOperator", checked === true)
+                      }
+                    />
+                    <span>NEW</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 text-sm">
+                    <Checkbox
+                      checked={form.showSeniorVoucher}
+                      onCheckedChange={(checked) =>
+                        onToggleChange("showSeniorVoucher", checked === true)
+                      }
+                    />
+                    <span>高级凭证</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 text-sm">
+                    <Checkbox
+                      checked={form.showHeadhuntingContract}
+                      onCheckedChange={(checked) =>
+                        onToggleChange(
+                          "showHeadhuntingContract",
+                          checked === true,
+                        )
+                      }
+                    />
+                    <span>寻访数据契约</span>
+                  </label>
                 </div>
               </FieldContent>
             </Field>

@@ -93,6 +93,21 @@ export async function exportRecruitImage(form: RecruitFormState) {
   const professionMark = form.profession
     ? await loadImageWithLabel(professionAssetMap[form.profession], "职业标识")
     : null;
+  const newTagMark = form.isNewOperator
+    ? await loadImageWithLabel(akRecruitAssets.newTagImage, "NEW 标记")
+    : null;
+  const seniorVoucherMark = form.showSeniorVoucher
+    ? await loadImageWithLabel(
+        akRecruitAssets.seniorVoucherIconImage,
+        "高级凭证",
+      )
+    : null;
+  const headhuntingContractMark = form.showHeadhuntingContract
+    ? await loadImageWithLabel(
+        akRecruitAssets.headhuntingContractIconImage,
+        "寻访数据契约",
+      )
+    : null;
   const uploadedImage = form.imageUrl
     ? await loadImageWithLabel(form.imageUrl, "上传图片")
     : null;
@@ -165,6 +180,56 @@ export async function exportRecruitImage(form: RecruitFormState) {
       infoLayout.rowTop + akRecruitTemplateSpec.professionTopOffset,
       akRecruitTemplateSpec.professionWidth,
       professionHeight,
+    );
+  }
+
+  if (newTagMark) {
+    const professionHeight = professionMark
+      ? (professionMark.height / professionMark.width) *
+        akRecruitTemplateSpec.professionWidth
+      : 0;
+    const newTagHeight =
+      (newTagMark.height / newTagMark.width) * akRecruitTemplateSpec.newTagWidth;
+    const professionRight =
+      infoLayout.blockLeft + akRecruitTemplateSpec.professionWidth;
+    ctx.drawImage(
+      newTagMark,
+      professionRight -
+        akRecruitTemplateSpec.newTagWidth -
+        akRecruitTemplateSpec.newTagOffsetRight,
+      infoLayout.rowTop +
+        akRecruitTemplateSpec.professionTopOffset +
+        professionHeight +
+        akRecruitTemplateSpec.newTagOffsetTop,
+      akRecruitTemplateSpec.newTagWidth,
+      newTagHeight,
+    );
+  }
+
+  if (seniorVoucherMark) {
+    ctx.drawImage(
+      seniorVoucherMark,
+      CANVAS_WIDTH -
+        akRecruitTemplateSpec.rightBadgeRight -
+        akRecruitTemplateSpec.rightBadgeWidth,
+      akRecruitTemplateSpec.rightBadgeTop,
+      akRecruitTemplateSpec.rightBadgeWidth,
+      akRecruitTemplateSpec.rightBadgeHeight,
+    );
+  }
+
+  if (headhuntingContractMark) {
+    const contractTop =
+      akRecruitTemplateSpec.rightBadgeTop +
+      (seniorVoucherMark ? akRecruitTemplateSpec.rightBadgeHeight : 0);
+    ctx.drawImage(
+      headhuntingContractMark,
+      CANVAS_WIDTH -
+        akRecruitTemplateSpec.rightBadgeRight -
+        akRecruitTemplateSpec.rightBadgeWidth,
+      contractTop,
+      akRecruitTemplateSpec.rightBadgeWidth,
+      akRecruitTemplateSpec.rightBadgeHeight,
     );
   }
 

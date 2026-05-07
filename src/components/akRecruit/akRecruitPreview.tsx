@@ -43,6 +43,8 @@ export function AkRecruitPreview({
   const professionAsset = form.profession
     ? professionAssetMap[form.profession]
     : null;
+  const shouldShowRightBadges =
+    form.showSeniorVoucher || form.showHeadhuntingContract;
 
   const baseLayout = useMemo(() => {
     if (!imageSize) {
@@ -161,17 +163,38 @@ export function AkRecruitPreview({
           className="flex items-start"
           style={{ marginTop: akRecruitTemplateSpec.infoGap }}
         >
-          {professionAsset ? (
-            <img
-              src={professionAsset}
-              alt=""
-              className="h-auto shrink-0"
+          {professionAsset || form.isNewOperator ? (
+            <div
+              className="flex shrink-0 flex-col items-end"
               style={{
-                width: akRecruitTemplateSpec.professionWidth,
                 marginTop: akRecruitTemplateSpec.professionTopOffset,
                 marginRight: akRecruitTemplateSpec.professionGap,
               }}
-            />
+            >
+              {professionAsset ? (
+                <img
+                  src={professionAsset}
+                  alt=""
+                  className="h-auto"
+                  style={{
+                    width: akRecruitTemplateSpec.professionWidth,
+                  }}
+                />
+              ) : null}
+
+              {form.isNewOperator ? (
+                <img
+                  src={akRecruitAssets.newTagImage}
+                  alt=""
+                  className="h-auto"
+                  style={{
+                    marginTop: akRecruitTemplateSpec.newTagOffsetTop,
+                    marginRight: akRecruitTemplateSpec.newTagOffsetRight,
+                    width: akRecruitTemplateSpec.newTagWidth,
+                  }}
+                />
+              ) : null}
+            </div>
           ) : null}
 
           <div className="flex flex-col items-start">
@@ -203,6 +226,39 @@ export function AkRecruitPreview({
           </div>
         </div>
       </div>
+
+      {shouldShowRightBadges ? (
+        <div
+          className="absolute z-[2] flex flex-col items-end"
+          style={{
+            top: akRecruitTemplateSpec.rightBadgeTop,
+            right: akRecruitTemplateSpec.rightBadgeRight,
+          }}
+        >
+          {form.showSeniorVoucher ? (
+            <img
+              src={akRecruitAssets.seniorVoucherIconImage}
+              alt=""
+              className="h-auto"
+              style={{
+                width: akRecruitTemplateSpec.rightBadgeWidth,
+                height: akRecruitTemplateSpec.rightBadgeHeight,
+              }}
+            />
+          ) : null}
+          {form.showHeadhuntingContract ? (
+            <img
+              src={akRecruitAssets.headhuntingContractIconImage}
+              alt=""
+              className="h-auto"
+              style={{
+                width: akRecruitTemplateSpec.rightBadgeWidth,
+                height: akRecruitTemplateSpec.rightBadgeHeight,
+              }}
+            />
+          ) : null}
+        </div>
+      ) : null}
 
       <div
         className="pointer-events-none absolute inset-x-0 z-[2]"

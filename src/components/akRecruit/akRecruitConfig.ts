@@ -1,5 +1,8 @@
 import type { CSSProperties } from "react";
 import bgImage from "@/assets/akrecruit/bg.webp";
+import headhuntingContractIconImage from "@/assets/akrecruit/headhuntingContractIcon.webp";
+import newTagImage from "@/assets/akrecruit/NewTag.webp";
+import seniorVoucherIconImage from "@/assets/akrecruit/seniorVoucherIcon.webp";
 import starImage from "@/assets/akrecruit/star.svg";
 import aegirImage from "@/assets/akrecruit/AEGIR.webp";
 import abyssalHuntersImage from "@/assets/akrecruit/Abyssal_Hunters_white.webp";
@@ -67,6 +70,13 @@ export const akRecruitTemplateSpec = {
   professionWidth: 260,
   professionGap: 4,
   professionTopOffset: 10,
+  newTagWidth: 150,
+  newTagOffsetTop: -12,
+  newTagOffsetRight: 12,
+  rightBadgeTop: 470,
+  rightBadgeRight: 0,
+  rightBadgeWidth: 338,
+  rightBadgeHeight: 189,
   enNameTopOffset: 120,
   introWidth: 1280,
   introLineHeight: 48,
@@ -145,6 +155,9 @@ export type RecruitFormState = {
   imageOffsetY: number;
   organization: OrganizationValue;
   profession: ProfessionValue | "";
+  isNewOperator: boolean;
+  showSeniorVoucher: boolean;
+  showHeadhuntingContract: boolean;
   rarity: number;
   name: string;
   enName: string;
@@ -207,6 +220,9 @@ export const initialFormState: RecruitFormState = {
   imageOffsetY: 0,
   organization: "rhodes_island",
   profession: "vanguard",
+  isNewOperator: true,
+  showSeniorVoucher: true,
+  showHeadhuntingContract: true,
   rarity: 6,
   name: "中文名称",
   enName: "English Name",
@@ -231,5 +247,8 @@ export const posterIntroStyle: CSSProperties = {
 
 export const akRecruitAssets = {
   bgImage,
+  headhuntingContractIconImage,
+  newTagImage,
+  seniorVoucherIconImage,
   starImage,
 };
