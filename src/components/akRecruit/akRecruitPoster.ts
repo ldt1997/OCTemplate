@@ -2,7 +2,7 @@ import {
   akRecruitAssets,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
-  organizationAssetMap,
+  getRecruitOrganizationLogoSrc,
   professionAssetMap,
   akRecruitTemplateSpec,
   type RecruitFormState,
@@ -87,7 +87,7 @@ export async function ensureRecruitFontsLoaded() {
 export async function exportRecruitImage(form: RecruitFormState) {
   const [background, organizationMark, starMark] = await Promise.all([
     loadImageWithLabel(akRecruitAssets.bgImage, "背景图"),
-    loadImageWithLabel(organizationAssetMap[form.organization], "组织标识"),
+    loadImageWithLabel(getRecruitOrganizationLogoSrc(form), "组织标识"),
     loadImageWithLabel(akRecruitAssets.starImage, "星标"),
   ]);
   const professionMark = form.profession

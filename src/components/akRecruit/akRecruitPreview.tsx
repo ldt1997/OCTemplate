@@ -3,7 +3,7 @@ import {
   akRecruitAssets,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
-  organizationAssetMap,
+  getRecruitOrganizationLogoSrc,
   posterEnNameStyle,
   posterIntroStyle,
   posterNameStyle,
@@ -40,6 +40,7 @@ export function AkRecruitPreview({
   previewScale,
   onImageTransformCommit,
 }: AkRecruitPreviewProps) {
+  const organizationLogoSrc = getRecruitOrganizationLogoSrc(form);
   const professionAsset = form.profession
     ? professionAssetMap[form.profession]
     : null;
@@ -92,7 +93,7 @@ export function AkRecruitPreview({
       }}
     >
       <img
-        src={organizationAssetMap[form.organization]}
+        src={organizationLogoSrc}
         alt=""
         className="pointer-events-none absolute select-none"
         style={{

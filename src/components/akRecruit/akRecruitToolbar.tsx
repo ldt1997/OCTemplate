@@ -1,6 +1,7 @@
 import type { ChangeEvent } from "react";
 import {
   MAX_FILE_SIZE_MB,
+  MAX_ORGANIZATION_LOGO_FILE_SIZE_MB,
   organizationOptionGroups,
   professionOptions,
   type OrganizationValue,
@@ -36,7 +37,9 @@ type AkRecruitToolbarProps = {
   variant: "desktop" | "mobile";
   form: RecruitFormState;
   imageError: string | null;
+  organizationLogoError: string | null;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onOrganizationLogoFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onTextChange: (field: "name" | "enName" | "intro", value: string) => void;
   onToggleChange: (
     field: "isNewOperator" | "showSeniorVoucher" | "showHeadhuntingContract",
@@ -52,7 +55,9 @@ export function AkRecruitToolbar({
   variant,
   form,
   imageError,
+  organizationLogoError,
   onFileChange,
+  onOrganizationLogoFileChange,
   onTextChange,
   onToggleChange,
   onSliderChange,
@@ -114,9 +119,9 @@ export function AkRecruitToolbar({
       ),
     },
     {
-      key: "role",
-      label: "角色",
-      desc: "选择角色星级职业和所属阵营",
+      key: "organization",
+      label: "阵营",
+      desc: "选择角色所属阵营",
       content: (
         <FieldSet>
           <FieldGroup>
@@ -147,6 +152,43 @@ export function AkRecruitToolbar({
                 </Select>
               </FieldContent>
             </Field>
+
+            <Field>
+              <FieldLabel htmlFor="organization-logo-upload">
+                自定义阵营LOGO
+              </FieldLabel>
+              <FieldContent>
+                <Input
+                  id="organization-logo-upload"
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  onChange={onOrganizationLogoFileChange}
+                />
+                <FieldDescription>
+                  支持 PNG / JPEG，最大 {MAX_ORGANIZATION_LOGO_FILE_SIZE_MB}MB，默认尺寸
+                  500*500px
+                  {form.customOrganizationLogoFile
+                    ? `，当前文件：${form.customOrganizationLogoFile.name}`
+                    : ""}
+                </FieldDescription>
+                {organizationLogoError ? (
+                  <p className="text-sm text-destructive">
+                    {organizationLogoError}
+                  </p>
+                ) : null}
+              </FieldContent>
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      ),
+    },
+    {
+      key: "role",
+      label: "角色",
+      desc: "选择角色星级职业与招募标记",
+      content: (
+        <FieldSet>
+          <FieldGroup>
 
             <Field>
               <FieldLabel>职业</FieldLabel>
@@ -330,7 +372,7 @@ export function AkRecruitToolbar({
             defaultValue={sections[0].key}
             className="bg-background p-4"
           >
-            <TabsList className="grid h-auto w-full grid-cols-3">
+            <TabsList className="grid h-auto w-full grid-cols-4">
               {sections.map((section) => (
                 <TabsTrigger
                   key={section.key}
@@ -349,10 +391,10 @@ export function AkRecruitToolbar({
                 className="mt-4"
               >
                 <div>
-                  <FieldTitle>{section.label}</FieldTitle>
+                  {/* <FieldTitle>{section.label}</FieldTitle>
                   <FieldDescription className="mt-1">
                     {section.desc}
-                  </FieldDescription>
+                  </FieldDescription> */}
                   <div className="mt-4 pb-[calc(env(safe-area-inset-bottom,0px)+8px)]">
                     {section.content}
                   </div>

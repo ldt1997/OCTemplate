@@ -48,6 +48,9 @@ export const CANVAS_WIDTH = 1920;
 export const CANVAS_HEIGHT = 1080;
 export const MAX_FILE_SIZE_MB = 10;
 export const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
+export const MAX_ORGANIZATION_LOGO_FILE_SIZE_MB = 5;
+export const MAX_ORGANIZATION_LOGO_FILE_SIZE =
+  MAX_ORGANIZATION_LOGO_FILE_SIZE_MB * 1024 * 1024;
 
 export const akRecruitTemplateSpec = {
   nameFontSize: 120,
@@ -159,6 +162,8 @@ export type RecruitFormState = {
   imageScale: number;
   imageOffsetX: number;
   imageOffsetY: number;
+  customOrganizationLogoFile: File | null;
+  customOrganizationLogoUrl: string | null;
   organization: OrganizationValue;
   profession: ProfessionValue | "";
   isNewOperator: boolean;
@@ -209,6 +214,10 @@ export const organizationAssetMap: Record<OrganizationValue, string> = {
   yen: yenImage,
 };
 
+export function getRecruitOrganizationLogoSrc(form: RecruitFormState) {
+  return form.customOrganizationLogoUrl || organizationAssetMap[form.organization];
+}
+
 export const professionAssetMap: Record<ProfessionValue, string> = {
   vanguard: vanguardImage,
   guard: guardImage,
@@ -226,6 +235,8 @@ export const initialFormState: RecruitFormState = {
   imageScale: 1,
   imageOffsetX: 0,
   imageOffsetY: 0,
+  customOrganizationLogoFile: null,
+  customOrganizationLogoUrl: null,
   organization: "rhodes_island",
   profession: "vanguard",
   isNewOperator: true,

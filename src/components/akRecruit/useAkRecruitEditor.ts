@@ -3,6 +3,8 @@ import {
   initialFormState,
   MAX_FILE_SIZE,
   MAX_FILE_SIZE_MB,
+  MAX_ORGANIZATION_LOGO_FILE_SIZE,
+  MAX_ORGANIZATION_LOGO_FILE_SIZE_MB,
   type ImageSize,
   type RecruitFormState,
 } from "@/components/akRecruit/akRecruitConfig";
@@ -20,6 +22,7 @@ export function useAkRecruitEditor() {
   const [form, setForm] = useState(initialFormState);
   const [imageSize, setImageSize] = useState<ImageSize | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [organizationLogoError, setOrganizationLogoError] = useState<string | null>(null);
   const [fontsReady, setFontsReady] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
@@ -48,6 +51,14 @@ export function useAkRecruitEditor() {
       }
     };
   }, [form.imageUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (form.customOrganizationLogoUrl) {
+        URL.revokeObjectURL(form.customOrganizationLogoUrl);
+      }
+    };
+  }, [form.customOrganizationLogoUrl]);
 
   useEffect(() => {
     let cancelled = false;
@@ -158,6 +169,58 @@ export function useAkRecruitEditor() {
     }
   };
 
+  const handleOrganizationLogoFileChange = (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const input = event.target;
+    const nextFile = event.target.files?.[0] ?? null;
+
+    if (!nextFile) {
+      setOrganizationLogoError(null);
+      updateForm((current) => {
+        if (current.customOrganizationLogoUrl) {
+          URL.revokeObjectURL(current.customOrganizationLogoUrl);
+        }
+
+        return {
+          ...current,
+          customOrganizationLogoFile: null,
+          customOrganizationLogoUrl: null,
+        };
+      });
+      return;
+    }
+
+    if (!["image/png", "image/jpeg"].includes(nextFile.type)) {
+      setOrganizationLogoError("请上传 PNG 或 JPEG 图片。");
+      input.value = "";
+      return;
+    }
+
+    if (nextFile.size > MAX_ORGANIZATION_LOGO_FILE_SIZE) {
+      setOrganizationLogoError(
+        `阵营 LOGO 大小不能超过 ${MAX_ORGANIZATION_LOGO_FILE_SIZE_MB}MB。`,
+      );
+      input.value = "";
+      return;
+    }
+
+    const nextUrl = URL.createObjectURL(nextFile);
+    setOrganizationLogoError(null);
+    updateForm((current) => {
+      if (current.customOrganizationLogoUrl) {
+        URL.revokeObjectURL(current.customOrganizationLogoUrl);
+      }
+
+      return {
+        ...current,
+        customOrganizationLogoFile: nextFile,
+        customOrganizationLogoUrl: nextUrl,
+      };
+    });
+    input.value = "";
+  };
+
   const handleImageTransformCommit = (
     next: Pick<
       RecruitFormState,
@@ -171,16 +234,20 @@ export function useAkRecruitEditor() {
     form,
     imageSize,
     imageError,
+    organizationLogoError,
     fontsReady,
     isExporting,
     updateForm,
     handleFileChange,
+    handleOrganizationLogoFileChange,
     handleExport,
     handleImageTransformCommit,
     toolbarProps: {
       form,
       imageError,
+      organizationLogoError,
       onFileChange: handleFileChange,
+      onOrganizationLogoFileChange: handleOrganizationLogoFileChange,
       onTextChange: (field: "name" | "enName" | "intro", value: string) =>
         updateForm({ [field]: value } as Partial<RecruitFormState>),
       onToggleChange: (
@@ -194,7 +261,18 @@ export function useAkRecruitEditor() {
         updateForm({ [field]: Math.round(value) } as Partial<RecruitFormState>),
       onImageScaleChange: (imageScale: number) => updateForm({ imageScale }),
       onOrganizationChange: (organization: RecruitFormState["organization"]) =>
-        updateForm({ organization }),
+        updateForm((current) => {
+          if (current.customOrganizationLogoUrl) {
+            URL.revokeObjectURL(current.customOrganizationLogoUrl);
+          }
+
+          return {
+            ...current,
+            organization,
+            customOrganizationLogoFile: null,
+            customOrganizationLogoUrl: null,
+          };
+        }),
       onProfessionChange: (profession: RecruitFormState["profession"]) =>
         updateForm({ profession }),
     },
