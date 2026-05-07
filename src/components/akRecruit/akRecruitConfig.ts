@@ -5,13 +5,14 @@ import newTagImage from "@/assets/akrecruit/NewTag.webp";
 import seniorVoucherIconImage from "@/assets/akrecruit/seniorVoucherIcon.webp";
 import starImage from "@/assets/akrecruit/star.svg";
 import aegirImage from "@/assets/akrecruit/AEGIR.webp";
-import abyssalHuntersImage from "@/assets/akrecruit/Abyssal_Hunters_white.webp";
+import abyssalHuntersImage from "@/assets/akrecruit/Abyssal_Hunters.webp";
+import babelImage from "@/assets/akrecruit/Babel_re.webp";
 import bolivarImage from "@/assets/akrecruit/BOLIVAR.webp";
-import blackSteelImage from "@/assets/akrecruit/Black_Steel_white.webp";
+import blackSteelImage from "@/assets/akrecruit/Black_Steel.webp";
 import columbiaImage from "@/assets/akrecruit/Columbian_Union.webp";
 import followersImage from "@/assets/akrecruit/Followers.webp";
 import glasgowImage from "@/assets/akrecruit/GLASGOW.webp";
-import leithaniaImage from "@/assets/akrecruit/Leithania_white.webp";
+import leithaniaImage from "@/assets/akrecruit/Leithania.webp";
 import higashiImage from "@/assets/akrecruit/Higashi.webp";
 import iberiaImage from "@/assets/akrecruit/IBERIA.webp";
 import kazdelImage from "@/assets/akrecruit/KAZDEL.webp";
@@ -23,11 +24,12 @@ import minosImage from "@/assets/akrecruit/MINOS.webp";
 import penguinLogisticsImage from "@/assets/akrecruit/Penguin_Logistics.webp";
 import rimBillitonImage from "@/assets/akrecruit/RIM_Billiton.webp";
 import reunionMovementImage from "@/assets/akrecruit/Reunion_Movement.webp";
-import rhineImage from "@/assets/akrecruit/Rhine_Lab_white.webp";
-import rhodesIslandImage from "@/assets/akrecruit/rhodes_island_white.webp";
+import rhineImage from "@/assets/akrecruit/Rhine_Lab.webp";
+import rhodesIslandImage from "@/assets/akrecruit/Rhodes_Island.webp";
 import samiImage from "@/assets/akrecruit/Sami.webp";
 import sargonImage from "@/assets/akrecruit/Sargon.webp";
 import siracusaImage from "@/assets/akrecruit/Siracusa.webp";
+import suiImage from "@/assets/akrecruit/Sui.webp";
 import ursusStudentSelfGovernmentGroupImage from "@/assets/akrecruit/URSUS_student_self-government_group.webp";
 import ursusImage from "@/assets/akrecruit/Ursus.webp";
 import victoriaImage from "@/assets/akrecruit/Victoria.webp";
@@ -101,8 +103,10 @@ export const organizationOptionGroups = [
       { label: "格拉斯哥帮", value: "glasgow" },
       { label: "使徒", value: "followers" },
       { label: "深海猎人", value: "abyssal_hunters" },
+      { label: "巴别塔", value: "babel" },
       { label: "乌萨斯学生自治团", value: "ursus_student_self_government_group" },
       { label: "雷神工业", value: "raythean" },
+      { label: "岁", value: "sui" },
     ],
   },
   {
@@ -174,6 +178,7 @@ export type ImageSize = {
 export const organizationAssetMap: Record<OrganizationValue, string> = {
   aegir: aegirImage,
   bolivar: bolivarImage,
+  babel: babelImage,
   columbia: columbiaImage,
   followers: followersImage,
   glasgow: glasgowImage,
@@ -197,6 +202,7 @@ export const organizationAssetMap: Record<OrganizationValue, string> = {
   sami: samiImage,
   sargon: sargonImage,
   siracusa: siracusaImage,
+  sui: suiImage,
   ursus: ursusImage,
   ursus_student_self_government_group: ursusStudentSelfGovernmentGroupImage,
   victoria: victoriaImage,
