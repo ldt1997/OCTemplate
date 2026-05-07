@@ -184,23 +184,12 @@ export async function exportRecruitImage(form: RecruitFormState) {
   }
 
   if (newTagMark) {
-    const professionHeight = professionMark
-      ? (professionMark.height / professionMark.width) *
-        akRecruitTemplateSpec.professionWidth
-      : 0;
     const newTagHeight =
       (newTagMark.height / newTagMark.width) * akRecruitTemplateSpec.newTagWidth;
-    const professionRight =
-      infoLayout.blockLeft + akRecruitTemplateSpec.professionWidth;
     ctx.drawImage(
       newTagMark,
-      professionRight -
-        akRecruitTemplateSpec.newTagWidth -
-        akRecruitTemplateSpec.newTagOffsetRight,
-      infoLayout.rowTop +
-        akRecruitTemplateSpec.professionTopOffset +
-        professionHeight +
-        akRecruitTemplateSpec.newTagOffsetTop,
+      akRecruitTemplateSpec.newTagLeft,
+      akRecruitTemplateSpec.newTagTop,
       akRecruitTemplateSpec.newTagWidth,
       newTagHeight,
     );

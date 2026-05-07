@@ -163,38 +163,17 @@ export function AkRecruitPreview({
           className="flex items-start"
           style={{ marginTop: akRecruitTemplateSpec.infoGap }}
         >
-          {professionAsset || form.isNewOperator ? (
-            <div
-              className="flex shrink-0 flex-col items-end"
+          {professionAsset ? (
+            <img
+              src={professionAsset}
+              alt=""
+              className="h-auto shrink-0"
               style={{
+                width: akRecruitTemplateSpec.professionWidth,
                 marginTop: akRecruitTemplateSpec.professionTopOffset,
                 marginRight: akRecruitTemplateSpec.professionGap,
               }}
-            >
-              {professionAsset ? (
-                <img
-                  src={professionAsset}
-                  alt=""
-                  className="h-auto"
-                  style={{
-                    width: akRecruitTemplateSpec.professionWidth,
-                  }}
-                />
-              ) : null}
-
-              {form.isNewOperator ? (
-                <img
-                  src={akRecruitAssets.newTagImage}
-                  alt=""
-                  className="h-auto"
-                  style={{
-                    marginTop: akRecruitTemplateSpec.newTagOffsetTop,
-                    marginRight: akRecruitTemplateSpec.newTagOffsetRight,
-                    width: akRecruitTemplateSpec.newTagWidth,
-                  }}
-                />
-              ) : null}
-            </div>
+            />
           ) : null}
 
           <div className="flex flex-col items-start">
@@ -226,6 +205,19 @@ export function AkRecruitPreview({
           </div>
         </div>
       </div>
+
+      {form.isNewOperator ? (
+        <img
+          src={akRecruitAssets.newTagImage}
+          alt=""
+          className="pointer-events-none absolute z-[2] h-auto select-none"
+          style={{
+            left: akRecruitTemplateSpec.newTagLeft,
+            top: akRecruitTemplateSpec.newTagTop,
+            width: akRecruitTemplateSpec.newTagWidth,
+          }}
+        />
+      ) : null}
 
       {shouldShowRightBadges ? (
         <div
