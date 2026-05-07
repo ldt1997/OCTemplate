@@ -228,11 +228,12 @@ export async function exportRecruitImage(form: RecruitFormState) {
 
   if (form.name) {
     ctx.lineWidth = akRecruitTemplateSpec.textStrokeWidth;
+    // FIXME: DOM preview text metrics and canvas text metrics do not align perfectly across platforms. Keep a small export-only Y offset until preview/export share a single text rendering source.
     drawTopAlignedText(
       ctx,
       form.name,
       infoLayout.textLeft,
-      infoLayout.rowTop,
+      infoLayout.rowTop + akRecruitTemplateSpec.exportNameOffsetY,
       NAME_FONT,
     );
   }
@@ -246,7 +247,9 @@ export async function exportRecruitImage(form: RecruitFormState) {
       ctx,
       exportEnName,
       infoLayout.textLeft,
-      infoLayout.rowTop + akRecruitTemplateSpec.enNameTopOffset,
+      infoLayout.rowTop +
+        akRecruitTemplateSpec.enNameTopOffset +
+        akRecruitTemplateSpec.exportEnNameOffsetY,
       EN_NAME_FONT,
     );
   }
