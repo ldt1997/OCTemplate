@@ -17,7 +17,6 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-  FieldTitle,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -165,8 +164,8 @@ export function AkRecruitToolbar({
                   onChange={onOrganizationLogoFileChange}
                 />
                 <FieldDescription>
-                  支持 PNG / JPEG，最大 {MAX_ORGANIZATION_LOGO_FILE_SIZE_MB}MB，默认尺寸
-                  500*500px
+                  支持 PNG / JPEG，最大 {MAX_ORGANIZATION_LOGO_FILE_SIZE_MB}
+                  MB，默认尺寸 500*500px
                   {form.customOrganizationLogoFile
                     ? `，当前文件：${form.customOrganizationLogoFile.name}`
                     : ""}
@@ -189,7 +188,6 @@ export function AkRecruitToolbar({
       content: (
         <FieldSet>
           <FieldGroup>
-
             <Field>
               <FieldLabel>职业</FieldLabel>
               <FieldContent>
@@ -368,10 +366,7 @@ export function AkRecruitToolbar({
         </div>
       ) : (
         <div className="lg:hidden">
-          <Tabs
-            defaultValue={sections[0].key}
-            className="bg-background p-4"
-          >
+          <Tabs defaultValue={sections[0].key} className="bg-background p-4">
             <TabsList className="grid h-auto w-full grid-cols-4">
               {sections.map((section) => (
                 <TabsTrigger
@@ -391,7 +386,7 @@ export function AkRecruitToolbar({
                 className="mt-4"
               >
                 <div>
-                  {/* <FieldTitle>{section.label}</FieldTitle>
+                  {/* <FieldLegend>{section.label}</FieldLegend>
                   <FieldDescription className="mt-1">
                     {section.desc}
                   </FieldDescription> */}
