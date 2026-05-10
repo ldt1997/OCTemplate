@@ -1,0 +1,154 @@
+import { type ChangeEvent, useEffect, useState } from "react";
+import {
+  acceptedImageTypes,
+  initialFormState,
+  MAX_FILE_SIZE,
+  notmecoreTemplateSpec,
+  type NotmecoreFormState,
+  type NotmecoreImageSize,
+} from "@/components/notmecore/notmecoreConfig";
+import {
+  exportNotmecoreImage,
+  readImageSize,
+} from "@/components/notmecore/notmecorePoster";
+
+type UpdateFormInput =
+  | Partial<NotmecoreFormState>
+  | ((current: NotmecoreFormState) => NotmecoreFormState);
+
+export function useNotmecoreEditor() {
+  const [form, setForm] = useState(initialFormState);
+  const [imageSize, setImageSize] = useState<NotmecoreImageSize | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (form.imageUrl) {
+        URL.revokeObjectURL(form.imageUrl);
+      }
+    };
+  }, [form.imageUrl]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!form.imageUrl) {
+      setImageSize(null);
+      return;
+    }
+
+    void readImageSize(form.imageUrl)
+      .then((nextImageSize) => {
+        if (!cancelled) {
+          setImageSize(nextImageSize);
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          console.error("图片尺寸读取失败", error);
+          setImageError("图片读取失败，请重新上传。");
+          setImageSize(null);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [form.imageUrl]);
+
+  const updateForm = (updater: UpdateFormInput) => {
+    setForm((current) =>
+      typeof updater === "function"
+        ? updater(current)
+        : { ...current, ...updater },
+    );
+  };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextFile = event.target.files?.[0] ?? null;
+
+    if (!nextFile) {
+      setImageError(null);
+      updateForm((current) => {
+        if (current.imageUrl) {
+          URL.revokeObjectURL(current.imageUrl);
+        }
+
+        return {
+          ...current,
+          imageFile: null,
+          imageUrl: null,
+        };
+      });
+      return;
+    }
+
+    if (!acceptedImageTypes.includes(nextFile.type as (typeof acceptedImageTypes)[number])) {
+      setImageError("请上传 PNG、JPEG 或 WEBP 图片。");
+      event.target.value = "";
+      return;
+    }
+
+    if (nextFile.size > MAX_FILE_SIZE) {
+      setImageError("图片大小不能超过 8MB。");
+      event.target.value = "";
+      return;
+    }
+
+    const nextUrl = URL.createObjectURL(nextFile);
+    setImageError(null);
+    updateForm((current) => {
+      if (current.imageUrl) {
+        URL.revokeObjectURL(current.imageUrl);
+      }
+
+      return {
+        ...current,
+        imageFile: nextFile,
+        imageUrl: nextUrl,
+      };
+    });
+  };
+
+  const handleExport = async () => {
+    if (!imageSize) {
+      return;
+    }
+
+    try {
+      setIsExporting(true);
+      const imageBlob = await exportNotmecoreImage(form, imageSize);
+      const downloadUrl = URL.createObjectURL(imageBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `${notmecoreTemplateSpec.filePrefix}_${Date.now()}.png`;
+      link.click();
+
+      setTimeout(() => {
+        URL.revokeObjectURL(downloadUrl);
+      }, 0);
+    } catch (error) {
+      console.error("导出失败", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  return {
+    form,
+    imageSize,
+    imageError,
+    isExporting,
+    canExport: Boolean(imageSize && form.imageUrl),
+    handleExport,
+    toolbarProps: {
+      form,
+      imageError,
+      onFileChange: handleFileChange,
+      onBackgroundColorChange: (value: string) =>
+        updateForm({ backgroundColor: value }),
+      onSaturationChange: (value: number) => updateForm({ saturation: value }),
+    },
+  };
+}
