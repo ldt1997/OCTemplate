@@ -7,6 +7,31 @@ import { buildNotmecoreTextScatterLayout } from "@/components/notmecore/notmecor
 const notmecoreTextFontFamily =
   '"Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif';
 
+function drawScatterBlocks(
+  context: CanvasRenderingContext2D,
+  blocks: ReturnType<typeof buildNotmecoreTextScatterLayout>,
+  textColor: string,
+  textFontSize: number,
+) {
+  if (blocks.length === 0) {
+    return;
+  }
+
+  context.save();
+  context.fillStyle = textColor;
+  context.font = `500 ${textFontSize}px ${notmecoreTextFontFamily}`;
+  context.textAlign = "left";
+  context.textBaseline = "alphabetic";
+
+  blocks.forEach((block) => {
+    block.characters.forEach((character) => {
+      context.fillText(character.value, character.x, character.y);
+    });
+  });
+
+  context.restore();
+}
+
 export async function loadImage(src: string) {
   const image = new Image();
 
@@ -46,6 +71,7 @@ export async function drawNotmecoreFrame(
     | "textLetterSpacing"
     | "textLineSpacing"
     | "textJitterY"
+    | "textLayerMode"
     | "textScatterSeed"
   >,
   imageSize: NotmecoreImageSize,
@@ -70,24 +96,18 @@ export async function drawNotmecoreFrame(
     letterSpacing: form.textLetterSpacing,
     lineSpacing: form.textLineSpacing,
     jitterY: form.textJitterY,
+    layerMode: form.textLayerMode,
     seed: form.textScatterSeed,
   });
+  const bottomBlocks = scatterBlocks.filter((block) => block.layer === "bottom");
+  const topBlocks = scatterBlocks.filter((block) => block.layer === "top");
 
-  if (scatterBlocks.length === 0) {
-    return;
-  }
+  drawScatterBlocks(context, bottomBlocks, form.textColor, form.textFontSize);
 
   context.save();
-  context.fillStyle = form.textColor;
-  context.font = `500 ${form.textFontSize}px ${notmecoreTextFontFamily}`;
-  context.textAlign = "left";
-  context.textBaseline = "alphabetic";
-
-  scatterBlocks.forEach((block) => {
-    block.characters.forEach((character) => {
-      context.fillText(character.value, character.x, character.y);
-    });
-  });
-
+  context.filter = `saturate(${form.saturation})`;
+  context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
   context.restore();
+
+  drawScatterBlocks(context, topBlocks, form.textColor, form.textFontSize);
 }

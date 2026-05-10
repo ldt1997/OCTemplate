@@ -10,6 +10,8 @@ export type NotmecoreImageSize = {
   height: number;
 };
 
+export type NotmecoreTextLayerMode = "random" | "bottom" | "top";
+
 export type NotmecoreFormState = {
   imageFile: File | null;
   imageUrl: string | null;
@@ -22,6 +24,7 @@ export type NotmecoreFormState = {
   textLetterSpacing: number;
   textLineSpacing: number;
   textJitterY: number;
+  textLayerMode: NotmecoreTextLayerMode;
   textScatterSeed: number;
 };
 
@@ -44,11 +47,12 @@ export const initialFormState: NotmecoreFormState = {
   backgroundColor: "#FFFFFF",
   saturation: 1,
   text: "That's not my name",
-  textRepeatCount: 3,
+  textRepeatCount: 5,
   textFontSize: 24,
-  textColor: "#0033CC",
+  textColor: "#0000ff",
   textLetterSpacing: 24,
   textLineSpacing: 16,
   textJitterY: 24,
+  textLayerMode: "top",
   textScatterSeed: 1,
 };

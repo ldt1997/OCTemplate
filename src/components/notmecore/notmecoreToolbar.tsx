@@ -2,6 +2,7 @@ import type { ChangeEvent } from "react";
 import {
   notmecoreTemplateSpec,
   type NotmecoreFormState,
+  type NotmecoreTextLayerMode,
 } from "@/components/notmecore/notmecoreConfig";
 import { cn } from "@/lib/utils";
 import {
@@ -33,6 +34,7 @@ type NotmecoreToolbarProps = {
   onTextLetterSpacingChange: (value: number) => void;
   onTextLineSpacingChange: (value: number) => void;
   onTextJitterYChange: (value: number) => void;
+  onTextLayerModeChange: (value: NotmecoreTextLayerMode) => void;
   onShuffleTextScatter: () => void;
 };
 
@@ -50,8 +52,18 @@ export function NotmecoreToolbar({
   onTextLetterSpacingChange,
   onTextLineSpacingChange,
   onTextJitterYChange,
+  onTextLayerModeChange,
   onShuffleTextScatter,
 }: NotmecoreToolbarProps) {
+  const textLayerModeOptions: Array<{
+    value: NotmecoreTextLayerMode;
+    label: string;
+  }> = [
+    { value: "top", label: "顶部" },
+    { value: "bottom", label: "底部" },
+    { value: "random", label: "随机" }
+  ];
+
   const sections = [
     {
       key: "image",
@@ -142,7 +154,32 @@ export function NotmecoreToolbar({
                       onTextRepeatCountChange(value[0] ?? form.textRepeatCount)
                     }
                   />
-                  <FieldDescription>当前值：{form.textRepeatCount}</FieldDescription>
+                  <FieldDescription>
+                    当前值：{form.textRepeatCount}
+                  </FieldDescription>
+                </div>
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>文字层级</FieldLabel>
+              <FieldContent>
+                <div className="flex flex-wrap gap-2">
+                  {textLayerModeOptions.map((option) => (
+                    <Button
+                      key={option.value}
+                      type="button"
+                      size="sm"
+                      variant={
+                        form.textLayerMode === option.value
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={() => onTextLayerModeChange(option.value)}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
                 </div>
               </FieldContent>
             </Field>
@@ -160,7 +197,9 @@ export function NotmecoreToolbar({
                       onTextFontSizeChange(value[0] ?? form.textFontSize)
                     }
                   />
-                  <FieldDescription>当前值：{form.textFontSize}px</FieldDescription>
+                  <FieldDescription>
+                    当前值：{form.textFontSize}px
+                  </FieldDescription>
                 </div>
               </FieldContent>
             </Field>
@@ -219,7 +258,9 @@ export function NotmecoreToolbar({
                       onTextLineSpacingChange(value[0] ?? form.textLineSpacing)
                     }
                   />
-                  <FieldDescription>当前值：{form.textLineSpacing}px</FieldDescription>
+                  <FieldDescription>
+                    当前值：{form.textLineSpacing}px
+                  </FieldDescription>
                 </div>
               </FieldContent>
             </Field>
@@ -237,12 +278,18 @@ export function NotmecoreToolbar({
                       onTextJitterYChange(value[0] ?? form.textJitterY)
                     }
                   />
-                  <FieldDescription>当前值：{form.textJitterY}px</FieldDescription>
+                  <FieldDescription>
+                    当前值：{form.textJitterY}px
+                  </FieldDescription>
                 </div>
               </FieldContent>
             </Field>
 
-            <Button type="button" variant="outline" onClick={onShuffleTextScatter}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onShuffleTextScatter}
+            >
               随机分布
             </Button>
           </FieldGroup>

@@ -7,6 +7,7 @@ export type NotmecoreTextScatterInput = {
   letterSpacing: number;
   lineSpacing: number;
   jitterY: number;
+  layerMode: "random" | "bottom" | "top";
   seed: number;
 };
 
@@ -17,6 +18,7 @@ export type NotmecoreScatterCharacter = {
 };
 
 export type NotmecoreScatterBlock = {
+  layer: "bottom" | "top";
   characters: NotmecoreScatterCharacter[];
 };
 
@@ -146,6 +148,12 @@ export function buildNotmecoreTextScatterLayout(
   return Array.from({ length: input.blockCount }, () => {
     const originX = marginX + (maxX - marginX) * random();
     const originY = marginY + (maxY - marginY) * random();
+    const layer =
+      input.layerMode === "random"
+        ? random() < 0.5
+          ? "bottom"
+          : "top"
+        : input.layerMode;
     const characters: NotmecoreScatterCharacter[] = [];
 
     lines.forEach((line, lineIndex) => {
@@ -164,6 +172,6 @@ export function buildNotmecoreTextScatterLayout(
       });
     });
 
-    return { characters };
+    return { layer, characters };
   });
 }

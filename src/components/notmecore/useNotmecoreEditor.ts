@@ -6,6 +6,7 @@ import {
   notmecoreTemplateSpec,
   type NotmecoreFormState,
   type NotmecoreImageSize,
+  type NotmecoreTextLayerMode,
 } from "@/components/notmecore/notmecoreConfig";
 import {
   exportNotmecoreImage,
@@ -168,6 +169,8 @@ export function useNotmecoreEditor() {
         updateForm({ textLineSpacing: value }),
       onTextJitterYChange: (value: number) =>
         updateForm({ textJitterY: value }),
+      onTextLayerModeChange: (value: NotmecoreTextLayerMode) =>
+        updateForm({ textLayerMode: value }),
       onShuffleTextScatter: () =>
         updateForm({ textScatterSeed: createScatterSeed() }),
     },
