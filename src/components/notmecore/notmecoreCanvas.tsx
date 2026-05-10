@@ -3,20 +3,21 @@ import type {
   NotmecoreFormState,
   NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
-import { getCanvasSize } from "@/components/notmecore/notmecoreLayout";
+import type { NotmecoreDisplaySize } from "@/components/notmecore/notmecoreLayout";
 import { drawNotmecoreFrame } from "@/components/notmecore/notmecoreRenderer";
 
 type NotmecoreCanvasProps = {
   form: NotmecoreFormState;
   imageSize: NotmecoreImageSize | null;
+  displaySize: NotmecoreDisplaySize;
 };
 
 export function NotmecoreCanvas({
   form,
   imageSize,
+  displaySize,
 }: NotmecoreCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasSize = getCanvasSize(imageSize);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -51,12 +52,12 @@ export function NotmecoreCanvas({
   return (
     <canvas
       ref={canvasRef}
-      width={canvasSize.width}
-      height={canvasSize.height}
+      width={imageSize.width}
+      height={imageSize.height}
       className="block h-auto max-w-none"
       style={{
-        width: `${canvasSize.width}px`,
-        height: `${canvasSize.height}px`,
+        width: `${displaySize.width}px`,
+        height: `${displaySize.height}px`,
       }}
     />
   );

@@ -4,11 +4,15 @@ import {
   notmecoreTemplateSpec,
   type NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
-import { getCanvasSize } from "@/components/notmecore/notmecoreLayout";
+import {
+  getContainDisplaySize,
+  type NotmecoreCanvasSize,
+  type NotmecoreDisplaySize,
+} from "@/components/notmecore/notmecoreLayout";
 
 type NotmecoreViewportProps = {
   imageSize: NotmecoreImageSize | null;
-  children: ReactNode;
+  children: (displaySize: NotmecoreDisplaySize) => ReactNode;
 };
 
 export function NotmecoreViewport({
@@ -16,8 +20,20 @@ export function NotmecoreViewport({
   children,
 }: NotmecoreViewportProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
-  const [previewScale, setPreviewScale] = useState(1);
-  const canvasSize = useMemo(() => getCanvasSize(imageSize), [imageSize]);
+  const [displaySize, setDisplaySize] = useState<NotmecoreDisplaySize>({
+    width: 0,
+    height: 0,
+  });
+  const canvasSize = useMemo<NotmecoreCanvasSize>(
+    () =>
+      imageSize
+        ? {
+            width: imageSize.width,
+            height: imageSize.height,
+          }
+        : { width: 0, height: 0 },
+    [imageSize],
+  );
 
   useEffect(() => {
     const node = viewportRef.current;
@@ -28,16 +44,16 @@ export function NotmecoreViewport({
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
       if (!entry || canvasSize.width === 0 || canvasSize.height === 0) {
-        setPreviewScale(1);
+        setDisplaySize({ width: 0, height: 0 });
         return;
       }
 
-      const nextScale = Math.min(
-        entry.contentRect.width / canvasSize.width,
-        entry.contentRect.height / canvasSize.height,
+      const nextDisplaySize = getContainDisplaySize(
+        canvasSize,
+        entry.contentRect.width,
+        entry.contentRect.height,
       );
-
-      setPreviewScale(nextScale);
+      setDisplaySize(nextDisplaySize);
     });
 
     observer.observe(node);
@@ -65,18 +81,17 @@ export function NotmecoreViewport({
   return (
     <div
       ref={viewportRef}
-      className="relative flex h-full items-start justify-center overflow-auto"
+      className="relative flex h-full items-center justify-center overflow-hidden"
+      style={{ overflow: "clip" }}
     >
       <div
-        className="shrink-0 overflow-hidden shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
+        className="overflow-hidden"
         style={{
-          width: `${canvasSize.width}px`,
-          height: `${canvasSize.height}px`,
-          transform: `scale(${previewScale})`,
-          transformOrigin: "top center",
+          width: `${displaySize.width}px`,
+          height: `${displaySize.height}px`,
         }}
       >
-        {children}
+        {children(displaySize)}
       </div>
     </div>
   );

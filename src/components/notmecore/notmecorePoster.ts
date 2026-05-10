@@ -2,18 +2,7 @@ import type {
   NotmecoreFormState,
   NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
-import { drawNotmecoreFrame, loadImage } from "@/components/notmecore/notmecoreRenderer";
-
-export async function readImageSize(
-  imageUrl: string,
-): Promise<NotmecoreImageSize> {
-  const image = await loadImage(imageUrl);
-
-  return {
-    width: image.naturalWidth || image.width,
-    height: image.naturalHeight || image.height,
-  };
-}
+import { drawNotmecoreFrame } from "@/components/notmecore/notmecoreRenderer";
 
 export async function exportNotmecoreImage(
   form: NotmecoreFormState,

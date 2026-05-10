@@ -9,8 +9,8 @@ import {
 } from "@/components/notmecore/notmecoreConfig";
 import {
   exportNotmecoreImage,
-  readImageSize,
 } from "@/components/notmecore/notmecorePoster";
+import { readImageSize } from "@/components/notmecore/notmecoreRenderer";
 
 type UpdateFormInput =
   | Partial<NotmecoreFormState>

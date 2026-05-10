@@ -1,23 +1,34 @@
-import type { NotmecoreImageSize } from "@/components/notmecore/notmecoreConfig";
-
 export type NotmecoreCanvasSize = {
   width: number;
   height: number;
 };
 
-export function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
+export type NotmecoreDisplaySize = {
+  width: number;
+  height: number;
+};
 
-export function getCanvasSize(
-  imageSize: NotmecoreImageSize | null,
-): NotmecoreCanvasSize {
-  if (!imageSize) {
+export function getContainDisplaySize(
+  canvasSize: NotmecoreCanvasSize,
+  viewportWidth: number,
+  viewportHeight: number,
+): NotmecoreDisplaySize {
+  if (
+    canvasSize.width === 0 ||
+    canvasSize.height === 0 ||
+    viewportWidth === 0 ||
+    viewportHeight === 0
+  ) {
     return { width: 0, height: 0 };
   }
 
+  const scale = Math.min(
+    viewportWidth / canvasSize.width,
+    viewportHeight / canvasSize.height,
+  );
+
   return {
-    width: imageSize.width,
-    height: imageSize.height,
+    width: canvasSize.width * scale,
+    height: canvasSize.height * scale,
   };
 }

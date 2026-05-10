@@ -29,7 +29,13 @@ export function NotmecorePage() {
 
         <section className="relative min-w-0 flex-1">
           <NotmecoreViewport imageSize={imageSize}>
-            <NotmecoreCanvas form={form} imageSize={imageSize} />
+            {(displaySize) => (
+              <NotmecoreCanvas
+                form={form}
+                imageSize={imageSize}
+                displaySize={displaySize}
+              />
+            )}
           </NotmecoreViewport>
 
           <div className="absolute inset-x-0 bottom-0 z-20 lg:hidden">

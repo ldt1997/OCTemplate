@@ -17,6 +17,17 @@ export async function loadImage(src: string) {
   });
 }
 
+export async function readImageSize(
+  imageUrl: string,
+): Promise<NotmecoreImageSize> {
+  const image = await loadImage(imageUrl);
+
+  return {
+    width: image.naturalWidth || image.width,
+    height: image.naturalHeight || image.height,
+  };
+}
+
 export async function drawNotmecoreFrame(
   context: CanvasRenderingContext2D,
   imageUrl: string,
