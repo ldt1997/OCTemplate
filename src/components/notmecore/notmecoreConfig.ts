@@ -33,9 +33,9 @@ export const notmecoreTemplateSpec = {
   textMaxLength: 50,
   textRepeatCountRange: { min: 1, max: 12, step: 1 },
   textFontSizeRange: { min: 8, max: 48, step: 1 },
-  textLetterSpacingRange: { min: 0, max: 24, step: 1 },
+  textLetterSpacingRange: { min: 0, max: 48, step: 1 },
   textLineSpacingRange: { min: 0, max: 32, step: 1 },
-  textJitterYRange: { min: 0, max: 24, step: 1 },
+  textJitterYRange: { min: 0, max: 48, step: 1 },
 } as const;
 
 export const initialFormState: NotmecoreFormState = {
@@ -45,10 +45,10 @@ export const initialFormState: NotmecoreFormState = {
   saturation: 1,
   text: "That's not my name",
   textRepeatCount: 3,
-  textFontSize: 12,
-  textColor: "#FFFFFF",
-  textLetterSpacing: 6,
+  textFontSize: 24,
+  textColor: "#0033CC",
+  textLetterSpacing: 24,
   textLineSpacing: 0,
-  textJitterY: 3,
+  textJitterY: 24,
   textScatterSeed: 1,
 };
