@@ -20,6 +20,8 @@ export type NotmecoreScatterBlock = {
   characters: NotmecoreScatterCharacter[];
 };
 
+const notmecoreTextWrapWidthRatio = 0.28;
+
 function createSeededRandom(seed: number) {
   let state = seed >>> 0;
 
@@ -54,10 +56,69 @@ function sanitizeLines(text: string) {
     .filter((line) => line.length > 0);
 }
 
+function wrapLineByEstimatedWidth(
+  line: string,
+  maxLineWidth: number,
+  fontSize: number,
+  letterSpacing: number,
+) {
+  if (line.length === 0 || maxLineWidth <= 0) {
+    return [];
+  }
+
+  const wrappedLines: string[] = [];
+  let currentLine = "";
+  let currentWidth = 0;
+
+  Array.from(line).forEach((character) => {
+    const nextWidth =
+      currentLine.length === 0
+        ? fontSize * 0.62
+        : estimateGlyphAdvance(fontSize, letterSpacing);
+
+    if (currentLine.length > 0 && currentWidth + nextWidth > maxLineWidth) {
+      wrappedLines.push(currentLine);
+      currentLine = character;
+      currentWidth = fontSize * 0.62;
+      return;
+    }
+
+    currentLine += character;
+    currentWidth += nextWidth;
+  });
+
+  if (currentLine.length > 0) {
+    wrappedLines.push(currentLine);
+  }
+
+  return wrappedLines;
+}
+
+function buildWrappedLines(
+  text: string,
+  canvasWidth: number,
+  fontSize: number,
+  letterSpacing: number,
+) {
+  const maxLineWidth = Math.max(
+    fontSize,
+    canvasWidth * notmecoreTextWrapWidthRatio,
+  );
+
+  return sanitizeLines(text).flatMap((line) =>
+    wrapLineByEstimatedWidth(line, maxLineWidth, fontSize, letterSpacing),
+  );
+}
+
 export function buildNotmecoreTextScatterLayout(
   input: NotmecoreTextScatterInput,
 ): NotmecoreScatterBlock[] {
-  const lines = sanitizeLines(input.text);
+  const lines = buildWrappedLines(
+    input.text,
+    input.canvasWidth,
+    input.fontSize,
+    input.letterSpacing,
+  );
   if (
     lines.length === 0 ||
     input.canvasWidth <= 0 ||

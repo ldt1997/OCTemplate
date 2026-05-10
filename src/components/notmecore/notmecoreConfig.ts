@@ -48,7 +48,7 @@ export const initialFormState: NotmecoreFormState = {
   textFontSize: 24,
   textColor: "#0033CC",
   textLetterSpacing: 24,
-  textLineSpacing: 0,
+  textLineSpacing: 16,
   textJitterY: 24,
   textScatterSeed: 1,
 };
