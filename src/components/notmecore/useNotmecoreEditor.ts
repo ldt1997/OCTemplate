@@ -154,6 +154,9 @@ export function useNotmecoreEditor() {
       onBackgroundColorChange: (value: string) =>
         updateForm({ backgroundColor: value }),
       onSaturationChange: (value: number) => updateForm({ saturation: value }),
+      onTintColorChange: (value: string) => updateForm({ tintColor: value }),
+      onBlendOpacityChange: (value: number) =>
+        updateForm({ blendOpacity: value }),
       onTextChange: (value: string) =>
         updateForm({
           text: value.slice(0, notmecoreTemplateSpec.textMaxLength),

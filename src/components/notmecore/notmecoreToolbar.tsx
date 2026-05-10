@@ -27,6 +27,8 @@ type NotmecoreToolbarProps = {
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onBackgroundColorChange: (value: string) => void;
   onSaturationChange: (value: number) => void;
+  onTintColorChange: (value: string) => void;
+  onBlendOpacityChange: (value: number) => void;
   onTextChange: (value: string) => void;
   onTextRepeatCountChange: (value: number) => void;
   onTextFontSizeChange: (value: number) => void;
@@ -45,6 +47,8 @@ export function NotmecoreToolbar({
   onFileChange,
   onBackgroundColorChange,
   onSaturationChange,
+  onTintColorChange,
+  onBlendOpacityChange,
   onTextChange,
   onTextRepeatCountChange,
   onTextFontSizeChange,
@@ -318,6 +322,45 @@ export function NotmecoreToolbar({
                   />
                   <FieldDescription>
                     当前值：{form.saturation.toFixed(2)}
+                  </FieldDescription>
+                </div>
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="notmecore-tint-color">偏色</FieldLabel>
+              <FieldContent>
+                <div className="flex items-center gap-3">
+                  <Input
+                    id="notmecore-tint-color"
+                    type="color"
+                    value={form.tintColor}
+                    className="h-10 w-16 rounded-none p-1"
+                    onChange={(event) => onTintColorChange(event.target.value)}
+                  />
+                  <Input
+                    value={form.tintColor}
+                    onChange={(event) => onTintColorChange(event.target.value)}
+                  />
+                </div>
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>偏色强度</FieldLabel>
+              <FieldContent>
+                <div className="space-y-3">
+                  <Slider
+                    value={[form.blendOpacity]}
+                    min={notmecoreTemplateSpec.blendOpacityRange.min}
+                    max={notmecoreTemplateSpec.blendOpacityRange.max}
+                    step={notmecoreTemplateSpec.blendOpacityRange.step}
+                    onValueChange={(value) =>
+                      onBlendOpacityChange(value[0] ?? form.blendOpacity)
+                    }
+                  />
+                  <FieldDescription>
+                    当前值：{form.blendOpacity.toFixed(2)}
                   </FieldDescription>
                 </div>
               </FieldContent>

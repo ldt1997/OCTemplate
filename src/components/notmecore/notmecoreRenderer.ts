@@ -64,6 +64,8 @@ export async function drawNotmecoreFrame(
     NotmecoreFormState,
     | "backgroundColor"
     | "saturation"
+    | "tintColor"
+    | "blendOpacity"
     | "text"
     | "textRepeatCount"
     | "textFontSize"
@@ -81,11 +83,6 @@ export async function drawNotmecoreFrame(
   context.clearRect(0, 0, imageSize.width, imageSize.height);
   context.fillStyle = form.backgroundColor;
   context.fillRect(0, 0, imageSize.width, imageSize.height);
-
-  context.save();
-  context.filter = `saturate(${form.saturation})`;
-  context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
-  context.restore();
 
   const scatterBlocks = buildNotmecoreTextScatterLayout({
     canvasWidth: imageSize.width,
@@ -108,6 +105,14 @@ export async function drawNotmecoreFrame(
   context.filter = `saturate(${form.saturation})`;
   context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
   context.restore();
+
+  if (form.blendOpacity > 0) {
+    context.save();
+    context.globalAlpha = form.blendOpacity;
+    context.fillStyle = form.tintColor;
+    context.fillRect(0, 0, imageSize.width, imageSize.height);
+    context.restore();
+  }
 
   drawScatterBlocks(context, topBlocks, form.textColor, form.textFontSize);
 }
