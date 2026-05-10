@@ -106,36 +106,6 @@ export function NotmecoreToolbar({
       ),
     },
     {
-      key: "filter",
-      label: "滤镜",
-      desc: "调整图片饱和度，实时影响预览和导出。",
-      content: (
-        <FieldSet>
-          <FieldGroup>
-            <Field>
-              <FieldLabel>饱和度</FieldLabel>
-              <FieldContent>
-                <div className="space-y-3">
-                  <Slider
-                    value={[form.saturation]}
-                    min={0}
-                    max={2}
-                    step={0.01}
-                    onValueChange={(value) =>
-                      onSaturationChange(value[0] ?? form.saturation)
-                    }
-                  />
-                  <FieldDescription>
-                    当前值：{form.saturation.toFixed(2)}
-                  </FieldDescription>
-                </div>
-              </FieldContent>
-            </Field>
-          </FieldGroup>
-        </FieldSet>
-      ),
-    },
-    {
       key: "text",
       label: "文字",
       desc: "把装饰文字离散分布到画布中，并保持预览和导出一致。",
@@ -275,6 +245,36 @@ export function NotmecoreToolbar({
             <Button type="button" variant="outline" onClick={onShuffleTextScatter}>
               随机分布
             </Button>
+          </FieldGroup>
+        </FieldSet>
+      ),
+    },
+    {
+      key: "filter",
+      label: "滤镜",
+      desc: "调整图片饱和度，实时影响预览和导出。",
+      content: (
+        <FieldSet>
+          <FieldGroup>
+            <Field>
+              <FieldLabel>饱和度</FieldLabel>
+              <FieldContent>
+                <div className="space-y-3">
+                  <Slider
+                    value={[form.saturation]}
+                    min={0}
+                    max={2}
+                    step={0.01}
+                    onValueChange={(value) =>
+                      onSaturationChange(value[0] ?? form.saturation)
+                    }
+                  />
+                  <FieldDescription>
+                    当前值：{form.saturation.toFixed(2)}
+                  </FieldDescription>
+                </div>
+              </FieldContent>
+            </Field>
           </FieldGroup>
         </FieldSet>
       ),
