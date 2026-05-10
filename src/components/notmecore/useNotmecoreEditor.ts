@@ -16,6 +16,10 @@ type UpdateFormInput =
   | Partial<NotmecoreFormState>
   | ((current: NotmecoreFormState) => NotmecoreFormState);
 
+function createScatterSeed() {
+  return Math.floor(Math.random() * 0x7fffffff);
+}
+
 export function useNotmecoreEditor() {
   const [form, setForm] = useState(initialFormState);
   const [imageSize, setImageSize] = useState<NotmecoreImageSize | null>(null);
@@ -149,6 +153,23 @@ export function useNotmecoreEditor() {
       onBackgroundColorChange: (value: string) =>
         updateForm({ backgroundColor: value }),
       onSaturationChange: (value: number) => updateForm({ saturation: value }),
+      onTextChange: (value: string) =>
+        updateForm({
+          text: value.slice(0, notmecoreTemplateSpec.textMaxLength),
+        }),
+      onTextRepeatCountChange: (value: number) =>
+        updateForm({ textRepeatCount: value }),
+      onTextFontSizeChange: (value: number) =>
+        updateForm({ textFontSize: value }),
+      onTextColorChange: (value: string) => updateForm({ textColor: value }),
+      onTextLetterSpacingChange: (value: number) =>
+        updateForm({ textLetterSpacing: value }),
+      onTextLineSpacingChange: (value: number) =>
+        updateForm({ textLineSpacing: value }),
+      onTextJitterYChange: (value: number) =>
+        updateForm({ textJitterY: value }),
+      onShuffleTextScatter: () =>
+        updateForm({ textScatterSeed: createScatterSeed() }),
     },
   };
 }
