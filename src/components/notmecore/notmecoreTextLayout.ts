@@ -22,7 +22,7 @@ export type NotmecoreScatterBlock = {
   characters: NotmecoreScatterCharacter[];
 };
 
-const notmecoreTextWrapWidthRatio = 0.28;
+const notmecoreTextWrapWidthRatio = 0.48;
 
 function createSeededRandom(seed: number) {
   let state = seed >>> 0;
@@ -139,8 +139,8 @@ export function buildNotmecoreTextScatterLayout(
       estimateLineWidth(line, input.fontSize, input.letterSpacing),
     ),
   );
-  const marginX = Math.max(input.fontSize * 1.5, input.canvasWidth * 0.04);
-  const marginY = Math.max(input.fontSize * 1.5, input.canvasHeight * 0.04);
+  const marginX = Math.max(input.fontSize, input.canvasWidth * 0.02);
+  const marginY = Math.max(input.fontSize, input.canvasHeight * 0.02);
   const maxX = Math.max(marginX, input.canvasWidth - marginX - blockWidth);
   const maxY = Math.max(marginY, input.canvasHeight - marginY - blockHeight);
   const random = createSeededRandom(input.seed);
