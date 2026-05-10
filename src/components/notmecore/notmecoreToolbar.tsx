@@ -27,6 +27,8 @@ type NotmecoreToolbarProps = {
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onBackgroundColorChange: (value: string) => void;
   onSaturationChange: (value: number) => void;
+  onContrastChange: (value: number) => void;
+  onBrightnessChange: (value: number) => void;
   onTintColorChange: (value: string) => void;
   onBlendOpacityChange: (value: number) => void;
   onTextChange: (value: string) => void;
@@ -47,6 +49,8 @@ export function NotmecoreToolbar({
   onFileChange,
   onBackgroundColorChange,
   onSaturationChange,
+  onContrastChange,
+  onBrightnessChange,
   onTintColorChange,
   onBlendOpacityChange,
   onTextChange,
@@ -313,15 +317,55 @@ export function NotmecoreToolbar({
                 <div className="space-y-3">
                   <Slider
                     value={[form.saturation]}
-                    min={0}
-                    max={2}
-                    step={0.01}
+                    min={notmecoreTemplateSpec.saturationRange.min}
+                    max={notmecoreTemplateSpec.saturationRange.max}
+                    step={notmecoreTemplateSpec.saturationRange.step}
                     onValueChange={(value) =>
                       onSaturationChange(value[0] ?? form.saturation)
                     }
                   />
                   <FieldDescription>
                     当前值：{form.saturation.toFixed(2)}
+                  </FieldDescription>
+                </div>
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>对比度</FieldLabel>
+              <FieldContent>
+                <div className="space-y-3">
+                  <Slider
+                    value={[form.contrast]}
+                    min={notmecoreTemplateSpec.contrastRange.min}
+                    max={notmecoreTemplateSpec.contrastRange.max}
+                    step={notmecoreTemplateSpec.contrastRange.step}
+                    onValueChange={(value) =>
+                      onContrastChange(value[0] ?? form.contrast)
+                    }
+                  />
+                  <FieldDescription>
+                    当前值：{form.contrast.toFixed(2)}
+                  </FieldDescription>
+                </div>
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>亮度</FieldLabel>
+              <FieldContent>
+                <div className="space-y-3">
+                  <Slider
+                    value={[form.brightness]}
+                    min={notmecoreTemplateSpec.brightnessRange.min}
+                    max={notmecoreTemplateSpec.brightnessRange.max}
+                    step={notmecoreTemplateSpec.brightnessRange.step}
+                    onValueChange={(value) =>
+                      onBrightnessChange(value[0] ?? form.brightness)
+                    }
+                  />
+                  <FieldDescription>
+                    当前值：{form.brightness.toFixed(2)}
                   </FieldDescription>
                 </div>
               </FieldContent>

@@ -32,6 +32,16 @@ function drawScatterBlocks(
   context.restore();
 }
 
+function buildImageFilter(
+  form: Pick<NotmecoreFormState, "saturation" | "contrast" | "brightness">,
+) {
+  return [
+    `saturate(${form.saturation})`,
+    `contrast(${form.contrast})`,
+    `brightness(${form.brightness})`,
+  ].join(" ");
+}
+
 export async function loadImage(src: string) {
   const image = new Image();
 
@@ -64,6 +74,8 @@ export async function drawNotmecoreFrame(
     NotmecoreFormState,
     | "backgroundColor"
     | "saturation"
+    | "contrast"
+    | "brightness"
     | "tintColor"
     | "blendOpacity"
     | "text"
@@ -102,7 +114,7 @@ export async function drawNotmecoreFrame(
   drawScatterBlocks(context, bottomBlocks, form.textColor, form.textFontSize);
 
   context.save();
-  context.filter = `saturate(${form.saturation})`;
+  context.filter = buildImageFilter(form);
   context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
   context.restore();
 

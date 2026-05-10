@@ -17,6 +17,8 @@ export type NotmecoreFormState = {
   imageUrl: string | null;
   backgroundColor: string;
   saturation: number;
+  contrast: number;
+  brightness: number;
   tintColor: string;
   blendOpacity: number;
   text: string;
@@ -35,6 +37,9 @@ export const notmecoreTemplateSpec = {
   emptyStateTitle: "上传图片开始预览",
   emptyStateDescription: "画布尺寸会自动匹配原图尺寸，导出保持原始像素。",
   emptyStateBoxHeight: 320,
+  saturationRange: { min: 0, max: 2, step: 0.01 },
+  contrastRange: { min: 0.4, max: 2.2, step: 0.01 },
+  brightnessRange: { min: 0.4, max: 1.8, step: 0.01 },
   blendOpacityRange: { min: 0, max: 1, step: 0.01 },
   textMaxLength: 50,
   textRepeatCountRange: { min: 1, max: 15, step: 1 },
@@ -49,8 +54,10 @@ export const initialFormState: NotmecoreFormState = {
   imageUrl: null,
   backgroundColor: "#FFFFFF",
   saturation: 1,
-  tintColor: "#0000ff",
-  blendOpacity: 0,
+  contrast: 1,
+  brightness: 1,
+  tintColor: "#d8d8d8",
+  blendOpacity: 0.2,
   text: "That's not my name",
   textRepeatCount: 6,
   textFontSize: 28,
