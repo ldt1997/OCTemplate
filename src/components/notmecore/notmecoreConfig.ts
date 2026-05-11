@@ -74,7 +74,6 @@ export type NotmecoreFormState = {
   textFontSize: number;
   textColor: string;
   textLetterSpacing: number;
-  textLineSpacing: number;
   textJitterY: number;
   textLayerMode: NotmecoreTextLayerMode;
   textScatterSeed: number;
@@ -95,7 +94,6 @@ export const notmecoreTemplateSpec = {
   textFontFamilyOptions: notmecoreTextFontOptions,
   textFontSizeRange: { min: 8, max: 72, step: 1 },
   textLetterSpacingRange: { min: 0, max: 48, step: 1 },
-  textLineSpacingRange: { min: 0, max: 32, step: 1 },
   textJitterYRange: { min: 0, max: 48, step: 1 },
 } as const;
 
@@ -117,7 +115,6 @@ export const initialFormState: NotmecoreFormState = {
   textFontSize: 28,
   textColor: "#ffffff",
   textLetterSpacing: 12,
-  textLineSpacing: 16,
   textJitterY: 24,
   textLayerMode: "top",
   textScatterSeed: 1,

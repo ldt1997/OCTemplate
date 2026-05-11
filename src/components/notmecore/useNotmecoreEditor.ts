@@ -289,8 +289,6 @@ export function useNotmecoreEditor() {
       onTextColorChange: (value: string) => updateForm({ textColor: value }),
       onTextLetterSpacingChange: (value: number) =>
         updateForm({ textLetterSpacing: value }),
-      onTextLineSpacingChange: (value: number) =>
-        updateForm({ textLineSpacing: value }),
       onTextJitterYChange: (value: number) =>
         updateForm({ textJitterY: value }),
       onTextLayerModeChange: (value: NotmecoreTextLayerMode) =>

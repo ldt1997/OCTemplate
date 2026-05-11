@@ -5,7 +5,6 @@ export type NotmecoreTextScatterInput = {
   blockCount: number;
   fontSize: number;
   letterSpacing: number;
-  lineSpacing: number;
   jitterY: number;
   layerMode: "random" | "bottom" | "top";
   seed: number;
@@ -130,10 +129,8 @@ export function buildNotmecoreTextScatterLayout(
     return [];
   }
 
-  const lineHeight = input.fontSize + input.lineSpacing;
-  const blockHeight =
-    lines.length * input.fontSize +
-    Math.max(0, lines.length - 1) * input.lineSpacing;
+  const lineHeight = input.fontSize;
+  const blockHeight = lines.length * input.fontSize;
   const blockWidth = Math.max(
     ...lines.map((line) =>
       estimateLineWidth(line, input.fontSize, input.letterSpacing),

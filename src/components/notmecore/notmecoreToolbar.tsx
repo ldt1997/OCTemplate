@@ -50,7 +50,6 @@ type NotmecoreToolbarProps = {
   onTextFontSizeChange: (value: number) => void;
   onTextColorChange: (value: string) => void;
   onTextLetterSpacingChange: (value: number) => void;
-  onTextLineSpacingChange: (value: number) => void;
   onTextJitterYChange: (value: number) => void;
   onTextLayerModeChange: (value: NotmecoreTextLayerMode) => void;
   onShuffleTextScatter: () => void;
@@ -77,7 +76,6 @@ export function NotmecoreToolbar({
   onTextFontSizeChange,
   onTextColorChange,
   onTextLetterSpacingChange,
-  onTextLineSpacingChange,
   onTextJitterYChange,
   onTextLayerModeChange,
   onShuffleTextScatter,
@@ -328,26 +326,6 @@ export function NotmecoreToolbar({
             </Field>
 
             <Field>
-              <FieldLabel>行间距</FieldLabel>
-              <FieldContent>
-                <div className="space-y-3">
-                  <Slider
-                    value={[form.textLineSpacing]}
-                    min={notmecoreTemplateSpec.textLineSpacingRange.min}
-                    max={notmecoreTemplateSpec.textLineSpacingRange.max}
-                    step={notmecoreTemplateSpec.textLineSpacingRange.step}
-                    onValueChange={(value) =>
-                      onTextLineSpacingChange(value[0] ?? form.textLineSpacing)
-                    }
-                  />
-                  <FieldDescription>
-                    当前值：{form.textLineSpacing}px
-                  </FieldDescription>
-                </div>
-              </FieldContent>
-            </Field>
-
-            <Field>
               <FieldLabel>上下偏移</FieldLabel>
               <FieldContent>
                 <div className="space-y-3">
@@ -381,7 +359,7 @@ export function NotmecoreToolbar({
     {
       key: "filter",
       label: "滤镜",
-      desc: "调整图片饱和度，实时影响预览和导出。",
+      desc: "调整图片效果。",
       content: (
         <FieldSet>
           <FieldGroup>

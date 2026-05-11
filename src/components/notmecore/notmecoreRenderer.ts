@@ -171,7 +171,6 @@ export async function drawNotmecoreFrame(
     | "textFontSize"
     | "textColor"
     | "textLetterSpacing"
-    | "textLineSpacing"
     | "textJitterY"
     | "textLayerMode"
     | "textScatterSeed"
@@ -200,7 +199,6 @@ export async function drawNotmecoreFrame(
     blockCount: form.textRepeatCount,
     fontSize: form.textFontSize,
     letterSpacing: form.textLetterSpacing,
-    lineSpacing: form.textLineSpacing,
     jitterY: form.textJitterY,
     layerMode: form.textLayerMode,
     seed: form.textScatterSeed,
