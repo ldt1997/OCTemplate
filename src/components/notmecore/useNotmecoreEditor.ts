@@ -43,10 +43,23 @@ function getPreviewRenderSize(imageSize: NotmecoreImageSize | null) {
   };
 }
 
+function clearBackgroundImage(current: NotmecoreFormState): NotmecoreFormState {
+  if (current.backgroundImageUrl) {
+    URL.revokeObjectURL(current.backgroundImageUrl);
+  }
+
+  return {
+    ...current,
+    backgroundImageFile: null,
+    backgroundImageUrl: null,
+  };
+}
+
 export function useNotmecoreEditor() {
   const [form, setForm] = useState(initialFormState);
   const [imageSize, setImageSize] = useState<NotmecoreImageSize | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [backgroundImageError, setBackgroundImageError] = useState<string | null>(null);
   const [fontsReady, setFontsReady] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
@@ -75,6 +88,14 @@ export function useNotmecoreEditor() {
       }
     };
   }, [form.imageUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (form.backgroundImageUrl) {
+        URL.revokeObjectURL(form.backgroundImageUrl);
+      }
+    };
+  }, [form.backgroundImageUrl]);
 
   useEffect(() => {
     let cancelled = false;
@@ -157,6 +178,48 @@ export function useNotmecoreEditor() {
     });
   };
 
+  const handleBackgroundImageFileChange = (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const nextFile = event.target.files?.[0] ?? null;
+
+    if (!nextFile) {
+      setBackgroundImageError(null);
+      updateForm(clearBackgroundImage);
+      return;
+    }
+
+    if (
+      !acceptedImageTypes.includes(
+        nextFile.type as (typeof acceptedImageTypes)[number],
+      )
+    ) {
+      setBackgroundImageError("请上传 PNG、JPEG 或 WEBP 图片。");
+      event.target.value = "";
+      return;
+    }
+
+    if (nextFile.size > MAX_FILE_SIZE) {
+      setBackgroundImageError("背景图片大小不能超过 8MB。");
+      event.target.value = "";
+      return;
+    }
+
+    const nextUrl = URL.createObjectURL(nextFile);
+    setBackgroundImageError(null);
+    updateForm((current) => {
+      if (current.backgroundImageUrl) {
+        URL.revokeObjectURL(current.backgroundImageUrl);
+      }
+
+      return {
+        ...current,
+        backgroundImageFile: nextFile,
+        backgroundImageUrl: nextUrl,
+      };
+    });
+  };
+
   const handleExport = async () => {
     if (!imageSize) {
       return;
@@ -195,7 +258,13 @@ export function useNotmecoreEditor() {
     toolbarProps: {
       form,
       imageError,
+      backgroundImageError,
       onFileChange: handleFileChange,
+      onBackgroundImageFileChange: handleBackgroundImageFileChange,
+      onClearBackgroundImage: () => {
+        setBackgroundImageError(null);
+        updateForm(clearBackgroundImage);
+      },
       onBackgroundColorChange: (value: string) =>
         updateForm({ backgroundColor: value }),
       onSaturationChange: (value: number) => updateForm({ saturation: value }),

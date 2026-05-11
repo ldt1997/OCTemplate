@@ -59,6 +59,8 @@ export const notmecoreTextFontSpec: Record<
 export type NotmecoreFormState = {
   imageFile: File | null;
   imageUrl: string | null;
+  backgroundImageFile: File | null;
+  backgroundImageUrl: string | null;
   backgroundColor: string;
   saturation: number;
   contrast: number;
@@ -100,6 +102,8 @@ export const notmecoreTemplateSpec = {
 export const initialFormState: NotmecoreFormState = {
   imageFile: null,
   imageUrl: null,
+  backgroundImageFile: null,
+  backgroundImageUrl: null,
   backgroundColor: "#FFFFFF",
   saturation: 1,
   contrast: 1,

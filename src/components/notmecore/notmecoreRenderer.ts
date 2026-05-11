@@ -86,6 +86,47 @@ function applyPosterize(
   context.putImageData(imageData, 0, 0);
 }
 
+function drawCoverImage(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  width: number,
+  height: number,
+) {
+  const sourceWidth = image.naturalWidth || image.width;
+  const sourceHeight = image.naturalHeight || image.height;
+
+  if (sourceWidth === 0 || sourceHeight === 0 || width === 0 || height === 0) {
+    return;
+  }
+
+  const sourceAspect = sourceWidth / sourceHeight;
+  const targetAspect = width / height;
+  let cropWidth = sourceWidth;
+  let cropHeight = sourceHeight;
+  let cropX = 0;
+  let cropY = 0;
+
+  if (sourceAspect > targetAspect) {
+    cropWidth = sourceHeight * targetAspect;
+    cropX = (sourceWidth - cropWidth) / 2;
+  } else {
+    cropHeight = sourceWidth / targetAspect;
+    cropY = (sourceHeight - cropHeight) / 2;
+  }
+
+  context.drawImage(
+    image,
+    cropX,
+    cropY,
+    cropWidth,
+    cropHeight,
+    0,
+    0,
+    width,
+    height,
+  );
+}
+
 export async function loadImage(src: string) {
   const image = new Image();
 
@@ -116,6 +157,7 @@ export async function drawNotmecoreFrame(
   imageUrl: string,
   form: Pick<
     NotmecoreFormState,
+    | "backgroundImageUrl"
     | "backgroundColor"
     | "saturation"
     | "contrast"
@@ -137,12 +179,19 @@ export async function drawNotmecoreFrame(
   imageSize: NotmecoreImageSize,
   renderSize: NotmecoreImageSize,
 ) {
-  const image = await loadImage(imageUrl);
+  const [image, backgroundImage] = await Promise.all([
+    loadImage(imageUrl),
+    form.backgroundImageUrl ? loadImage(form.backgroundImageUrl) : null,
+  ]);
   const renderScale = renderSize.width / imageSize.width;
 
   context.clearRect(0, 0, renderSize.width, renderSize.height);
   context.fillStyle = form.backgroundColor;
   context.fillRect(0, 0, renderSize.width, renderSize.height);
+
+  if (backgroundImage) {
+    drawCoverImage(context, backgroundImage, renderSize.width, renderSize.height);
+  }
 
   const scatterBlocks = buildNotmecoreTextScatterLayout({
     canvasWidth: imageSize.width,

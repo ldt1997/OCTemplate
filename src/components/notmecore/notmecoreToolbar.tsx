@@ -33,7 +33,10 @@ type NotmecoreToolbarProps = {
   variant: "desktop" | "mobile";
   form: NotmecoreFormState;
   imageError: string | null;
+  backgroundImageError: string | null;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onBackgroundImageFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onClearBackgroundImage: () => void;
   onBackgroundColorChange: (value: string) => void;
   onSaturationChange: (value: number) => void;
   onContrastChange: (value: number) => void;
@@ -57,7 +60,10 @@ export function NotmecoreToolbar({
   variant,
   form,
   imageError,
+  backgroundImageError,
   onFileChange,
+  onBackgroundImageFileChange,
+  onClearBackgroundImage,
   onBackgroundColorChange,
   onSaturationChange,
   onContrastChange,
@@ -113,7 +119,39 @@ export function NotmecoreToolbar({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="notmecore-background">背景</FieldLabel>
+              <FieldLabel htmlFor="notmecore-background-image">背景图片</FieldLabel>
+              <FieldContent>
+                <div className="flex items-center gap-3">
+                  <Input
+                    id="notmecore-background-image"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={onBackgroundImageFileChange}
+                  />
+                  {form.backgroundImageUrl ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={onClearBackgroundImage}
+                    >
+                      清除
+                    </Button>
+                  ) : null}
+                </div>
+                <FieldDescription>
+                  支持 PNG / JPEG / WEBP，最大 8MB
+                  {form.backgroundImageFile
+                    ? `，当前文件：${form.backgroundImageFile.name}`
+                    : ""}
+                </FieldDescription>
+                {backgroundImageError ? (
+                  <p className="text-sm text-destructive">{backgroundImageError}</p>
+                ) : null}
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="notmecore-background">背景颜色</FieldLabel>
               <FieldContent>
                 <div className="flex items-center gap-3">
                   <Input
