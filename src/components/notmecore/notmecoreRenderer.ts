@@ -63,29 +63,6 @@ function buildImageFilter(
   ].join(" ");
 }
 
-function applyPosterize(
-  context: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-  levels: number,
-) {
-  if (levels <= 1) {
-    return;
-  }
-
-  const imageData = context.getImageData(0, 0, width, height);
-  const { data } = imageData;
-  const step = 255 / Math.max(1, levels - 1);
-
-  for (let index = 0; index < data.length; index += 4) {
-    data[index] = Math.round(data[index] / step) * step;
-    data[index + 1] = Math.round(data[index + 1] / step) * step;
-    data[index + 2] = Math.round(data[index + 2] / step) * step;
-  }
-
-  context.putImageData(imageData, 0, 0);
-}
-
 function drawCoverImage(
   context: CanvasRenderingContext2D,
   image: HTMLImageElement,
@@ -162,7 +139,6 @@ export async function drawNotmecoreFrame(
     | "saturation"
     | "contrast"
     | "brightness"
-    | "posterizeLevels"
     | "tintColor"
     | "blendOpacity"
     | "text"
@@ -219,13 +195,6 @@ export async function drawNotmecoreFrame(
   context.filter = buildImageFilter(form);
   context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
   context.restore();
-
-  applyPosterize(
-    context,
-    renderSize.width,
-    renderSize.height,
-    form.posterizeLevels,
-  );
 
   if (form.blendOpacity > 0) {
     context.save();

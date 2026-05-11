@@ -41,7 +41,6 @@ type NotmecoreToolbarProps = {
   onSaturationChange: (value: number) => void;
   onContrastChange: (value: number) => void;
   onBrightnessChange: (value: number) => void;
-  onPosterizeLevelsChange: (value: number) => void;
   onTintColorChange: (value: string) => void;
   onBlendOpacityChange: (value: number) => void;
   onTextChange: (value: string) => void;
@@ -67,7 +66,6 @@ export function NotmecoreToolbar({
   onSaturationChange,
   onContrastChange,
   onBrightnessChange,
-  onPosterizeLevelsChange,
   onTintColorChange,
   onBlendOpacityChange,
   onTextChange,
@@ -418,28 +416,6 @@ export function NotmecoreToolbar({
                   />
                   <FieldDescription>
                     当前值：{form.brightness.toFixed(2)}
-                  </FieldDescription>
-                </div>
-              </FieldContent>
-            </Field>
-
-            <Field>
-              <FieldLabel>色阶层数</FieldLabel>
-              <FieldContent>
-                <div className="space-y-3">
-                  <Slider
-                    value={[form.posterizeLevels]}
-                    min={notmecoreTemplateSpec.posterizeLevelsRange.min}
-                    max={notmecoreTemplateSpec.posterizeLevelsRange.max}
-                    step={notmecoreTemplateSpec.posterizeLevelsRange.step}
-                    onValueChange={(value) =>
-                      onPosterizeLevelsChange(value[0] ?? form.posterizeLevels)
-                    }
-                  />
-                  <FieldDescription>
-                    {form.posterizeLevels === 0
-                      ? "当前值：关闭"
-                      : `当前值：${form.posterizeLevels}`}
                   </FieldDescription>
                 </div>
               </FieldContent>

@@ -65,7 +65,6 @@ export type NotmecoreFormState = {
   saturation: number;
   contrast: number;
   brightness: number;
-  posterizeLevels: number;
   tintColor: string;
   blendOpacity: number;
   text: string;
@@ -87,7 +86,6 @@ export const notmecoreTemplateSpec = {
   saturationRange: { min: 0, max: 2, step: 0.01 },
   contrastRange: { min: 0.4, max: 2.2, step: 0.01 },
   brightnessRange: { min: 0.4, max: 1.8, step: 0.01 },
-  posterizeLevelsRange: { min: 0, max: 16, step: 1 },
   blendOpacityRange: { min: 0, max: 1, step: 0.01 },
   textMaxLength: 50,
   textRepeatCountRange: { min: 1, max: 50, step: 1 },
@@ -106,7 +104,6 @@ export const initialFormState: NotmecoreFormState = {
   saturation: 1,
   contrast: 1,
   brightness: 1,
-  posterizeLevels: 0,
   tintColor: "#d8d8d8",
   blendOpacity: 0,
   text: "That's not my name",
