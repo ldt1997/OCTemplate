@@ -113,12 +113,14 @@ export async function drawNotmecoreFrame(
     | "textScatterSeed"
   >,
   imageSize: NotmecoreImageSize,
+  renderSize: NotmecoreImageSize,
 ) {
   const image = await loadImage(imageUrl);
+  const renderScale = renderSize.width / imageSize.width;
 
-  context.clearRect(0, 0, imageSize.width, imageSize.height);
+  context.clearRect(0, 0, renderSize.width, renderSize.height);
   context.fillStyle = form.backgroundColor;
-  context.fillRect(0, 0, imageSize.width, imageSize.height);
+  context.fillRect(0, 0, renderSize.width, renderSize.height);
 
   const scatterBlocks = buildNotmecoreTextScatterLayout({
     canvasWidth: imageSize.width,
@@ -135,17 +137,18 @@ export async function drawNotmecoreFrame(
   const bottomBlocks = scatterBlocks.filter((block) => block.layer === "bottom");
   const topBlocks = scatterBlocks.filter((block) => block.layer === "top");
 
+  context.save();
+  context.scale(renderScale, renderScale);
   drawScatterBlocks(context, bottomBlocks, form.textColor, form.textFontSize);
 
-  context.save();
   context.filter = buildImageFilter(form);
   context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
   context.restore();
 
   applyPosterize(
     context,
-    imageSize.width,
-    imageSize.height,
+    renderSize.width,
+    renderSize.height,
     form.posterizeLevels,
   );
 
@@ -153,9 +156,12 @@ export async function drawNotmecoreFrame(
     context.save();
     context.globalAlpha = form.blendOpacity;
     context.fillStyle = form.tintColor;
-    context.fillRect(0, 0, imageSize.width, imageSize.height);
+    context.fillRect(0, 0, renderSize.width, renderSize.height);
     context.restore();
   }
 
+  context.save();
+  context.scale(renderScale, renderScale);
   drawScatterBlocks(context, topBlocks, form.textColor, form.textFontSize);
+  context.restore();
 }

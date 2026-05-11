@@ -21,7 +21,7 @@ export async function exportNotmecoreImage(
     throw new Error("当前环境不支持导出画布。");
   }
 
-  await drawNotmecoreFrame(context, form.imageUrl, form, imageSize);
+  await drawNotmecoreFrame(context, form.imageUrl, form, imageSize, imageSize);
 
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {

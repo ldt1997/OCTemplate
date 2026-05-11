@@ -21,6 +21,24 @@ function createScatterSeed() {
   return Math.floor(Math.random() * 0x7fffffff);
 }
 
+function getPreviewRenderSize(imageSize: NotmecoreImageSize | null) {
+  if (!imageSize) {
+    return null;
+  }
+
+  const previewMaxEdge = 1800;
+  const longestEdge = Math.max(imageSize.width, imageSize.height);
+  if (longestEdge <= previewMaxEdge) {
+    return imageSize;
+  }
+
+  const scale = previewMaxEdge / longestEdge;
+  return {
+    width: Math.max(1, Math.round(imageSize.width * scale)),
+    height: Math.max(1, Math.round(imageSize.height * scale)),
+  };
+}
+
 export function useNotmecoreEditor() {
   const [form, setForm] = useState(initialFormState);
   const [imageSize, setImageSize] = useState<NotmecoreImageSize | null>(null);
@@ -140,9 +158,12 @@ export function useNotmecoreEditor() {
     }
   };
 
+  const previewRenderSize = getPreviewRenderSize(imageSize);
+
   return {
     form,
     imageSize,
+    previewRenderSize,
     imageError,
     isExporting,
     canExport: Boolean(imageSize && form.imageUrl),

@@ -9,8 +9,15 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Spinner } from "@/components/ui/spinner";
 
 export function NotmecorePage() {
-  const { form, imageSize, isExporting, canExport, handleExport, toolbarProps } =
-    useNotmecoreEditor();
+  const {
+    form,
+    imageSize,
+    previewRenderSize,
+    isExporting,
+    canExport,
+    handleExport,
+    toolbarProps,
+  } = useNotmecoreEditor();
 
   return (
     <AppLayout
@@ -33,6 +40,7 @@ export function NotmecorePage() {
               <NotmecoreCanvas
                 form={form}
                 imageSize={imageSize}
+                previewRenderSize={previewRenderSize}
                 displaySize={displaySize}
               />
             )}

@@ -9,19 +9,21 @@ import { drawNotmecoreFrame } from "@/components/notmecore/notmecoreRenderer";
 type NotmecoreCanvasProps = {
   form: NotmecoreFormState;
   imageSize: NotmecoreImageSize | null;
+  previewRenderSize: NotmecoreImageSize | null;
   displaySize: NotmecoreDisplaySize;
 };
 
 export function NotmecoreCanvas({
   form,
   imageSize,
+  previewRenderSize,
   displaySize,
 }: NotmecoreCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !form.imageUrl || !imageSize) {
+    if (!canvas || !form.imageUrl || !imageSize || !previewRenderSize) {
       return;
     }
 
@@ -32,28 +34,32 @@ export function NotmecoreCanvas({
 
     let cancelled = false;
 
-    void drawNotmecoreFrame(context, form.imageUrl, form, imageSize).catch(
-      (error) => {
-        if (!cancelled) {
-          console.error("预览绘制失败", error);
-        }
-      },
-    );
+    void drawNotmecoreFrame(
+      context,
+      form.imageUrl,
+      form,
+      imageSize,
+      previewRenderSize,
+    ).catch((error) => {
+      if (!cancelled) {
+        console.error("预览绘制失败", error);
+      }
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [form, imageSize]);
+  }, [form, imageSize, previewRenderSize]);
 
-  if (!imageSize || !form.imageUrl) {
+  if (!imageSize || !previewRenderSize || !form.imageUrl) {
     return null;
   }
 
   return (
     <canvas
       ref={canvasRef}
-      width={imageSize.width}
-      height={imageSize.height}
+      width={previewRenderSize.width}
+      height={previewRenderSize.height}
       className="block h-auto max-w-none"
       style={{
         width: `${displaySize.width}px`,
