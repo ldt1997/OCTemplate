@@ -22,7 +22,7 @@ export type NotmecoreScatterBlock = {
   characters: NotmecoreScatterCharacter[];
 };
 
-const notmecoreTextWrapWidthRatio = 0.48;
+const notmecoreTextWrapWidthRatio = 0.8;
 
 function createSeededRandom(seed: number) {
   let state = seed >>> 0;
