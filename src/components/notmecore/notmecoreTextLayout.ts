@@ -139,15 +139,13 @@ export function buildNotmecoreTextScatterLayout(
       estimateLineWidth(line, input.fontSize, input.letterSpacing),
     ),
   );
-  const marginX = Math.max(input.fontSize, input.canvasWidth * 0.02);
-  const marginY = Math.max(input.fontSize, input.canvasHeight * 0.02);
-  const maxX = Math.max(marginX, input.canvasWidth - marginX - blockWidth);
-  const maxY = Math.max(marginY, input.canvasHeight - marginY - blockHeight);
+  const maxX = Math.max(0, input.canvasWidth - blockWidth);
+  const maxY = Math.max(0, input.canvasHeight - blockHeight);
   const random = createSeededRandom(input.seed);
 
   return Array.from({ length: input.blockCount }, () => {
-    const originX = marginX + (maxX - marginX) * random();
-    const originY = marginY + (maxY - marginY) * random();
+    const originX = maxX * random();
+    const originY = maxY * random();
     const layer =
       input.layerMode === "random"
         ? random() < 0.5
