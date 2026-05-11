@@ -130,7 +130,7 @@ export function NotmecoreToolbar({
     {
       key: "text",
       label: "文字",
-      desc: "把装饰文字离散分布到画布中，并保持预览和导出一致。",
+      desc: "设置装饰文字内容、数量和基础视觉样式。",
       content: (
         <FieldSet>
           <FieldGroup>
@@ -172,29 +172,6 @@ export function NotmecoreToolbar({
             </Field>
 
             <Field>
-              <FieldLabel>文字层级</FieldLabel>
-              <FieldContent>
-                <div className="flex flex-wrap gap-2">
-                  {textLayerModeOptions.map((option) => (
-                    <Button
-                      key={option.value}
-                      type="button"
-                      size="sm"
-                      variant={
-                        form.textLayerMode === option.value
-                          ? "default"
-                          : "outline"
-                      }
-                      onClick={() => onTextLayerModeChange(option.value)}
-                    >
-                      {option.label}
-                    </Button>
-                  ))}
-                </div>
-              </FieldContent>
-            </Field>
-
-            <Field>
               <FieldLabel htmlFor="notmecore-text-color">字体大小</FieldLabel>
               <FieldContent>
                 <div className="space-y-3">
@@ -219,6 +196,39 @@ export function NotmecoreToolbar({
                   <FieldDescription>
                     当前值：{form.textFontSize}px
                   </FieldDescription>
+                </div>
+              </FieldContent>
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      ),
+    },
+    {
+      key: "scatter",
+      label: "分布",
+      desc: "控制文字块在画布中的层级、间距和随机散布方式。",
+      content: (
+        <FieldSet>
+          <FieldGroup>
+            <Field>
+              <FieldLabel>文字层级</FieldLabel>
+              <FieldContent>
+                <div className="flex flex-wrap gap-2">
+                  {textLayerModeOptions.map((option) => (
+                    <Button
+                      key={option.value}
+                      type="button"
+                      size="sm"
+                      variant={
+                        form.textLayerMode === option.value
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={() => onTextLayerModeChange(option.value)}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
                 </div>
               </FieldContent>
             </Field>
@@ -386,37 +396,27 @@ export function NotmecoreToolbar({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="notmecore-tint-color">偏色</FieldLabel>
-              <FieldContent>
-                <div className="flex items-center gap-3">
-                  <Input
-                    id="notmecore-tint-color"
-                    type="color"
-                    value={form.tintColor}
-                    className="h-10 w-16 rounded-none p-1"
-                    onChange={(event) => onTintColorChange(event.target.value)}
-                  />
-                  <Input
-                    value={form.tintColor}
-                    onChange={(event) => onTintColorChange(event.target.value)}
-                  />
-                </div>
-              </FieldContent>
-            </Field>
-
-            <Field>
-              <FieldLabel>偏色强度</FieldLabel>
+              <FieldLabel htmlFor="notmecore-tint-color">偏色强度</FieldLabel>
               <FieldContent>
                 <div className="space-y-3">
-                  <Slider
-                    value={[form.blendOpacity]}
-                    min={notmecoreTemplateSpec.blendOpacityRange.min}
-                    max={notmecoreTemplateSpec.blendOpacityRange.max}
-                    step={notmecoreTemplateSpec.blendOpacityRange.step}
-                    onValueChange={(value) =>
-                      onBlendOpacityChange(value[0] ?? form.blendOpacity)
-                    }
-                  />
+                  <div className="flex items-center gap-3">
+                    <Input
+                      id="notmecore-tint-color"
+                      type="color"
+                      value={form.tintColor}
+                      className="h-10 w-10 shrink-0 rounded-none p-1"
+                      onChange={(event) => onTintColorChange(event.target.value)}
+                    />
+                    <Slider
+                      value={[form.blendOpacity]}
+                      min={notmecoreTemplateSpec.blendOpacityRange.min}
+                      max={notmecoreTemplateSpec.blendOpacityRange.max}
+                      step={notmecoreTemplateSpec.blendOpacityRange.step}
+                      onValueChange={(value) =>
+                        onBlendOpacityChange(value[0] ?? form.blendOpacity)
+                      }
+                    />
+                  </div>
                   <FieldDescription>
                     当前值：{form.blendOpacity.toFixed(2)}
                   </FieldDescription>
