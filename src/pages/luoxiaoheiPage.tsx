@@ -63,7 +63,7 @@ export function LuoxiaoheiPage() {
               </DrawerTrigger>
 
               <DrawerContent overlayClassName="bg-transparent">
-                <div className="max-h-[min(72dvh,40rem)] overflow-y-auto">
+                <div className="max-h-[50dvh] overflow-y-auto">
                   <LuoxiaoheiToolbar variant="mobile" {...toolbarProps} />
                 </div>
               </DrawerContent>

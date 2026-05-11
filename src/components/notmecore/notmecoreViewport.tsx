@@ -81,7 +81,7 @@ export function NotmecoreViewport({
   return (
     <div
       ref={viewportRef}
-      className="relative flex h-full items-center justify-center overflow-hidden"
+      className="relative flex h-full items-start justify-center overflow-hidden"
       style={{ overflow: "clip" }}
     >
       <div

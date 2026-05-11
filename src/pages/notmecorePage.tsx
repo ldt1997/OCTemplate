@@ -65,7 +65,7 @@ export function NotmecorePage() {
               </DrawerTrigger>
 
               <DrawerContent overlayClassName="bg-transparent">
-                <div className="max-h-[min(72dvh,40rem)] overflow-y-auto">
+                <div className="max-h-[50dvh] overflow-y-auto">
                   <NotmecoreToolbar variant="mobile" {...toolbarProps} />
                 </div>
               </DrawerContent>
