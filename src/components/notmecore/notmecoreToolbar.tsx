@@ -195,40 +195,30 @@ export function NotmecoreToolbar({
             </Field>
 
             <Field>
-              <FieldLabel>字体大小</FieldLabel>
+              <FieldLabel htmlFor="notmecore-text-color">字体大小</FieldLabel>
               <FieldContent>
                 <div className="space-y-3">
-                  <Slider
-                    value={[form.textFontSize]}
-                    min={notmecoreTemplateSpec.textFontSizeRange.min}
-                    max={notmecoreTemplateSpec.textFontSizeRange.max}
-                    step={notmecoreTemplateSpec.textFontSizeRange.step}
-                    onValueChange={(value) =>
-                      onTextFontSizeChange(value[0] ?? form.textFontSize)
-                    }
-                  />
+                  <div className="flex items-center gap-3">
+                    <Input
+                      id="notmecore-text-color"
+                      type="color"
+                      value={form.textColor}
+                      className="h-10 w-10 shrink-0 rounded-none p-1"
+                      onChange={(event) => onTextColorChange(event.target.value)}
+                    />
+                    <Slider
+                      value={[form.textFontSize]}
+                      min={notmecoreTemplateSpec.textFontSizeRange.min}
+                      max={notmecoreTemplateSpec.textFontSizeRange.max}
+                      step={notmecoreTemplateSpec.textFontSizeRange.step}
+                      onValueChange={(value) =>
+                        onTextFontSizeChange(value[0] ?? form.textFontSize)
+                      }
+                    />
+                  </div>
                   <FieldDescription>
                     当前值：{form.textFontSize}px
                   </FieldDescription>
-                </div>
-              </FieldContent>
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="notmecore-text-color">字体颜色</FieldLabel>
-              <FieldContent>
-                <div className="flex items-center gap-3">
-                  <Input
-                    id="notmecore-text-color"
-                    type="color"
-                    value={form.textColor}
-                    className="h-10 w-16 rounded-none p-1"
-                    onChange={(event) => onTextColorChange(event.target.value)}
-                  />
-                  <Input
-                    value={form.textColor}
-                    onChange={(event) => onTextColorChange(event.target.value)}
-                  />
                 </div>
               </FieldContent>
             </Field>
