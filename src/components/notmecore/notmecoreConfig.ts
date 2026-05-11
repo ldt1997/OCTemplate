@@ -11,6 +11,50 @@ export type NotmecoreImageSize = {
 };
 
 export type NotmecoreTextLayerMode = "random" | "bottom" | "top";
+export type NotmecoreTextFontFamily =
+  | "pixel-operator"
+  | "pixel-operator-bold"
+  | "system";
+
+export const notmecoreTextFontOptions: Array<{
+  value: NotmecoreTextFontFamily;
+  label: string;
+}> = [
+  { value: "pixel-operator", label: "PixelOperator" },
+  { value: "pixel-operator-bold", label: "PixelOperator-Bold" },
+  { value: "system", label: "系统字体" },
+];
+
+export const notmecoreTextFontSpec: Record<
+  NotmecoreTextFontFamily,
+  {
+    label: string;
+    fontFamily: string;
+    fontWeight: number;
+    fontLoad: string | null;
+  }
+> = {
+  "pixel-operator": {
+    label: "PixelOperator",
+    fontFamily:
+      '"Pixel Operator", "Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif',
+    fontWeight: 400,
+    fontLoad: '16px "Pixel Operator"',
+  },
+  "pixel-operator-bold": {
+    label: "PixelOperator-Bold",
+    fontFamily:
+      '"Pixel Operator Bold", "Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif',
+    fontWeight: 400,
+    fontLoad: '16px "Pixel Operator Bold"',
+  },
+  system: {
+    label: "系统字体",
+    fontFamily: '"Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif',
+    fontWeight: 500,
+    fontLoad: null,
+  },
+};
 
 export type NotmecoreFormState = {
   imageFile: File | null;
@@ -24,6 +68,7 @@ export type NotmecoreFormState = {
   blendOpacity: number;
   text: string;
   textRepeatCount: number;
+  textFontFamily: NotmecoreTextFontFamily;
   textFontSize: number;
   textColor: string;
   textLetterSpacing: number;
@@ -45,6 +90,7 @@ export const notmecoreTemplateSpec = {
   blendOpacityRange: { min: 0, max: 1, step: 0.01 },
   textMaxLength: 50,
   textRepeatCountRange: { min: 1, max: 15, step: 1 },
+  textFontFamilyOptions: notmecoreTextFontOptions,
   textFontSizeRange: { min: 8, max: 72, step: 1 },
   textLetterSpacingRange: { min: 0, max: 48, step: 1 },
   textLineSpacingRange: { min: 0, max: 32, step: 1 },
@@ -63,6 +109,7 @@ export const initialFormState: NotmecoreFormState = {
   blendOpacity: 0.2,
   text: "That's not my name",
   textRepeatCount: 6,
+  textFontFamily: "pixel-operator",
   textFontSize: 28,
   textColor: "#0000ff",
   textLetterSpacing: 12,

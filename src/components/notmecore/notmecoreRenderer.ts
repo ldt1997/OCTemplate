@@ -2,24 +2,45 @@ import type {
   NotmecoreFormState,
   NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
+import { notmecoreTextFontSpec } from "@/components/notmecore/notmecoreConfig";
 import { buildNotmecoreTextScatterLayout } from "@/components/notmecore/notmecoreTextLayout";
 
-const notmecoreTextFontFamily =
-  '"Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif';
+const notmecoreFontLoadEntries = Object.values(notmecoreTextFontSpec)
+  .map((font) => font.fontLoad)
+  .filter((font): font is string => Boolean(font));
+
+let notmecoreFontsLoadPromise: Promise<void> | null = null;
+
+export function ensureNotmecoreFontsLoaded() {
+  if (typeof document === "undefined" || !("fonts" in document)) {
+    return Promise.resolve();
+  }
+
+  if (!notmecoreFontsLoadPromise) {
+    notmecoreFontsLoadPromise = Promise.all(
+      notmecoreFontLoadEntries.map((font) => document.fonts.load(font)),
+    ).then(() => undefined);
+  }
+
+  return notmecoreFontsLoadPromise;
+}
 
 function drawScatterBlocks(
   context: CanvasRenderingContext2D,
   blocks: ReturnType<typeof buildNotmecoreTextScatterLayout>,
   textColor: string,
+  textFontFamily: NotmecoreFormState["textFontFamily"],
   textFontSize: number,
 ) {
   if (blocks.length === 0) {
     return;
   }
 
+  const fontSpec = notmecoreTextFontSpec[textFontFamily];
+
   context.save();
   context.fillStyle = textColor;
-  context.font = `500 ${textFontSize}px ${notmecoreTextFontFamily}`;
+  context.font = `${fontSpec.fontWeight} ${textFontSize}px ${fontSpec.fontFamily}`;
   context.textAlign = "left";
   context.textBaseline = "alphabetic";
 
@@ -104,6 +125,7 @@ export async function drawNotmecoreFrame(
     | "blendOpacity"
     | "text"
     | "textRepeatCount"
+    | "textFontFamily"
     | "textFontSize"
     | "textColor"
     | "textLetterSpacing"
@@ -139,7 +161,13 @@ export async function drawNotmecoreFrame(
 
   context.save();
   context.scale(renderScale, renderScale);
-  drawScatterBlocks(context, bottomBlocks, form.textColor, form.textFontSize);
+  drawScatterBlocks(
+    context,
+    bottomBlocks,
+    form.textColor,
+    form.textFontFamily,
+    form.textFontSize,
+  );
 
   context.filter = buildImageFilter(form);
   context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
@@ -162,6 +190,12 @@ export async function drawNotmecoreFrame(
 
   context.save();
   context.scale(renderScale, renderScale);
-  drawScatterBlocks(context, topBlocks, form.textColor, form.textFontSize);
+  drawScatterBlocks(
+    context,
+    topBlocks,
+    form.textColor,
+    form.textFontFamily,
+    form.textFontSize,
+  );
   context.restore();
 }

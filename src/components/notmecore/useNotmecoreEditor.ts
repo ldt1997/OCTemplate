@@ -6,12 +6,16 @@ import {
   notmecoreTemplateSpec,
   type NotmecoreFormState,
   type NotmecoreImageSize,
+  type NotmecoreTextFontFamily,
   type NotmecoreTextLayerMode,
 } from "@/components/notmecore/notmecoreConfig";
 import {
   exportNotmecoreImage,
 } from "@/components/notmecore/notmecorePoster";
-import { readImageSize } from "@/components/notmecore/notmecoreRenderer";
+import {
+  ensureNotmecoreFontsLoaded,
+  readImageSize,
+} from "@/components/notmecore/notmecoreRenderer";
 
 type UpdateFormInput =
   | Partial<NotmecoreFormState>
@@ -43,7 +47,26 @@ export function useNotmecoreEditor() {
   const [form, setForm] = useState(initialFormState);
   const [imageSize, setImageSize] = useState<NotmecoreImageSize | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [fontsReady, setFontsReady] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    void ensureNotmecoreFontsLoaded()
+      .then(() => {
+        if (active) {
+          setFontsReady(true);
+        }
+      })
+      .catch((error) => {
+        console.error("字体加载失败", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -164,9 +187,10 @@ export function useNotmecoreEditor() {
     form,
     imageSize,
     previewRenderSize,
+    fontsReady,
     imageError,
     isExporting,
-    canExport: Boolean(imageSize && form.imageUrl),
+    canExport: Boolean(imageSize && form.imageUrl && fontsReady),
     handleExport,
     toolbarProps: {
       form,
@@ -189,6 +213,8 @@ export function useNotmecoreEditor() {
         }),
       onTextRepeatCountChange: (value: number) =>
         updateForm({ textRepeatCount: value }),
+      onTextFontFamilyChange: (value: NotmecoreTextFontFamily) =>
+        updateForm({ textFontFamily: value }),
       onTextFontSizeChange: (value: number) =>
         updateForm({ textFontSize: value }),
       onTextColorChange: (value: string) => updateForm({ textColor: value }),

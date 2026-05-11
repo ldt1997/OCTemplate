@@ -1,7 +1,9 @@
 import type { ChangeEvent } from "react";
 import {
+  notmecoreTextFontOptions,
   notmecoreTemplateSpec,
   type NotmecoreFormState,
+  type NotmecoreTextFontFamily,
   type NotmecoreTextLayerMode,
 } from "@/components/notmecore/notmecoreConfig";
 import { cn } from "@/lib/utils";
@@ -16,6 +18,13 @@ import {
 } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,6 +43,7 @@ type NotmecoreToolbarProps = {
   onBlendOpacityChange: (value: number) => void;
   onTextChange: (value: string) => void;
   onTextRepeatCountChange: (value: number) => void;
+  onTextFontFamilyChange: (value: NotmecoreTextFontFamily) => void;
   onTextFontSizeChange: (value: number) => void;
   onTextColorChange: (value: string) => void;
   onTextLetterSpacingChange: (value: number) => void;
@@ -57,6 +67,7 @@ export function NotmecoreToolbar({
   onBlendOpacityChange,
   onTextChange,
   onTextRepeatCountChange,
+  onTextFontFamilyChange,
   onTextFontSizeChange,
   onTextColorChange,
   onTextLetterSpacingChange,
@@ -168,6 +179,29 @@ export function NotmecoreToolbar({
                     当前值：{form.textRepeatCount}
                   </FieldDescription>
                 </div>
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>字体</FieldLabel>
+              <FieldContent>
+                <Select
+                  value={form.textFontFamily}
+                  onValueChange={(value) =>
+                    onTextFontFamilyChange(value as NotmecoreTextFontFamily)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择字体" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {notmecoreTextFontOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FieldContent>
             </Field>
 

@@ -8,6 +8,7 @@ import { drawNotmecoreFrame } from "@/components/notmecore/notmecoreRenderer";
 
 type NotmecoreCanvasProps = {
   form: NotmecoreFormState;
+  fontsReady: boolean;
   imageSize: NotmecoreImageSize | null;
   previewRenderSize: NotmecoreImageSize | null;
   displaySize: NotmecoreDisplaySize;
@@ -15,6 +16,7 @@ type NotmecoreCanvasProps = {
 
 export function NotmecoreCanvas({
   form,
+  fontsReady,
   imageSize,
   previewRenderSize,
   displaySize,
@@ -49,7 +51,7 @@ export function NotmecoreCanvas({
     return () => {
       cancelled = true;
     };
-  }, [form, imageSize, previewRenderSize]);
+  }, [form, fontsReady, imageSize, previewRenderSize]);
 
   if (!imageSize || !previewRenderSize || !form.imageUrl) {
     return null;

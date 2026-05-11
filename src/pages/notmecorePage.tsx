@@ -1,3 +1,4 @@
+import "@/styles/notmecore-fonts.css";
 import { SlidersHorizontal } from "lucide-react";
 import { NotmecoreCanvas } from "@/components/notmecore/notmecoreCanvas";
 import { NotmecoreToolbar } from "@/components/notmecore/notmecoreToolbar";
@@ -13,6 +14,7 @@ export function NotmecorePage() {
     form,
     imageSize,
     previewRenderSize,
+    fontsReady,
     isExporting,
     canExport,
     handleExport,
@@ -39,6 +41,7 @@ export function NotmecorePage() {
             {(displaySize) => (
               <NotmecoreCanvas
                 form={form}
+                fontsReady={fontsReady}
                 imageSize={imageSize}
                 previewRenderSize={previewRenderSize}
                 displaySize={displaySize}

@@ -2,7 +2,10 @@ import type {
   NotmecoreFormState,
   NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
-import { drawNotmecoreFrame } from "@/components/notmecore/notmecoreRenderer";
+import {
+  drawNotmecoreFrame,
+  ensureNotmecoreFontsLoaded,
+} from "@/components/notmecore/notmecoreRenderer";
 
 export async function exportNotmecoreImage(
   form: NotmecoreFormState,
@@ -21,6 +24,7 @@ export async function exportNotmecoreImage(
     throw new Error("当前环境不支持导出画布。");
   }
 
+  await ensureNotmecoreFontsLoaded();
   await drawNotmecoreFrame(context, form.imageUrl, form, imageSize, imageSize);
 
   return new Promise<Blob>((resolve, reject) => {
