@@ -1,7 +1,7 @@
 import type { TemplateItem } from "@/types/template";
 import akrecruitPreview from "@/assets/akrecruit/preview.webp";
 import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.webp";
-import notmecorePreview from "@/assets/notmecore/preview.svg";
+import notmecorePreview from "@/assets/notmecore/preview.webp";
 
 export const templateList: TemplateItem[] = [
   {
@@ -22,9 +22,9 @@ export const templateList: TemplateItem[] = [
   },
   {
     id: "notmecore",
-    name: "NOT ME CORE",
+    name: "'NOT ME' CORE",
     tag: "NOT ME",
-    description: "上传图片并调整背景与饱和度，生成低保真感图片",
+    description: "ascii art & glitch",
     path: "/notmecore",
     previewImage: notmecorePreview,
   },
