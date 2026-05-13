@@ -55,13 +55,11 @@ function drawScatterBlocks(
 }
 
 function buildImageFilter(
-  form: Pick<NotmecoreFormState, "saturation" | "contrast" | "brightness">,
+  form: Pick<NotmecoreFormState, "saturation" | "contrast">,
 ) {
-  return [
-    `saturate(${form.saturation})`,
-    `contrast(${form.contrast})`,
-    `brightness(${form.brightness})`,
-  ].join(" ");
+  return [`saturate(${form.saturation})`, `contrast(${form.contrast})`].join(
+    " ",
+  );
 }
 
 function drawCoverImage(
@@ -177,7 +175,6 @@ export async function drawNotmecoreFrame(
     | "backgroundColor"
     | "saturation"
     | "contrast"
-    | "brightness"
     | "tintColor"
     | "blendOpacity"
     | "lightenGlitchAmount"

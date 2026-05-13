@@ -286,8 +286,6 @@ export function useNotmecoreEditor() {
         updateForm({ backgroundColor: value }),
       onSaturationChange: (value: number) => updateForm({ saturation: value }),
       onContrastChange: (value: number) => updateForm({ contrast: value }),
-      onBrightnessChange: (value: number) =>
-        updateForm({ brightness: value }),
       onTintColorChange: (value: string) => updateForm({ tintColor: value }),
       onBlendOpacityChange: (value: number) =>
         updateForm({ blendOpacity: value }),

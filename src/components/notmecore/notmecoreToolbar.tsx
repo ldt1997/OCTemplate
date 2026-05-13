@@ -40,7 +40,6 @@ type NotmecoreToolbarProps = {
   onBackgroundColorChange: (value: string) => void;
   onSaturationChange: (value: number) => void;
   onContrastChange: (value: number) => void;
-  onBrightnessChange: (value: number) => void;
   onTintColorChange: (value: string) => void;
   onBlendOpacityChange: (value: number) => void;
   lightenGlitchMax: number;
@@ -67,7 +66,6 @@ export function NotmecoreToolbar({
   onBackgroundColorChange,
   onSaturationChange,
   onContrastChange,
-  onBrightnessChange,
   onTintColorChange,
   onBlendOpacityChange,
   lightenGlitchMax,
@@ -400,26 +398,6 @@ export function NotmecoreToolbar({
                   />
                   <FieldDescription>
                     当前值：{form.contrast.toFixed(2)}
-                  </FieldDescription>
-                </div>
-              </FieldContent>
-            </Field>
-
-            <Field>
-              <FieldLabel>亮度</FieldLabel>
-              <FieldContent>
-                <div className="space-y-3">
-                  <Slider
-                    value={[form.brightness]}
-                    min={notmecoreTemplateSpec.brightnessRange.min}
-                    max={notmecoreTemplateSpec.brightnessRange.max}
-                    step={notmecoreTemplateSpec.brightnessRange.step}
-                    onValueChange={(value) =>
-                      onBrightnessChange(value[0] ?? form.brightness)
-                    }
-                  />
-                  <FieldDescription>
-                    当前值：{form.brightness.toFixed(2)}
                   </FieldDescription>
                 </div>
               </FieldContent>

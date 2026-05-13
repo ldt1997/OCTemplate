@@ -64,7 +64,6 @@ export type NotmecoreFormState = {
   backgroundColor: string;
   saturation: number;
   contrast: number;
-  brightness: number;
   tintColor: string;
   blendOpacity: number;
   lightenGlitchAmount: number;
@@ -86,7 +85,6 @@ export const notmecoreTemplateSpec = {
   emptyStateBoxHeight: 320,
   saturationRange: { min: 0, max: 2, step: 0.01 },
   contrastRange: { min: 0.4, max: 2.2, step: 0.01 },
-  brightnessRange: { min: 0.4, max: 1.8, step: 0.01 },
   blendOpacityRange: { min: 0, max: 1, step: 0.01 },
   lightenGlitchAmountRange: { min: 0, step: 1 },
   textMaxLength: 50,
@@ -105,7 +103,6 @@ export const initialFormState: NotmecoreFormState = {
   backgroundColor: "#0000ff",
   saturation: 0.25,
   contrast: 1,
-  brightness: 1,
   tintColor: "#d8d8d8",
   blendOpacity: 0,
   lightenGlitchAmount: 0,
