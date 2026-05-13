@@ -10,11 +10,14 @@ import {
   type NotmecoreTextLayerMode,
 } from "@/components/notmecore/notmecoreConfig";
 import {
+  clearNotmecoreImageResource,
+  readNotmecoreImageSize,
+} from "@/components/notmecore/notmecoreImageResource";
+import {
   exportNotmecoreImage,
 } from "@/components/notmecore/notmecorePoster";
 import {
   ensureNotmecoreFontsLoaded,
-  readImageSize,
 } from "@/components/notmecore/notmecoreRenderer";
 import { getLightenGlitchMaxAmount } from "@/components/notmecore/notmecoreLayout";
 
@@ -46,6 +49,7 @@ function getPreviewRenderSize(imageSize: NotmecoreImageSize | null) {
 
 function clearBackgroundImage(current: NotmecoreFormState): NotmecoreFormState {
   if (current.backgroundImageUrl) {
+    clearNotmecoreImageResource(current.backgroundImageUrl);
     URL.revokeObjectURL(current.backgroundImageUrl);
   }
 
@@ -85,6 +89,7 @@ export function useNotmecoreEditor() {
   useEffect(() => {
     return () => {
       if (form.imageUrl) {
+        clearNotmecoreImageResource(form.imageUrl);
         URL.revokeObjectURL(form.imageUrl);
       }
     };
@@ -93,6 +98,7 @@ export function useNotmecoreEditor() {
   useEffect(() => {
     return () => {
       if (form.backgroundImageUrl) {
+        clearNotmecoreImageResource(form.backgroundImageUrl);
         URL.revokeObjectURL(form.backgroundImageUrl);
       }
     };
@@ -106,7 +112,7 @@ export function useNotmecoreEditor() {
       return;
     }
 
-    void readImageSize(form.imageUrl)
+    void readNotmecoreImageSize(form.imageUrl)
       .then((nextImageSize) => {
         if (!cancelled) {
           setImageSize(nextImageSize);
@@ -155,6 +161,7 @@ export function useNotmecoreEditor() {
       setImageError(null);
       updateForm((current) => {
         if (current.imageUrl) {
+          clearNotmecoreImageResource(current.imageUrl);
           URL.revokeObjectURL(current.imageUrl);
         }
 
@@ -183,6 +190,7 @@ export function useNotmecoreEditor() {
     setImageError(null);
     updateForm((current) => {
       if (current.imageUrl) {
+        clearNotmecoreImageResource(current.imageUrl);
         URL.revokeObjectURL(current.imageUrl);
       }
 
@@ -225,6 +233,7 @@ export function useNotmecoreEditor() {
     setBackgroundImageError(null);
     updateForm((current) => {
       if (current.backgroundImageUrl) {
+        clearNotmecoreImageResource(current.backgroundImageUrl);
         URL.revokeObjectURL(current.backgroundImageUrl);
       }
 

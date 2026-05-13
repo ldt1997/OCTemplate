@@ -2,6 +2,7 @@ import type {
   NotmecoreFormState,
   NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
+import { loadNotmecoreImage } from "@/components/notmecore/notmecoreImageResource";
 import { notmecoreTextFontSpec } from "@/components/notmecore/notmecoreConfig";
 import { createFilteredImageCanvas } from "@/components/notmecore/notmecoreImageFilters";
 import { buildNotmecoreLightenGlitchSlices } from "@/components/notmecore/notmecoreLayout";
@@ -221,31 +222,6 @@ function drawLightenGlitch(
   context.restore();
 }
 
-export async function loadImage(src: string) {
-  const image = new Image();
-
-  return new Promise<HTMLImageElement>((resolve, reject) => {
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error(`图片加载失败: ${src}`));
-    image.src = src;
-
-    if (image.complete && image.naturalWidth > 0) {
-      resolve(image);
-    }
-  });
-}
-
-export async function readImageSize(
-  imageUrl: string,
-): Promise<NotmecoreImageSize> {
-  const image = await loadImage(imageUrl);
-
-  return {
-    width: image.naturalWidth || image.width,
-    height: image.naturalHeight || image.height,
-  };
-}
-
 export async function drawNotmecoreFrame(
   context: CanvasRenderingContext2D,
   imageUrl: string,
@@ -272,8 +248,10 @@ export async function drawNotmecoreFrame(
   renderSize: NotmecoreImageSize,
 ) {
   const [image, backgroundImage] = await Promise.all([
-    loadImage(imageUrl),
-    form.backgroundImageUrl ? loadImage(form.backgroundImageUrl) : null,
+    loadNotmecoreImage(imageUrl),
+    form.backgroundImageUrl
+      ? loadNotmecoreImage(form.backgroundImageUrl)
+      : null,
   ]);
   const renderScale = renderSize.width / imageSize.width;
 
