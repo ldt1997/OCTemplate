@@ -3,6 +3,7 @@ import type {
   NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
 import { notmecoreTextFontSpec } from "@/components/notmecore/notmecoreConfig";
+import { buildNotmecoreLightenGlitchSlices } from "@/components/notmecore/notmecoreLayout";
 import { buildNotmecoreTextScatterLayout } from "@/components/notmecore/notmecoreTextLayout";
 
 const notmecoreFontLoadEntries = Object.values(notmecoreTextFontSpec)
@@ -104,6 +105,44 @@ function drawCoverImage(
   );
 }
 
+function drawLightenGlitch(
+  context: CanvasRenderingContext2D,
+  amount: number,
+  imageSize: NotmecoreImageSize,
+  renderScale: number,
+) {
+  const slices = buildNotmecoreLightenGlitchSlices(
+    imageSize.width,
+    imageSize.height,
+    amount,
+  );
+
+  if (slices.length === 0) {
+    return;
+  }
+
+  context.save();
+  context.scale(renderScale, renderScale);
+  context.globalCompositeOperation = "lighten";
+  context.imageSmoothingEnabled = false;
+
+  slices.forEach((slice) => {
+    context.drawImage(
+      context.canvas,
+      slice.sourceX * renderScale,
+      slice.sourceY * renderScale,
+      slice.sliceWidth * renderScale,
+      slice.sliceHeight * renderScale,
+      slice.destinationX,
+      slice.sourceY,
+      slice.sliceWidth,
+      slice.sliceHeight,
+    );
+  });
+
+  context.restore();
+}
+
 export async function loadImage(src: string) {
   const image = new Image();
 
@@ -141,6 +180,7 @@ export async function drawNotmecoreFrame(
     | "brightness"
     | "tintColor"
     | "blendOpacity"
+    | "lightenGlitchAmount"
     | "text"
     | "textRepeatCount"
     | "textFontFamily"
@@ -195,6 +235,15 @@ export async function drawNotmecoreFrame(
   context.filter = buildImageFilter(form);
   context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
   context.restore();
+
+  if (form.lightenGlitchAmount > 0) {
+    drawLightenGlitch(
+      context,
+      form.lightenGlitchAmount,
+      imageSize,
+      renderScale,
+    );
+  }
 
   if (form.blendOpacity > 0) {
     context.save();

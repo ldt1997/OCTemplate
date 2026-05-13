@@ -67,6 +67,7 @@ export type NotmecoreFormState = {
   brightness: number;
   tintColor: string;
   blendOpacity: number;
+  lightenGlitchAmount: number;
   text: string;
   textRepeatCount: number;
   textFontFamily: NotmecoreTextFontFamily;
@@ -87,6 +88,7 @@ export const notmecoreTemplateSpec = {
   contrastRange: { min: 0.4, max: 2.2, step: 0.01 },
   brightnessRange: { min: 0.4, max: 1.8, step: 0.01 },
   blendOpacityRange: { min: 0, max: 1, step: 0.01 },
+  lightenGlitchAmountRange: { min: 0, step: 1 },
   textMaxLength: 50,
   textRepeatCountRange: { min: 1, max: 70, step: 1 },
   textFontFamilyOptions: notmecoreTextFontOptions,
@@ -106,6 +108,7 @@ export const initialFormState: NotmecoreFormState = {
   brightness: 1,
   tintColor: "#d8d8d8",
   blendOpacity: 0,
+  lightenGlitchAmount: 0,
   text: "That's not my name",
   textRepeatCount: 24,
   textFontFamily: "pixel-operator",

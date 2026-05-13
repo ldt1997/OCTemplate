@@ -16,6 +16,7 @@ import {
   ensureNotmecoreFontsLoaded,
   readImageSize,
 } from "@/components/notmecore/notmecoreRenderer";
+import { getLightenGlitchMaxAmount } from "@/components/notmecore/notmecoreLayout";
 
 type UpdateFormInput =
   | Partial<NotmecoreFormState>
@@ -123,6 +124,21 @@ export function useNotmecoreEditor() {
       cancelled = true;
     };
   }, [form.imageUrl]);
+
+  useEffect(() => {
+    const lightenGlitchMax = getLightenGlitchMaxAmount(imageSize?.height ?? 0);
+
+    setForm((current) => {
+      if (current.lightenGlitchAmount <= lightenGlitchMax) {
+        return current;
+      }
+
+      return {
+        ...current,
+        lightenGlitchAmount: lightenGlitchMax,
+      };
+    });
+  }, [imageSize]);
 
   const updateForm = (updater: UpdateFormInput) => {
     setForm((current) =>
@@ -245,6 +261,7 @@ export function useNotmecoreEditor() {
   };
 
   const previewRenderSize = getPreviewRenderSize(imageSize);
+  const lightenGlitchMax = getLightenGlitchMaxAmount(imageSize?.height ?? 0);
 
   return {
     form,
@@ -274,6 +291,14 @@ export function useNotmecoreEditor() {
       onTintColorChange: (value: string) => updateForm({ tintColor: value }),
       onBlendOpacityChange: (value: number) =>
         updateForm({ blendOpacity: value }),
+      lightenGlitchMax,
+      onLightenGlitchAmountChange: (value: number) =>
+        updateForm({
+          lightenGlitchAmount: Math.min(
+            Math.max(notmecoreTemplateSpec.lightenGlitchAmountRange.min, value),
+            lightenGlitchMax,
+          ),
+        }),
       onTextChange: (value: string) =>
         updateForm({
           text: value.slice(0, notmecoreTemplateSpec.textMaxLength),

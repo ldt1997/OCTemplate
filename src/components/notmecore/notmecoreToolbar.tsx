@@ -43,6 +43,8 @@ type NotmecoreToolbarProps = {
   onBrightnessChange: (value: number) => void;
   onTintColorChange: (value: string) => void;
   onBlendOpacityChange: (value: number) => void;
+  lightenGlitchMax: number;
+  onLightenGlitchAmountChange: (value: number) => void;
   onTextChange: (value: string) => void;
   onTextRepeatCountChange: (value: number) => void;
   onTextFontFamilyChange: (value: NotmecoreTextFontFamily) => void;
@@ -68,6 +70,8 @@ export function NotmecoreToolbar({
   onBrightnessChange,
   onTintColorChange,
   onBlendOpacityChange,
+  lightenGlitchMax,
+  onLightenGlitchAmountChange,
   onTextChange,
   onTextRepeatCountChange,
   onTextFontFamilyChange,
@@ -445,6 +449,29 @@ export function NotmecoreToolbar({
                   </div>
                   <FieldDescription>
                     当前值：{form.blendOpacity.toFixed(2)}
+                  </FieldDescription>
+                </div>
+              </FieldContent>
+            </Field>
+
+            <Field>
+              <FieldLabel>lighten glitch</FieldLabel>
+              <FieldContent>
+                <div className="space-y-3">
+                  <Slider
+                    value={[form.lightenGlitchAmount]}
+                    min={notmecoreTemplateSpec.lightenGlitchAmountRange.min}
+                    max={lightenGlitchMax}
+                    step={notmecoreTemplateSpec.lightenGlitchAmountRange.step}
+                    disabled={lightenGlitchMax === 0}
+                    onValueChange={(value) =>
+                      onLightenGlitchAmountChange(
+                        value[0] ?? form.lightenGlitchAmount,
+                      )
+                    }
+                  />
+                  <FieldDescription>
+                    当前值：{form.lightenGlitchAmount} / {lightenGlitchMax}
                   </FieldDescription>
                 </div>
               </FieldContent>
