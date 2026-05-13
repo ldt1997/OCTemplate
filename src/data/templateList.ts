@@ -22,9 +22,9 @@ export const templateList: TemplateItem[] = [
   },
   {
     id: "notmecore",
-    name: "'NOT ME' CORE",
+    name: "GLITCH & ASCII ART",
     tag: "NOT ME",
-    description: "ascii art & glitch",
+    description: "生成故障艺术风格的图像",
     path: "/notmecore",
     previewImage: notmecorePreview,
   },
