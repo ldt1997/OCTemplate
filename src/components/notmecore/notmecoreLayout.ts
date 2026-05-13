@@ -59,7 +59,7 @@ export function getLightenGlitchMaxAmount(height: number) {
     return 0;
   }
 
-  return Math.max(0, Math.round(height / 2));
+  return Math.max(0, Math.round(height / 6));
 }
 
 export function buildNotmecoreLightenGlitchSlices(

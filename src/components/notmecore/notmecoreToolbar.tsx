@@ -358,8 +358,8 @@ export function NotmecoreToolbar({
     },
     {
       key: "filter",
-      label: "滤镜",
-      desc: "调整图片效果。",
+      label: "效果",
+      desc: "调整图片滤镜、偏色和故障效果。",
       content: (
         <FieldSet>
           <FieldGroup>
@@ -433,7 +433,7 @@ export function NotmecoreToolbar({
             </Field>
 
             <Field>
-              <FieldLabel>lighten glitch</FieldLabel>
+              <FieldLabel>Lighten Glitch 强度</FieldLabel>
               <FieldContent>
                 <div className="space-y-3">
                   <Slider
