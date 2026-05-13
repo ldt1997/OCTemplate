@@ -22,12 +22,15 @@ export function NotmecoreCanvas({
   displaySize,
 }: NotmecoreCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const drawRequestRef = useRef<number | null>(null);
+  const drawTokenRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !form.imageUrl || !imageSize || !previewRenderSize) {
+    if (!canvas || !fontsReady || !form.imageUrl || !imageSize || !previewRenderSize) {
       return;
     }
+    const imageUrl = form.imageUrl;
 
     const context = canvas.getContext("2d");
     if (!context) {
@@ -35,21 +38,36 @@ export function NotmecoreCanvas({
     }
 
     let cancelled = false;
+    const drawToken = drawTokenRef.current + 1;
+    drawTokenRef.current = drawToken;
 
-    void drawNotmecoreFrame(
-      context,
-      form.imageUrl,
-      form,
-      imageSize,
-      previewRenderSize,
-    ).catch((error) => {
-      if (!cancelled) {
-        console.error("预览绘制失败", error);
-      }
+    if (drawRequestRef.current !== null) {
+      cancelAnimationFrame(drawRequestRef.current);
+    }
+
+    drawRequestRef.current = requestAnimationFrame(() => {
+      drawRequestRef.current = null;
+
+      void drawNotmecoreFrame(
+        context,
+        imageUrl,
+        form,
+        imageSize,
+        previewRenderSize,
+      ).catch((error) => {
+        if (!cancelled && drawTokenRef.current === drawToken) {
+          console.error("预览绘制失败", error);
+        }
+      });
     });
 
     return () => {
       cancelled = true;
+
+      if (drawRequestRef.current !== null) {
+        cancelAnimationFrame(drawRequestRef.current);
+        drawRequestRef.current = null;
+      }
     };
   }, [form, fontsReady, imageSize, previewRenderSize]);
 

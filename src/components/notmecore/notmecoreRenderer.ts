@@ -97,41 +97,29 @@ function drawImageWithNativeFilter(
 ) {
   context.save();
   context.filter = buildImageFilter(form);
-  context.drawImage(image, 0, 0, width, height, 0, 0, width, height);
+  context.drawImage(image, 0, 0, width, height);
   context.restore();
 }
 
 function drawImageWithPixelFallback(
   context: CanvasRenderingContext2D,
   image: HTMLImageElement,
-  imageSize: NotmecoreImageSize,
   renderSize: NotmecoreImageSize,
   form: Pick<NotmecoreFormState, "saturation" | "contrast">,
 ) {
   const filteredCanvas = createFilteredImageCanvas(
     image,
-    imageSize.width,
-    imageSize.height,
+    renderSize.width,
+    renderSize.height,
     form,
   );
 
-  context.drawImage(
-    filteredCanvas,
-    0,
-    0,
-    imageSize.width,
-    imageSize.height,
-    0,
-    0,
-    renderSize.width,
-    renderSize.height,
-  );
+  context.drawImage(filteredCanvas, 0, 0, renderSize.width, renderSize.height);
 }
 
 function drawFilteredImageLayer(
   context: CanvasRenderingContext2D,
   image: HTMLImageElement,
-  imageSize: NotmecoreImageSize,
   renderSize: NotmecoreImageSize,
   form: Pick<NotmecoreFormState, "saturation" | "contrast">,
 ) {
@@ -140,7 +128,7 @@ function drawFilteredImageLayer(
     return;
   }
 
-  drawImageWithPixelFallback(context, image, imageSize, renderSize, form);
+  drawImageWithPixelFallback(context, image, renderSize, form);
 }
 
 function drawCoverImage(
@@ -288,7 +276,7 @@ export async function drawNotmecoreFrame(
   );
   context.restore();
 
-  drawFilteredImageLayer(context, image, imageSize, renderSize, form);
+  drawFilteredImageLayer(context, image, renderSize, form);
 
   if (form.lightenGlitchAmount > 0) {
     drawLightenGlitch(
