@@ -2,9 +2,9 @@ import type {
   NotmecoreFormState,
   NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
+import { ensureNotmecoreFontsLoaded } from "@/components/notmecore/notmecoreResources";
 import {
   drawNotmecoreFrame,
-  ensureNotmecoreFontsLoaded,
 } from "@/components/notmecore/notmecoreRenderer";
 
 export async function exportNotmecoreImage(

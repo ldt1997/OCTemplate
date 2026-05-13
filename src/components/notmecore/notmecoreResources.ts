@@ -1,6 +1,14 @@
 import type { NotmecoreImageSize } from "@/components/notmecore/notmecoreConfig";
+import { notmecoreTextFontSpec } from "@/components/notmecore/notmecoreConfig";
+import { clearNotmecoreBaseImageCanvasCache } from "@/components/notmecore/notmecoreImageFilters";
 
 const imageResourceCache = new Map<string, Promise<HTMLImageElement>>();
+
+const notmecoreFontLoadEntries = Object.values(notmecoreTextFontSpec)
+  .map((font) => font.fontLoad)
+  .filter((font): font is string => Boolean(font));
+
+let notmecoreFontsLoadPromise: Promise<void> | null = null;
 
 function createImageLoadPromise(src: string) {
   const image = new Image();
@@ -14,6 +22,20 @@ function createImageLoadPromise(src: string) {
       resolve(image);
     }
   });
+}
+
+export function ensureNotmecoreFontsLoaded() {
+  if (typeof document === "undefined" || !("fonts" in document)) {
+    return Promise.resolve();
+  }
+
+  if (!notmecoreFontsLoadPromise) {
+    notmecoreFontsLoadPromise = Promise.all(
+      notmecoreFontLoadEntries.map((font) => document.fonts.load(font)),
+    ).then(() => undefined);
+  }
+
+  return notmecoreFontsLoadPromise;
 }
 
 export function loadNotmecoreImage(src: string) {
@@ -48,4 +70,14 @@ export function clearNotmecoreImageResource(src: string | null) {
   }
 
   imageResourceCache.delete(src);
+}
+
+export function disposeNotmecoreObjectUrl(src: string | null) {
+  if (!src) {
+    return;
+  }
+
+  clearNotmecoreBaseImageCanvasCache(src);
+  clearNotmecoreImageResource(src);
+  URL.revokeObjectURL(src);
 }

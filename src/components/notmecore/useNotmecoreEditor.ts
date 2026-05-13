@@ -10,16 +10,13 @@ import {
   type NotmecoreTextLayerMode,
 } from "@/components/notmecore/notmecoreConfig";
 import {
-  clearNotmecoreImageResource,
+  disposeNotmecoreObjectUrl,
   readNotmecoreImageSize,
-} from "@/components/notmecore/notmecoreImageResource";
-import { clearNotmecoreBaseImageCanvasCache } from "@/components/notmecore/notmecoreImageFilters";
+  ensureNotmecoreFontsLoaded,
+} from "@/components/notmecore/notmecoreResources";
 import {
   exportNotmecoreImage,
 } from "@/components/notmecore/notmecorePoster";
-import {
-  ensureNotmecoreFontsLoaded,
-} from "@/components/notmecore/notmecoreRenderer";
 import { getLightenGlitchMaxAmount } from "@/components/notmecore/notmecoreLayout";
 
 type UpdateFormInput =
@@ -50,9 +47,7 @@ function getPreviewRenderSize(imageSize: NotmecoreImageSize | null) {
 
 function clearBackgroundImage(current: NotmecoreFormState): NotmecoreFormState {
   if (current.backgroundImageUrl) {
-    clearNotmecoreBaseImageCanvasCache(current.backgroundImageUrl);
-    clearNotmecoreImageResource(current.backgroundImageUrl);
-    URL.revokeObjectURL(current.backgroundImageUrl);
+    disposeNotmecoreObjectUrl(current.backgroundImageUrl);
   }
 
   return {
@@ -91,9 +86,7 @@ export function useNotmecoreEditor() {
   useEffect(() => {
     return () => {
       if (form.imageUrl) {
-        clearNotmecoreBaseImageCanvasCache(form.imageUrl);
-        clearNotmecoreImageResource(form.imageUrl);
-        URL.revokeObjectURL(form.imageUrl);
+        disposeNotmecoreObjectUrl(form.imageUrl);
       }
     };
   }, [form.imageUrl]);
@@ -101,9 +94,7 @@ export function useNotmecoreEditor() {
   useEffect(() => {
     return () => {
       if (form.backgroundImageUrl) {
-        clearNotmecoreBaseImageCanvasCache(form.backgroundImageUrl);
-        clearNotmecoreImageResource(form.backgroundImageUrl);
-        URL.revokeObjectURL(form.backgroundImageUrl);
+        disposeNotmecoreObjectUrl(form.backgroundImageUrl);
       }
     };
   }, [form.backgroundImageUrl]);
@@ -165,9 +156,7 @@ export function useNotmecoreEditor() {
       setImageError(null);
       updateForm((current) => {
         if (current.imageUrl) {
-          clearNotmecoreBaseImageCanvasCache(current.imageUrl);
-          clearNotmecoreImageResource(current.imageUrl);
-          URL.revokeObjectURL(current.imageUrl);
+          disposeNotmecoreObjectUrl(current.imageUrl);
         }
 
         return {
@@ -195,9 +184,7 @@ export function useNotmecoreEditor() {
     setImageError(null);
     updateForm((current) => {
       if (current.imageUrl) {
-        clearNotmecoreBaseImageCanvasCache(current.imageUrl);
-        clearNotmecoreImageResource(current.imageUrl);
-        URL.revokeObjectURL(current.imageUrl);
+        disposeNotmecoreObjectUrl(current.imageUrl);
       }
 
       return {
@@ -239,9 +226,7 @@ export function useNotmecoreEditor() {
     setBackgroundImageError(null);
     updateForm((current) => {
       if (current.backgroundImageUrl) {
-        clearNotmecoreBaseImageCanvasCache(current.backgroundImageUrl);
-        clearNotmecoreImageResource(current.backgroundImageUrl);
-        URL.revokeObjectURL(current.backgroundImageUrl);
+        disposeNotmecoreObjectUrl(current.backgroundImageUrl);
       }
 
       return {
