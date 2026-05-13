@@ -1,6 +1,7 @@
 import type { TemplateItem } from "@/types/template";
 import akrecruitPreview from "@/assets/akrecruit/preview.webp";
 import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.webp";
+import notmecorePreview from "@/assets/notmecore/preview.webp";
 
 export const templateList: TemplateItem[] = [
   {
@@ -18,5 +19,13 @@ export const templateList: TemplateItem[] = [
     description: "上传图片并提取主题双色，一键生成风格统一的人物海报",
     path: "/luoxiaohei",
     previewImage: luoxiaoheiPreview,
+  },
+  {
+    id: "notmecore",
+    name: "GLITCH & ASCII ART",
+    tag: "NOT ME",
+    description: "生成故障艺术风格的图像",
+    path: "/notmecore",
+    previewImage: notmecorePreview,
   },
 ];
