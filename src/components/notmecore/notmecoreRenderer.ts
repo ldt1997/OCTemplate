@@ -3,6 +3,7 @@ import type {
   NotmecoreImageSize,
 } from "@/components/notmecore/notmecoreConfig";
 import { notmecoreTextFontSpec } from "@/components/notmecore/notmecoreConfig";
+import { createFilteredImageCanvas } from "@/components/notmecore/notmecoreImageFilters";
 import { buildNotmecoreLightenGlitchSlices } from "@/components/notmecore/notmecoreLayout";
 import { buildNotmecoreTextScatterLayout } from "@/components/notmecore/notmecoreTextLayout";
 
@@ -60,6 +61,85 @@ function buildImageFilter(
   return [`saturate(${form.saturation})`, `contrast(${form.contrast})`].join(
     " ",
   );
+}
+
+function isMobileCanvasFilterUnsafe() {
+  if (typeof navigator === "undefined") {
+    return false;
+  }
+
+  const userAgentData = (
+    navigator as Navigator & { userAgentData?: { mobile?: boolean } }
+  ).userAgentData;
+
+  if (userAgentData?.mobile) {
+    return true;
+  }
+
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+}
+
+function canUseNativeCanvasFilter(context: CanvasRenderingContext2D) {
+  if (!("filter" in context) || isMobileCanvasFilterUnsafe()) {
+    return false;
+  }
+
+  return typeof context.filter === "string";
+}
+
+function drawImageWithNativeFilter(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  width: number,
+  height: number,
+  form: Pick<NotmecoreFormState, "saturation" | "contrast">,
+) {
+  context.save();
+  context.filter = buildImageFilter(form);
+  context.drawImage(image, 0, 0, width, height, 0, 0, width, height);
+  context.restore();
+}
+
+function drawImageWithPixelFallback(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  imageSize: NotmecoreImageSize,
+  renderSize: NotmecoreImageSize,
+  form: Pick<NotmecoreFormState, "saturation" | "contrast">,
+) {
+  const filteredCanvas = createFilteredImageCanvas(
+    image,
+    imageSize.width,
+    imageSize.height,
+    form,
+  );
+
+  context.drawImage(
+    filteredCanvas,
+    0,
+    0,
+    imageSize.width,
+    imageSize.height,
+    0,
+    0,
+    renderSize.width,
+    renderSize.height,
+  );
+}
+
+function drawFilteredImageLayer(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  imageSize: NotmecoreImageSize,
+  renderSize: NotmecoreImageSize,
+  form: Pick<NotmecoreFormState, "saturation" | "contrast">,
+) {
+  if (canUseNativeCanvasFilter(context)) {
+    drawImageWithNativeFilter(context, image, renderSize.width, renderSize.height, form);
+    return;
+  }
+
+  drawImageWithPixelFallback(context, image, imageSize, renderSize, form);
 }
 
 function drawCoverImage(
@@ -228,10 +308,9 @@ export async function drawNotmecoreFrame(
     form.textFontFamily,
     form.textFontSize,
   );
-
-  context.filter = buildImageFilter(form);
-  context.drawImage(image, 0, 0, imageSize.width, imageSize.height);
   context.restore();
+
+  drawFilteredImageLayer(context, image, imageSize, renderSize, form);
 
   if (form.lightenGlitchAmount > 0) {
     drawLightenGlitch(
