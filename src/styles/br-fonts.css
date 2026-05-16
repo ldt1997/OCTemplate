@@ -1,0 +1,31 @@
+@font-face {
+  font-family: "Akt Regular";
+  src: url("../assets/br/Akt-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Akt Bold";
+  src: url("../assets/br/Akt-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mochiy Pop One";
+  src: url("../assets/br/MochiyPopOne-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Trade Winds";
+  src: url("../assets/br/TradeWinds-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

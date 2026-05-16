@@ -2,6 +2,7 @@ import type { TemplateItem } from "@/types/template";
 import akrecruitPreview from "@/assets/akrecruit/preview.webp";
 import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.webp";
 import notmecorePreview from "@/assets/notmecore/preview.webp";
+import brPreview from "@/assets/br/preview.webp";
 
 export const templateList: TemplateItem[] = [
   {
@@ -27,5 +28,13 @@ export const templateList: TemplateItem[] = [
     description: "生成故障艺术风格的图像",
     path: "/notmecore",
     previewImage: notmecorePreview,
+  },
+  {
+    id: "br",
+    name: "《大逃杀》人物公式书",
+    tag: "大逃杀",
+    description: "生成《大逃杀》人物公式书风格角色档案图",
+    path: "/br",
+    previewImage: brPreview,
   },
 ];

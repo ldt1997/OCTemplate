@@ -17,6 +17,11 @@ const NotmecorePage = lazy(async () => {
   return { default: module.NotmecorePage };
 });
 
+const BrPage = lazy(async () => {
+  const module = await import("@/pages/brPage");
+  return { default: module.BrPage };
+});
+
 function RouteFallback() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-6 text-sm text-muted-foreground">
@@ -35,6 +40,7 @@ export function AppRoutes() {
           <Route path="/akrecruit" element={<AkRecruitPage />} />
           <Route path="/luoxiaohei" element={<LuoxiaoheiPage />} />
           <Route path="/notmecore" element={<NotmecorePage />} />
+          <Route path="/br" element={<BrPage />} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>
       </Suspense>
