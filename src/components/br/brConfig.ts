@@ -2,9 +2,14 @@ export const BR_CANVAS_WIDTH = 792;
 export const BR_CANVAS_HEIGHT = 1224;
 export const BR_MAX_FILE_SIZE = 8 * 1024 * 1024;
 
-export const brAcceptedImageTypes = ["image/jpeg", "image/png"] as const;
+export const brAcceptedImageTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+] as const;
 
 export type BrGender = "She" | "He";
+export type BrGrainLevel = 0 | 1 | 2 | 3;
 
 export type BrImageCropArea = {
   x: number;
@@ -17,6 +22,7 @@ export type BrFormState = {
   imageFile: File | null;
   imageUrl: string | null;
   imageCrop: BrImageCropArea | null;
+  grainLevel: BrGrainLevel;
   backgroundColor: string;
   name: string;
   englishName: string;
@@ -35,7 +41,7 @@ export const brTemplateSpec = {
   canvasHeight: BR_CANVAS_HEIGHT,
   emptyStateTitle: "《大逃杀》人物公式书",
   emptyStateDescription: "默认状态已可预览，可上传人物照片并调整文字信息。",
-  imageAcceptLabel: "支持 JPEG / PNG，最大 8MB",
+  imageAcceptLabel: "支持 JPEG / PNG / WEBP，最大 8MB",
   textLimits: {
     name: 50,
     englishName: 25,
@@ -51,6 +57,12 @@ export const brTemplateSpec = {
     maxZoom: 4,
     zoomStep: 0.01,
     initialZoom: 1,
+  },
+  texture: {
+    grainWidth: 396,
+    grainHeight: 612,
+    grainAlphaByLevel: [0, 0.2, 0.4, 0.6],
+    grainPixelAlpha: 36,
   },
   colors: {
     border: "#6B291F",
@@ -129,6 +141,7 @@ export const initialBrFormState: BrFormState = {
   imageFile: null,
   imageUrl: null,
   imageCrop: null,
+  grainLevel: 2,
   backgroundColor: "#942727",
   name: "千草貴子",
   englishName: "takako chigusa",

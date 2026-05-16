@@ -7,6 +7,7 @@ import {
   type BrImageCropArea,
   type BrFormState,
   type BrGender,
+  type BrGrainLevel,
 } from "@/components/br/brConfig";
 import { exportBrImage } from "@/components/br/brPoster";
 import {
@@ -82,7 +83,7 @@ export function useBrEditor() {
     }
 
     if (!brAcceptedImageTypes.includes(nextFile.type as (typeof brAcceptedImageTypes)[number])) {
-      setImageError("请上传 JPEG 或 PNG 图片。");
+      setImageError("请上传 JPEG、PNG 或 WEBP 图片。");
       event.target.value = "";
       return;
     }
@@ -159,6 +160,8 @@ export function useBrEditor() {
       },
       onBackgroundColorChange: (value: string) =>
         updateForm({ backgroundColor: value }),
+      onGrainLevelChange: (value: BrGrainLevel) =>
+        updateForm({ grainLevel: value }),
       onNameChange: (value: string) =>
         updateForm({ name: value.slice(0, brTemplateSpec.textLimits.name) }),
       onEnglishNameChange: (value: string) =>

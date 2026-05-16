@@ -1,5 +1,9 @@
 import type { ChangeEvent } from "react";
-import type { BrFormState, BrGender } from "@/components/br/brConfig";
+import type {
+  BrFormState,
+  BrGender,
+  BrGrainLevel,
+} from "@/components/br/brConfig";
 import { brTemplateSpec } from "@/components/br/brConfig";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +28,7 @@ type BrToolbarProps = {
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onOpenImageCrop: () => void;
   onBackgroundColorChange: (value: string) => void;
+  onGrainLevelChange: (value: BrGrainLevel) => void;
   onNameChange: (value: string) => void;
   onEnglishNameChange: (value: string) => void;
   onGenderChange: (value: BrGender) => void;
@@ -60,6 +65,7 @@ export function BrToolbar({
   onFileChange,
   onOpenImageCrop,
   onBackgroundColorChange,
+  onGrainLevelChange,
   onNameChange,
   onEnglishNameChange,
   onGenderChange,
@@ -82,7 +88,7 @@ export function BrToolbar({
               <Input
                 id="br-image"
                 type="file"
-                accept="image/jpeg,image/png"
+                accept="image/jpeg,image/png,image/webp"
                 onChange={onFileChange}
               />
               <FieldDescription>
@@ -119,6 +125,29 @@ export function BrToolbar({
                     onBackgroundColorChange(event.target.value)
                   }
                 />
+              </div>
+            </FieldContent>
+          </Field>
+
+          <Field>
+            <FieldLabel>噪点</FieldLabel>
+            <FieldContent>
+              <div className="space-y-3">
+                <Slider
+                  value={[form.grainLevel]}
+                  min={0}
+                  max={3}
+                  step={1}
+                  onValueChange={(value) =>
+                    onGrainLevelChange((value[0] ?? form.grainLevel) as BrGrainLevel)
+                  }
+                />
+                <div className="grid grid-cols-4 text-center text-xs text-muted-foreground">
+                  <span>无</span>
+                  <span>低</span>
+                  <span>中</span>
+                  <span>高</span>
+                </div>
               </div>
             </FieldContent>
           </Field>

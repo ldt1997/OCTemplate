@@ -11,6 +11,69 @@ import {
   loadBrSkullImage,
 } from "@/components/br/brResources";
 
+let brNoiseCanvas: HTMLCanvasElement | null = null;
+
+function createBrNoiseCanvas() {
+  const texture = brTemplateSpec.texture;
+  const canvas = document.createElement("canvas");
+  canvas.width = texture.grainWidth;
+  canvas.height = texture.grainHeight;
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    return canvas;
+  }
+
+  const imageData = context.createImageData(canvas.width, canvas.height);
+  const data = imageData.data;
+
+  for (let index = 0; index < data.length; index += 4) {
+    const isHighlight = Math.random() > 0.55;
+    const alpha = Math.random() > 0.45 ? texture.grainPixelAlpha : 0;
+
+    data[index] = isHighlight ? 210 : 36;
+    data[index + 1] = isHighlight ? 190 : 12;
+    data[index + 2] = isHighlight ? 170 : 8;
+    data[index + 3] = alpha;
+  }
+
+  context.putImageData(imageData, 0, 0);
+  return canvas;
+}
+
+function getBrNoiseCanvas() {
+  if (!brNoiseCanvas) {
+    brNoiseCanvas = createBrNoiseCanvas();
+  }
+
+  return brNoiseCanvas;
+}
+
+function drawGlobalGrain(
+  context: CanvasRenderingContext2D,
+  grainLevel: BrFormState["grainLevel"],
+) {
+  const grainAlpha = brTemplateSpec.texture.grainAlphaByLevel[grainLevel];
+  if (grainAlpha <= 0) {
+    return;
+  }
+
+  const noiseCanvas = getBrNoiseCanvas();
+
+  context.save();
+  context.imageSmoothingEnabled = false;
+  context.globalAlpha = grainAlpha;
+  context.globalCompositeOperation = "source-over";
+  context.drawImage(
+    noiseCanvas,
+    0,
+    0,
+    brTemplateSpec.canvasWidth,
+    brTemplateSpec.canvasHeight,
+  );
+  context.restore();
+}
+
 function drawCoverImage(
   context: CanvasRenderingContext2D,
   image: HTMLImageElement,
@@ -336,4 +399,5 @@ export async function drawBrFrame(
   drawJapaneseName(context, form.name);
   drawEnglishName(context, form.englishName);
   drawProfiles(context, form);
+  drawGlobalGrain(context, form.grainLevel);
 }
