@@ -113,7 +113,7 @@ export const brTemplateSpec = {
 export const initialBrFormState: BrFormState = {
   imageFile: null,
   imageUrl: null,
-  backgroundColor: "#ffffff",
+  backgroundColor: "#942727",
   name: "千草貴子",
   englishName: "takako chigusa",
   gender: "She",
