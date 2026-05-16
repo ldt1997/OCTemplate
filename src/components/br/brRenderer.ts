@@ -239,17 +239,6 @@ function drawTitleBox(
   context.restore();
 }
 
-function drawBodyBox(
-  context: CanvasRenderingContext2D,
-  rect: { x: number; y: number; width: number; height: number },
-) {
-  context.save();
-  context.strokeStyle = brTemplateSpec.colors.border;
-  context.lineWidth = brTemplateSpec.layers.profile.borderWidth;
-  context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-  context.restore();
-}
-
 function drawProfileText(
   context: CanvasRenderingContext2D,
   lines: ReturnType<typeof buildBrProfileLayout>["movieLines"],
@@ -283,10 +272,8 @@ function drawProfiles(context: CanvasRenderingContext2D, form: BrFormState) {
   );
 
   drawTitleBox(context, "movie", layout.movieTitle);
-  drawBodyBox(context, layout.movieBody);
   drawProfileText(context, layout.movieLines);
   drawTitleBox(context, "novel's back ground", layout.novelTitle);
-  drawBodyBox(context, layout.novelBody);
   drawProfileText(context, layout.novelLines);
 }
 

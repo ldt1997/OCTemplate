@@ -29,14 +29,14 @@ export const brTemplateSpec = {
   emptyStateDescription: "默认状态已可预览，可上传人物照片并调整文字信息。",
   imageAcceptLabel: "支持 JPEG / PNG，最大 8MB",
   textLimits: {
-    name: 6,
+    name: 10,
     englishName: 25,
-    weapon: 10,
-    deathLocation: 10,
-    profile: 150,
+    weapon: 50,
+    deathLocation: 50,
+    profile: 300,
   },
   killCountRange: { min: 0, max: 10, step: 1 },
-  numberRange: { min: 1, max: 99 },
+  numberRange: { min: 0, max: 99 },
   colors: {
     border: "#6B291F",
     darkRed: "#33100A",
@@ -65,10 +65,10 @@ export const brTemplateSpec = {
   },
   layers: {
     photo: { x: 61, y: 87, width: 410, height: 410, borderWidth: 2 },
-    number: { x: 182, y: 454, fontSize: 390 },
+    number: { x: 175, y: 560, fontSize: 390 },
     stats: {
-      x: 282,
-      y: 78,
+      x: 61,
+      y: 497,
       labelWidth: 132,
       valueWidth: 150,
       rowHeight: 26,
@@ -89,7 +89,7 @@ export const brTemplateSpec = {
       fontSize: 195,
     },
     englishName: {
-      x: 544,
+      x: 590,
       y: 79,
       width: 1050,
       height: 48,
