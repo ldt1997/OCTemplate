@@ -22,6 +22,7 @@ type BrToolbarProps = {
   form: BrFormState;
   imageError: string | null;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onOpenImageCrop: () => void;
   onBackgroundColorChange: (value: string) => void;
   onNameChange: (value: string) => void;
   onEnglishNameChange: (value: string) => void;
@@ -57,6 +58,7 @@ export function BrToolbar({
   form,
   imageError,
   onFileChange,
+  onOpenImageCrop,
   onBackgroundColorChange,
   onNameChange,
   onEnglishNameChange,
@@ -89,6 +91,11 @@ export function BrToolbar({
               </FieldDescription>
               {imageError ? (
                 <p className="text-sm text-destructive">{imageError}</p>
+              ) : null}
+              {form.imageUrl ? (
+                <Button type="button" variant="outline" onClick={onOpenImageCrop}>
+                  重新裁剪
+                </Button>
               ) : null}
             </FieldContent>
           </Field>

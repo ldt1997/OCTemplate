@@ -1,6 +1,7 @@
 import "@/styles/br-fonts.css";
 import { SlidersHorizontal } from "lucide-react";
 import { BrCanvas } from "@/components/br/brCanvas";
+import { BrImageCropDialog } from "@/components/br/brImageCropDialog";
 import { BrToolbar } from "@/components/br/brToolbar";
 import { BrViewport } from "@/components/br/brViewport";
 import { useBrEditor } from "@/components/br/useBrEditor";
@@ -16,6 +17,7 @@ export function BrPage() {
     isExporting,
     canExport,
     handleExport,
+    cropDialogProps,
     toolbarProps,
   } = useBrEditor();
 
@@ -69,6 +71,7 @@ export function BrPage() {
           </div>
         </section>
       </div>
+      <BrImageCropDialog {...cropDialogProps} />
     </AppLayout>
   );
 }

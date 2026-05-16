@@ -6,9 +6,17 @@ export const brAcceptedImageTypes = ["image/jpeg", "image/png"] as const;
 
 export type BrGender = "She" | "He";
 
+export type BrImageCropArea = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export type BrFormState = {
   imageFile: File | null;
   imageUrl: string | null;
+  imageCrop: BrImageCropArea | null;
   backgroundColor: string;
   name: string;
   englishName: string;
@@ -37,6 +45,13 @@ export const brTemplateSpec = {
   },
   killCountRange: { min: 0, max: 10, step: 1 },
   numberRange: { min: 0, max: 99 },
+  crop: {
+    aspect: 1,
+    minZoom: 1,
+    maxZoom: 4,
+    zoomStep: 0.01,
+    initialZoom: 1,
+  },
   colors: {
     border: "#6B291F",
     darkRed: "#33100A",
@@ -113,6 +128,7 @@ export const brTemplateSpec = {
 export const initialBrFormState: BrFormState = {
   imageFile: null,
   imageUrl: null,
+  imageCrop: null,
   backgroundColor: "#942727",
   name: "千草貴子",
   englishName: "takako chigusa",

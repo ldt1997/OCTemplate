@@ -4,6 +4,7 @@ import {
   brAcceptedImageTypes,
   brTemplateSpec,
   initialBrFormState,
+  type BrImageCropArea,
   type BrFormState,
   type BrGender,
 } from "@/components/br/brConfig";
@@ -23,6 +24,7 @@ export function useBrEditor() {
   const [imageError, setImageError] = useState<string | null>(null);
   const [fontsReady, setFontsReady] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isImageCropOpen, setIsImageCropOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -72,8 +74,10 @@ export function useBrEditor() {
           ...current,
           imageFile: null,
           imageUrl: null,
+          imageCrop: null,
         };
       });
+      setIsImageCropOpen(false);
       return;
     }
 
@@ -100,8 +104,15 @@ export function useBrEditor() {
         ...current,
         imageFile: nextFile,
         imageUrl: nextUrl,
+        imageCrop: null,
       };
     });
+    setIsImageCropOpen(true);
+  };
+
+  const handleImageCropConfirm = (cropArea: BrImageCropArea) => {
+    updateForm({ imageCrop: cropArea });
+    setIsImageCropOpen(false);
   };
 
   const handleExport = async () => {
@@ -131,10 +142,21 @@ export function useBrEditor() {
     isExporting,
     canExport: fontsReady,
     handleExport,
+    cropDialogProps: {
+      open: isImageCropOpen,
+      imageUrl: form.imageUrl,
+      onCancel: () => setIsImageCropOpen(false),
+      onConfirm: handleImageCropConfirm,
+    },
     toolbarProps: {
       form,
       imageError,
       onFileChange: handleFileChange,
+      onOpenImageCrop: () => {
+        if (form.imageUrl) {
+          setIsImageCropOpen(true);
+        }
+      },
       onBackgroundColorChange: (value: string) =>
         updateForm({ backgroundColor: value }),
       onNameChange: (value: string) =>

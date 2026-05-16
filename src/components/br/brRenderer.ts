@@ -75,7 +75,21 @@ async function drawUploadedPhoto(
 
   if (form.imageUrl) {
     const image = await loadBrImage(form.imageUrl);
-    drawCoverImage(context, image, photo);
+    if (form.imageCrop) {
+      context.drawImage(
+        image,
+        form.imageCrop.x,
+        form.imageCrop.y,
+        form.imageCrop.width,
+        form.imageCrop.height,
+        photo.x,
+        photo.y,
+        photo.width,
+        photo.height,
+      );
+    } else {
+      drawCoverImage(context, image, photo);
+    }
   }
 
   context.save();
