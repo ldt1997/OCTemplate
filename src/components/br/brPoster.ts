@@ -4,9 +4,10 @@ import { ensureBrFontsLoaded } from "@/components/br/brResources";
 import { drawBrFrame } from "@/components/br/brRenderer";
 
 export async function exportBrImage(form: BrFormState) {
+  const exportScale = 2;
   const canvas = document.createElement("canvas");
-  canvas.width = brTemplateSpec.canvasWidth;
-  canvas.height = brTemplateSpec.canvasHeight;
+  canvas.width = brTemplateSpec.canvasWidth * exportScale;
+  canvas.height = brTemplateSpec.canvasHeight * exportScale;
   const context = canvas.getContext("2d");
 
   if (!context) {
@@ -14,6 +15,7 @@ export async function exportBrImage(form: BrFormState) {
   }
 
   await ensureBrFontsLoaded();
+  context.scale(exportScale, exportScale);
   await drawBrFrame(context, form);
 
   return new Promise<Blob>((resolve, reject) => {
