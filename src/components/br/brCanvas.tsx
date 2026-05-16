@@ -59,7 +59,7 @@ export function BrCanvas({ form, fontsReady, displaySize }: BrCanvasProps) {
       ref={canvasRef}
       width={brTemplateSpec.canvasWidth}
       height={brTemplateSpec.canvasHeight}
-      className="block h-auto max-w-none bg-black"
+      className="block h-auto max-w-none bg-black select-none touch-none"
       style={{
         width: `${displaySize.width}px`,
         height: `${displaySize.height}px`,
