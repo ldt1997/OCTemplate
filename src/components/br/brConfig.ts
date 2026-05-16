@@ -29,7 +29,7 @@ export const brTemplateSpec = {
   emptyStateDescription: "默认状态已可预览，可上传人物照片并调整文字信息。",
   imageAcceptLabel: "支持 JPEG / PNG，最大 8MB",
   textLimits: {
-    name: 10,
+    name: 50,
     englishName: 25,
     weapon: 50,
     deathLocation: 50,
@@ -87,6 +87,7 @@ export const brTemplateSpec = {
       blockWidth: 143,
       blockHeight: 1050,
       fontSize: 195,
+      characterGap: 12,
     },
     englishName: {
       x: 590,

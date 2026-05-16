@@ -184,23 +184,38 @@ function drawJapaneseName(context: CanvasRenderingContext2D, name: string) {
   const layer = brTemplateSpec.layers.name;
   const characters = getVerticalNameCharacters(name);
 
+  if (characters.length === 0) {
+    return;
+  }
+
   context.save();
-  context.translate(layer.x, layer.y);
-  context.beginPath();
-  context.rect(0, 0, layer.blockWidth, layer.blockHeight);
-  context.clip();
   context.fillStyle = brTemplateSpec.colors.white;
   context.font = `400 ${layer.fontSize}px ${brTemplateSpec.fonts.mochiy.family}`;
   context.textAlign = "center";
   context.textBaseline = "top";
 
-  const lineHeight = layer.fontSize * 0.93;
-  const contentHeight = characters.length * lineHeight;
-  const scaleY = Math.min(1, layer.blockHeight / Math.max(contentHeight, 1));
-  context.scale(1, scaleY);
+  const rawWidth = Math.max(
+    ...characters.map((character) => context.measureText(character).width),
+  );
+  const rawLineHeight = layer.fontSize * 0.93;
+  const rawHeight =
+    characters.length * rawLineHeight +
+    Math.max(0, characters.length - 1) * layer.characterGap;
+  const scaleX = layer.blockWidth / Math.max(rawWidth, 1);
+  const scaleY = layer.blockHeight / Math.max(rawHeight, 1);
+
+  context.translate(layer.x, layer.y);
+  context.beginPath();
+  context.rect(0, 0, layer.blockWidth, layer.blockHeight);
+  context.clip();
+  context.scale(scaleX, scaleY);
 
   characters.forEach((character, index) => {
-    context.fillText(character, layer.blockWidth / 2, index * lineHeight);
+    context.fillText(
+      character,
+      rawWidth / 2,
+      index * (rawLineHeight + layer.characterGap),
+    );
   });
 
   context.restore();
