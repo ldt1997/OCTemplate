@@ -13,6 +13,46 @@ import {
 
 let brNoiseCanvas: HTMLCanvasElement | null = null;
 
+type PixelBounds = {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+};
+
+function getOpaquePixelBounds(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+): PixelBounds | null {
+  const imageData = context.getImageData(0, 0, width, height);
+  const data = imageData.data;
+  let minX = width;
+  let minY = height;
+  let maxX = -1;
+  let maxY = -1;
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const alpha = data[(y * width + x) * 4 + 3];
+      if (alpha === 0) {
+        continue;
+      }
+
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x);
+      maxY = Math.max(maxY, y);
+    }
+  }
+
+  if (maxX < minX || maxY < minY) {
+    return null;
+  }
+
+  return { minX, minY, maxX, maxY };
+}
+
 function createBrNoiseCanvas() {
   const texture = brTemplateSpec.texture;
   const canvas = document.createElement("canvas");
@@ -72,6 +112,43 @@ function drawGlobalGrain(
     brTemplateSpec.canvasHeight,
   );
   context.restore();
+}
+
+function renderJapaneseNameToCanvas(
+  characters: string[],
+  layer: typeof brTemplateSpec.layers.name,
+) {
+  const padding = layer.fontSize;
+  const rawLineHeight = layer.fontSize * 0.93;
+  const estimatedWidth = layer.fontSize * 2 + padding * 2;
+  const estimatedHeight =
+    characters.length * rawLineHeight +
+    Math.max(0, characters.length - 1) * layer.characterGap +
+    padding * 2;
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.ceil(estimatedWidth);
+  canvas.height = Math.ceil(estimatedHeight);
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    return null;
+  }
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = brTemplateSpec.colors.white;
+  context.font = `400 ${layer.fontSize}px ${brTemplateSpec.fonts.mochiy.family}`;
+  context.textAlign = "center";
+  context.textBaseline = "top";
+
+  characters.forEach((character, index) => {
+    context.fillText(
+      character,
+      canvas.width / 2,
+      padding + index * (rawLineHeight + layer.characterGap),
+    );
+  });
+
+  return { canvas, context };
 }
 
 function drawCoverImage(
@@ -265,36 +342,36 @@ function drawJapaneseName(context: CanvasRenderingContext2D, name: string) {
     return;
   }
 
-  context.save();
-  context.fillStyle = brTemplateSpec.colors.white;
-  context.font = `400 ${layer.fontSize}px ${brTemplateSpec.fonts.mochiy.family}`;
-  context.textAlign = "center";
-  context.textBaseline = "top";
+  const renderedName = renderJapaneseNameToCanvas(characters, layer);
+  if (!renderedName) {
+    return;
+  }
 
-  const rawWidth = Math.max(
-    ...characters.map((character) => context.measureText(character).width),
+  const bounds = getOpaquePixelBounds(
+    renderedName.context,
+    renderedName.canvas.width,
+    renderedName.canvas.height,
   );
-  const rawLineHeight = layer.fontSize * 0.93;
-  const rawHeight =
-    characters.length * rawLineHeight +
-    Math.max(0, characters.length - 1) * layer.characterGap;
-  const scaleX = layer.blockWidth / Math.max(rawWidth, 1);
-  const scaleY = layer.blockHeight / Math.max(rawHeight, 1);
 
-  context.translate(layer.x, layer.y);
+  if (!bounds) {
+    return;
+  }
+
+  context.save();
   context.beginPath();
-  context.rect(0, 0, layer.blockWidth, layer.blockHeight);
+  context.rect(layer.x, layer.y, layer.blockWidth, layer.blockHeight);
   context.clip();
-  context.scale(scaleX, scaleY);
-
-  characters.forEach((character, index) => {
-    context.fillText(
-      character,
-      rawWidth / 2,
-      index * (rawLineHeight + layer.characterGap),
-    );
-  });
-
+  context.drawImage(
+    renderedName.canvas,
+    bounds.minX,
+    bounds.minY,
+    bounds.maxX - bounds.minX + 1,
+    bounds.maxY - bounds.minY + 1,
+    layer.x,
+    layer.y,
+    layer.blockWidth,
+    layer.blockHeight,
+  );
   context.restore();
 }
 
