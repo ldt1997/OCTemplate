@@ -5,9 +5,11 @@ import { NotmecoreToolbar } from "@/components/notmecore/notmecoreToolbar";
 import { NotmecoreViewport } from "@/components/notmecore/notmecoreViewport";
 import { useNotmecoreEditor } from "@/components/notmecore/useNotmecoreEditor";
 import { AppLayout } from "@/components/layout/appLayout";
+import { SeoMeta } from "@/components/seo/SeoMeta";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Spinner } from "@/components/ui/spinner";
+import { createWebApplicationJsonLd, seoPages } from "@/data/siteMetadata";
 
 export function NotmecorePage() {
   const {
@@ -31,7 +33,13 @@ export function NotmecorePage() {
       }
       contentClassName="h-[calc(100dvh-4rem)] overflow-hidden"
     >
+      <SeoMeta
+        metadata={seoPages.notmecore}
+        structuredData={createWebApplicationJsonLd(seoPages.notmecore)}
+        structuredDataId="notmecore"
+      />
       <div className="relative flex h-full">
+        <h1 className="sr-only">GLITCH & ASCII ART 图片生成器</h1>
         <aside className="hidden h-full w-[21rem] shrink-0 border-r bg-background lg:block">
           <NotmecoreToolbar variant="desktop" {...toolbarProps} />
         </aside>

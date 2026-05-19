@@ -5,9 +5,11 @@ import { LuoxiaoheiPreview } from "@/components/luoxiaohei/luoxiaoheiPreview";
 import { LuoxiaoheiToolbar } from "@/components/luoxiaohei/luoxiaoheiToolbar";
 import { useLuoxiaoheiEditor } from "@/components/luoxiaohei/useLuoxiaoheiEditor";
 import { AppLayout } from "@/components/layout/appLayout";
+import { SeoMeta } from "@/components/seo/SeoMeta";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Spinner } from "@/components/ui/spinner";
+import { createWebApplicationJsonLd, seoPages } from "@/data/siteMetadata";
 
 export function LuoxiaoheiPage() {
   const {
@@ -30,7 +32,13 @@ export function LuoxiaoheiPage() {
       }
       contentClassName="h-[calc(100dvh-4rem)] overflow-hidden bg-muted"
     >
+      <SeoMeta
+        metadata={seoPages.luoxiaohei}
+        structuredData={createWebApplicationJsonLd(seoPages.luoxiaohei)}
+        structuredDataId="luoxiaohei"
+      />
       <div className="relative flex h-full">
+        <h1 className="sr-only">罗小黑人物双色海报生成器</h1>
         <aside className="hidden h-full w-[21rem] shrink-0 border-r bg-background lg:block">
           <LuoxiaoheiToolbar variant="desktop" {...toolbarProps} />
         </aside>

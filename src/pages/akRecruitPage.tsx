@@ -5,9 +5,11 @@ import { AkRecruitPreview } from "@/components/akRecruit/akRecruitPreview";
 import { AkRecruitToolbar } from "@/components/akRecruit/akRecruitToolbar";
 import { useAkRecruitEditor } from "@/components/akRecruit/useAkRecruitEditor";
 import { AppLayout } from "@/components/layout/appLayout";
+import { SeoMeta } from "@/components/seo/SeoMeta";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Spinner } from "@/components/ui/spinner";
+import { createWebApplicationJsonLd, seoPages } from "@/data/siteMetadata";
 
 export function AkRecruitPage() {
   const {
@@ -30,7 +32,13 @@ export function AkRecruitPage() {
       }
       contentClassName="h-[calc(100dvh-4rem)] overflow-hidden bg-muted"
     >
+      <SeoMeta
+        metadata={seoPages.akRecruit}
+        structuredData={createWebApplicationJsonLd(seoPages.akRecruit)}
+        structuredDataId="akrecruit"
+      />
       <div className="relative flex h-full">
+        <h1 className="sr-only">明日方舟干员招募界面生成器</h1>
         <aside className="hidden h-full w-80 shrink-0 border-r bg-background lg:block">
           <AkRecruitToolbar variant="desktop" {...toolbarProps} />
         </aside>

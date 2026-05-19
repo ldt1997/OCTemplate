@@ -6,9 +6,11 @@ import { BrToolbar } from "@/components/br/brToolbar";
 import { BrViewport } from "@/components/br/brViewport";
 import { useBrEditor } from "@/components/br/useBrEditor";
 import { AppLayout } from "@/components/layout/appLayout";
+import { SeoMeta } from "@/components/seo/SeoMeta";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Spinner } from "@/components/ui/spinner";
+import { createWebApplicationJsonLd, seoPages } from "@/data/siteMetadata";
 
 export function BrPage() {
   const {
@@ -31,7 +33,13 @@ export function BrPage() {
       }
       contentClassName="h-[calc(100dvh-4rem)] overflow-hidden"
     >
+      <SeoMeta
+        metadata={seoPages.br}
+        structuredData={createWebApplicationJsonLd(seoPages.br)}
+        structuredDataId="br"
+      />
       <div className="relative flex h-full">
+        <h1 className="sr-only">《大逃杀》人物公式书生成器</h1>
         <aside className="hidden h-full w-[21rem] shrink-0 border-r bg-background lg:block">
           <BrToolbar variant="desktop" {...toolbarProps} />
         </aside>
