@@ -3,6 +3,7 @@ import akrecruitPreview from "@/assets/akrecruit/preview.webp";
 import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.webp";
 import notmecorePreview from "@/assets/notmecore/preview.webp";
 import brPreview from "@/assets/br/preview.webp";
+import fancamPreview from "@/assets/fancam/mbc_front.webp";
 
 export const templateList: TemplateItem[] = [
   {
@@ -36,5 +37,14 @@ export const templateList: TemplateItem[] = [
     description: "生成《大逃杀》人物公式书风格角色档案图",
     path: "/br",
     previewImage: brPreview,
+  },
+  {
+    id: "fancam",
+    name: "舞台直拍封面",
+    tag: "舞台直拍",
+    description:
+      "生成舞台直拍风格封面",
+    path: "/fancam",
+    previewImage: fancamPreview,
   },
 ];

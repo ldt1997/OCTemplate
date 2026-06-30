@@ -58,6 +58,13 @@ export const seoPages = {
     path: "/br",
     keywords: ["大逃杀", "人物公式书", "角色档案", "图片模板生成器"],
   },
+  fancam: {
+    title: "舞台直拍封面生成器 - OCTemplate",
+    description:
+      "使用 OCTemplate 生成舞台直拍风格封面，替换立绘、背景、装饰和演出信息后导出横版 PNG。",
+    path: "/fancam",
+    keywords: ["舞台直拍", "封面生成器", "饭拍封面", "图片模板生成器"],
+  },
 } satisfies Record<string, SeoMetadata>;
 
 export function absoluteUrl(path: string) {
@@ -100,4 +107,3 @@ export function createWebApplicationJsonLd(metadata: SeoMetadata) {
     },
   };
 }
-
