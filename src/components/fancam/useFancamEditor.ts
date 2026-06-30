@@ -1,4 +1,4 @@
-import { type ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   FANCAM_BACKGROUND_MAX_FILE_SIZE,
   FANCAM_CHARACTER_MAX_FILE_SIZE,
@@ -34,6 +34,13 @@ export function useFancamEditor() {
   const [fontsReady, setFontsReady] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isBackgroundCropOpen, setIsBackgroundCropOpen] = useState(false);
+  const objectUrlsRef = useRef<{
+    characterUrl: string | null;
+    backgroundUrl: string | null;
+  }>({
+    characterUrl: null,
+    backgroundUrl: null,
+  });
 
   useEffect(() => {
     let active = true;
@@ -54,16 +61,18 @@ export function useFancamEditor() {
   }, []);
 
   useEffect(() => {
-    return () => {
-      if (form.characterUrl) {
-        disposeFancamObjectUrl(form.characterUrl);
-      }
-
-      if (form.backgroundUrl) {
-        disposeFancamObjectUrl(form.backgroundUrl);
-      }
+    objectUrlsRef.current = {
+      characterUrl: form.characterUrl,
+      backgroundUrl: form.backgroundUrl,
     };
   }, [form.characterUrl, form.backgroundUrl]);
+
+  useEffect(() => {
+    return () => {
+      disposeFancamObjectUrl(objectUrlsRef.current.characterUrl);
+      disposeFancamObjectUrl(objectUrlsRef.current.backgroundUrl);
+    };
+  }, []);
 
   const updateForm = (updater: UpdateFormInput) => {
     setForm((current) =>
@@ -178,6 +187,23 @@ export function useFancamEditor() {
     setIsBackgroundCropOpen(false);
   };
 
+  const handleBackgroundImageClear = () => {
+    setBackgroundError(null);
+    updateForm((current) => {
+      if (current.backgroundUrl) {
+        disposeFancamObjectUrl(current.backgroundUrl);
+      }
+
+      return {
+        ...current,
+        backgroundFile: null,
+        backgroundUrl: null,
+        backgroundCrop: null,
+      };
+    });
+    setIsBackgroundCropOpen(false);
+  };
+
   const handleExport = async () => {
     try {
       setIsExporting(true);
@@ -226,6 +252,7 @@ export function useFancamEditor() {
       backgroundError,
       onCharacterFileChange: handleCharacterFileChange,
       onBackgroundFileChange: handleBackgroundFileChange,
+      onBackgroundImageClear: handleBackgroundImageClear,
       onOpenBackgroundCrop: () => {
         if (form.backgroundUrl) {
           setIsBackgroundCropOpen(true);

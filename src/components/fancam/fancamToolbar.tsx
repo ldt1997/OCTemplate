@@ -30,6 +30,7 @@ type FancamToolbarProps = {
   backgroundError: string | null;
   onCharacterFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onBackgroundFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onBackgroundImageClear: () => void;
   onOpenBackgroundCrop: () => void;
   onCharacterScaleChange: (value: number) => void;
   onResetCharacterPosition: () => void;
@@ -66,6 +67,7 @@ export function FancamToolbar({
   backgroundError,
   onCharacterFileChange,
   onBackgroundFileChange,
+  onBackgroundImageClear,
   onOpenBackgroundCrop,
   onCharacterScaleChange,
   onResetCharacterPosition,
@@ -200,6 +202,7 @@ export function FancamToolbar({
             <FieldLabel htmlFor="fancam-background-image">背景图片</FieldLabel>
             <FieldContent>
               <Input
+                key={form.backgroundUrl ?? "empty-background"}
                 id="fancam-background-image"
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
@@ -213,9 +216,22 @@ export function FancamToolbar({
                 <p className="text-sm text-destructive">{backgroundError}</p>
               ) : null}
               {form.backgroundUrl ? (
-                <Button type="button" variant="outline" onClick={onOpenBackgroundCrop}>
-                  重新裁剪
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={onOpenBackgroundCrop}
+                  >
+                    重新裁剪
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={onBackgroundImageClear}
+                  >
+                    清空背景图片
+                  </Button>
+                </div>
               ) : null}
             </FieldContent>
           </Field>
