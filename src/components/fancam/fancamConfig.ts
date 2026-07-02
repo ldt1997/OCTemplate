@@ -9,7 +9,7 @@ export const fancamAcceptedImageTypes = [
   "image/webp",
 ] as const;
 
-export type FancamTemplate = "mbc" | "sbs";
+export type FancamTemplate = "mbc" | "sbs" | "mcd";
 export type FancamEffect = "none" | "bubble" | "ribbon" | "star";
 
 export type FancamFormState = {
@@ -37,8 +37,9 @@ export type FancamImageCropArea = {
 };
 
 export const fancamTemplateOptions = [
-  { label: "MBC", value: "mbc", asset: "mbc_front.webp" },
+  { label: "MBC", value: "mbc", asset: "front_mbc.webp" },
   { label: "SBS", value: "sbs", asset: "front_sbs.webp" },
+  { label: "MCD", value: "mcd", asset: "front_mcd.webp" },
 ] as const;
 
 export const fancamEffectOptions = [
@@ -131,6 +132,32 @@ export const fancamTemplateSpec = {
         fontSize: 83,
         font: "chironHei",
         fontWeight: 300,
+      },
+    },
+    mcdText: {
+      fillColor: "#ffffff",
+      shadowColor: "rgba(0, 0, 0, 0.45)",
+      shadowBlur: 4,
+      shadowOffsetX: 4,
+      shadowOffsetY: 4,
+      groupName: {
+        x: 58,
+        y: 700,
+        fontSize: 127,
+        font: "chironHei",
+        fontWeight: 700,
+      },
+      divider: {
+        x: 58,
+        y: 827,
+        height: 6,
+      },
+      memberName: {
+        x: 58,
+        y: 870,
+        fontSize: 180,
+        font: "chironHei",
+        fontWeight: 700,
       },
     },
   },

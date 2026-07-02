@@ -72,6 +72,8 @@ function drawTextWithStyle(
     strokeWidth?: number;
     shadowColor?: string;
     shadowBlur?: number;
+    shadowOffsetX?: number;
+    shadowOffsetY?: number;
   },
 ) {
   const font = fancamTemplateSpec.fonts[layer.font];
@@ -87,8 +89,8 @@ function drawTextWithStyle(
   context.lineWidth = style.strokeWidth ?? 0;
   context.shadowColor = style.shadowColor ?? "transparent";
   context.shadowBlur = style.shadowBlur ?? 0;
-  context.shadowOffsetX = 0;
-  context.shadowOffsetY = 0;
+  context.shadowOffsetX = style.shadowOffsetX ?? 0;
+  context.shadowOffsetY = style.shadowOffsetY ?? 0;
 
   const shouldStroke = (style.strokeWidth ?? 0) > 0;
 
@@ -143,6 +145,85 @@ function drawSbsText(context: CanvasRenderingContext2D, form: FancamFormState) {
   drawTextWithStyle(context, form.groupName, textLayer.groupName, style);
 }
 
+function drawShadowedDivider(
+  context: CanvasRenderingContext2D,
+  layer: typeof fancamTemplateSpec.layers.mcdText.divider & { width: number },
+  style: {
+    fillColor: string;
+    shadowColor: string;
+    shadowBlur: number;
+    shadowOffsetX: number;
+    shadowOffsetY: number;
+  },
+) {
+  context.save();
+  context.fillStyle = style.fillColor;
+  context.shadowColor = style.shadowColor;
+  context.shadowBlur = style.shadowBlur;
+  context.shadowOffsetX = style.shadowOffsetX;
+  context.shadowOffsetY = style.shadowOffsetY;
+  context.fillRect(layer.x, layer.y, layer.width, layer.height);
+  context.restore();
+}
+
+function measureTextLayerWidth(
+  context: CanvasRenderingContext2D,
+  text: string,
+  layer: {
+    fontSize: number;
+    font: "chironMedium" | "chironBold" | "chironHei";
+    fontWeight?: number;
+    letterSpacingRatio?: number;
+  },
+) {
+  const font = fancamTemplateSpec.fonts[layer.font];
+  const fontWeight =
+    layer.fontWeight ?? (layer.font === "chironBold" ? 700 : 500);
+
+  context.save();
+  context.font = `${fontWeight} ${layer.fontSize}px ${font.family}`;
+
+  if (!layer.letterSpacingRatio) {
+    const width = context.measureText(text).width;
+    context.restore();
+    return width;
+  }
+
+  const characters = Array.from(text);
+  const letterSpacing = layer.fontSize * layer.letterSpacingRatio;
+  const width = characters.reduce((total, character, index) => {
+    const spacing = index === characters.length - 1 ? 0 : letterSpacing;
+    return total + context.measureText(character).width + spacing;
+  }, 0);
+
+  context.restore();
+  return width;
+}
+
+function drawMcdText(context: CanvasRenderingContext2D, form: FancamFormState) {
+  const textLayer = fancamTemplateSpec.layers.mcdText;
+  const style = {
+    fillColor: textLayer.fillColor,
+    shadowColor: textLayer.shadowColor,
+    shadowBlur: textLayer.shadowBlur,
+    shadowOffsetX: textLayer.shadowOffsetX,
+    shadowOffsetY: textLayer.shadowOffsetY,
+  };
+  const dividerWidth = measureTextLayerWidth(
+    context,
+    form.groupName,
+    textLayer.groupName,
+  );
+
+  drawTextWithStyle(context, form.groupName, textLayer.groupName, style);
+  drawShadowedDivider(
+    context,
+    { ...textLayer.divider, width: dividerWidth },
+    style,
+  );
+  drawTextWithStyle(context, form.memberName, textLayer.memberName, style);
+}
+
 export async function drawFancamFrame(
   context: CanvasRenderingContext2D,
   form: FancamFormState,
@@ -191,5 +272,10 @@ export async function drawFancamFrame(
 
   if (form.template === "sbs") {
     drawSbsText(context, form);
+    return;
+  }
+
+  if (form.template === "mcd") {
+    drawMcdText(context, form);
   }
 }

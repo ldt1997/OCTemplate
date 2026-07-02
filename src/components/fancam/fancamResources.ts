@@ -1,8 +1,9 @@
 import effectBubbleUrl from "@/assets/fancam/effect_01.webp";
 import effectRibbonUrl from "@/assets/fancam/effect_02.webp";
 import effectStarUrl from "@/assets/fancam/effect_03.webp";
+import mcdFrontUrl from "@/assets/fancam/front_mcd.webp";
 import sbsFrontUrl from "@/assets/fancam/front_sbs.webp";
-import mbcFrontUrl from "@/assets/fancam/mbc_front.webp";
+import mbcFrontUrl from "@/assets/fancam/front_mbc.webp";
 import type { FancamEffect, FancamTemplate } from "@/components/fancam/fancamConfig";
 import { fancamTemplateSpec } from "@/components/fancam/fancamConfig";
 
@@ -12,6 +13,7 @@ let fancamFontsLoadPromise: Promise<void> | null = null;
 const templateAssetByValue: Record<FancamTemplate, string> = {
   mbc: mbcFrontUrl,
   sbs: sbsFrontUrl,
+  mcd: mcdFrontUrl,
 };
 
 const effectAssetByValue: Record<Exclude<FancamEffect, "none">, string> = {
