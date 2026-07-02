@@ -80,10 +80,10 @@ export function FancamToolbar({
 }: FancamToolbarProps) {
   const sections = [
     {
-      key: "character",
-      label: "立绘",
+      key: "image",
+      label: "图片",
       content: (
-        <SectionChrome legend="立绘" desc="设置角色立绘、缩放与位置。">
+        <SectionChrome legend="图片" desc="设置角色立绘、缩放、背景颜色与背景图片。">
           <Field>
             <FieldLabel htmlFor="fancam-character-image">角色立绘</FieldLabel>
             <FieldContent>
@@ -130,32 +130,6 @@ export function FancamToolbar({
               </div>
             </FieldContent>
           </Field>
-        </SectionChrome>
-      ),
-    },
-    {
-      key: "style",
-      label: "样式",
-      content: (
-        <SectionChrome legend="样式" desc="设置封面模板、背景与装饰效果。">
-          <Field>
-            <FieldLabel>模板</FieldLabel>
-            <FieldContent>
-              <ButtonGroup className="w-full">
-                {fancamTemplateOptions.map((option) => (
-                  <Button
-                    key={option.value}
-                    type="button"
-                    variant={form.template === option.value ? "default" : "outline"}
-                    className="flex-1"
-                    onClick={() => onTemplateChange(option.value)}
-                  >
-                    {option.label}
-                  </Button>
-                ))}
-              </ButtonGroup>
-            </FieldContent>
-          </Field>
 
           <Field>
             <FieldLabel htmlFor="fancam-background-color">背景颜色</FieldLabel>
@@ -176,24 +150,6 @@ export function FancamToolbar({
                     onBackgroundColorChange(event.target.value)
                   }
                 />
-              </div>
-            </FieldContent>
-          </Field>
-
-          <Field>
-            <FieldLabel>装饰效果</FieldLabel>
-            <FieldContent>
-              <div className="grid grid-cols-2 gap-2">
-                {fancamEffectOptions.map((option) => (
-                  <Button
-                    key={option.value}
-                    type="button"
-                    variant={form.effect === option.value ? "default" : "outline"}
-                    onClick={() => onEffectChange(option.value)}
-                  >
-                    {option.label}
-                  </Button>
-                ))}
               </div>
             </FieldContent>
           </Field>
@@ -239,10 +195,54 @@ export function FancamToolbar({
       ),
     },
     {
-      key: "info",
-      label: "信息",
+      key: "effect",
+      label: "效果",
       content: (
-        <SectionChrome legend="基本信息" desc="设置组合、人物与歌曲名称。">
+        <SectionChrome legend="效果" desc="设置封面模板与装饰效果。">
+          <Field>
+            <FieldLabel>模板</FieldLabel>
+            <FieldContent>
+              <ButtonGroup className="w-full">
+                {fancamTemplateOptions.map((option) => (
+                  <Button
+                    key={option.value}
+                    type="button"
+                    variant={form.template === option.value ? "default" : "outline"}
+                    className="flex-1"
+                    onClick={() => onTemplateChange(option.value)}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </ButtonGroup>
+            </FieldContent>
+          </Field>
+
+          <Field>
+            <FieldLabel>装饰效果</FieldLabel>
+            <FieldContent>
+              <div className="grid grid-cols-2 gap-2">
+                {fancamEffectOptions.map((option) => (
+                  <Button
+                    key={option.value}
+                    type="button"
+                    variant={form.effect === option.value ? "default" : "outline"}
+                    onClick={() => onEffectChange(option.value)}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </div>
+            </FieldContent>
+          </Field>
+        </SectionChrome>
+      ),
+    },
+    {
+      key: "text",
+      label: "文字",
+      content: (
+        <SectionChrome legend="文字" desc="设置组合、人物与歌曲名称。">
           <Field>
             <FieldLabel htmlFor="fancam-group-name">组合名称</FieldLabel>
             <FieldContent>
@@ -293,7 +293,7 @@ export function FancamToolbar({
         variant === "desktop" ? "overflow-y-auto p-5" : "p-4",
       )}
     >
-      <Tabs defaultValue="character" className="w-full">
+      <Tabs defaultValue="image" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           {sections.map((section) => (
             <TabsTrigger key={section.key} value={section.key}>
