@@ -55,6 +55,19 @@ function drawCharacter(
   context.restore();
 }
 
+function getTopAlignedBaselineY(
+  context: CanvasRenderingContext2D,
+  text: string,
+  topY: number,
+  fontSize: number,
+) {
+  const metrics = context.measureText(text || " ");
+  const fallbackAscent = fontSize * 0.88;
+  const ascent = metrics.actualBoundingBoxAscent || fallbackAscent;
+
+  return topY + ascent;
+}
+
 function drawTextWithStyle(
   context: CanvasRenderingContext2D,
   text: string,
@@ -83,7 +96,7 @@ function drawTextWithStyle(
   context.save();
   context.font = `${fontWeight} ${layer.fontSize}px ${font.family}`;
   context.textAlign = "left";
-  context.textBaseline = "top";
+  context.textBaseline = "alphabetic";
   context.fillStyle = style.fillColor;
   context.strokeStyle = style.strokeColor ?? "transparent";
   context.lineWidth = style.strokeWidth ?? 0;
@@ -93,6 +106,12 @@ function drawTextWithStyle(
   context.shadowOffsetY = style.shadowOffsetY ?? 0;
 
   const shouldStroke = (style.strokeWidth ?? 0) > 0;
+  const baselineY = getTopAlignedBaselineY(
+    context,
+    text,
+    layer.y,
+    layer.fontSize,
+  );
 
   const drawGlyph = (glyph: string, x: number, y: number) => {
     if (shouldStroke) {
@@ -103,7 +122,7 @@ function drawTextWithStyle(
   };
 
   if (!layer.letterSpacingRatio) {
-    drawGlyph(text, layer.x, layer.y);
+    drawGlyph(text, layer.x, baselineY);
     context.restore();
     return;
   }
@@ -113,7 +132,7 @@ function drawTextWithStyle(
   let currentX = layer.x;
 
   characters.forEach((character) => {
-    drawGlyph(character, currentX, layer.y);
+    drawGlyph(character, currentX, baselineY);
     currentX += context.measureText(character).width + letterSpacing;
   });
 
