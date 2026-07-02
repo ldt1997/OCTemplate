@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Chiron GoRound TC Medium";
-  src: url("../assets/fancam/ChironGoRoundTC-Medium.woff2") format("woff2");
+  src: url("../assets/fancam/ChironGoRoundTC-VariableFont_wght.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "Chiron GoRound TC Bold";
-  src: url("../assets/fancam/ChironGoRoundTC-Bold.woff2") format("woff2");
+  src: url("../assets/fancam/ChironGoRoundTC-VariableFont_wght.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
