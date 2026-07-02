@@ -62,28 +62,46 @@ function drawTextWithStyle(
     x: number;
     y: number;
     fontSize: number;
-    font: "chironMedium" | "chironBold";
+    font: "chironMedium" | "chironBold" | "chironHei";
+    fontWeight?: number;
     letterSpacingRatio?: number;
   },
+  style: {
+    fillColor: string;
+    strokeColor?: string;
+    strokeWidth?: number;
+    shadowColor?: string;
+    shadowBlur?: number;
+  },
 ) {
-  const textLayer = fancamTemplateSpec.layers.mbcText;
   const font = fancamTemplateSpec.fonts[layer.font];
+  const fontWeight =
+    layer.fontWeight ?? (layer.font === "chironBold" ? 700 : 500);
 
   context.save();
-  context.font = `${layer.font === "chironBold" ? 700 : 500} ${layer.fontSize}px ${font.family}`;
+  context.font = `${fontWeight} ${layer.fontSize}px ${font.family}`;
   context.textAlign = "left";
   context.textBaseline = "top";
-  context.fillStyle = textLayer.fillColor;
-  context.strokeStyle = textLayer.strokeColor;
-  context.lineWidth = textLayer.strokeWidth;
-  context.shadowColor = textLayer.shadowColor;
-  context.shadowBlur = textLayer.shadowBlur;
+  context.fillStyle = style.fillColor;
+  context.strokeStyle = style.strokeColor ?? "transparent";
+  context.lineWidth = style.strokeWidth ?? 0;
+  context.shadowColor = style.shadowColor ?? "transparent";
+  context.shadowBlur = style.shadowBlur ?? 0;
   context.shadowOffsetX = 0;
   context.shadowOffsetY = 0;
 
+  const shouldStroke = (style.strokeWidth ?? 0) > 0;
+
+  const drawGlyph = (glyph: string, x: number, y: number) => {
+    if (shouldStroke) {
+      context.strokeText(glyph, x, y);
+    }
+
+    context.fillText(glyph, x, y);
+  };
+
   if (!layer.letterSpacingRatio) {
-    context.strokeText(text, layer.x, layer.y);
-    context.fillText(text, layer.x, layer.y);
+    drawGlyph(text, layer.x, layer.y);
     context.restore();
     return;
   }
@@ -93,8 +111,7 @@ function drawTextWithStyle(
   let currentX = layer.x;
 
   characters.forEach((character) => {
-    context.strokeText(character, currentX, layer.y);
-    context.fillText(character, currentX, layer.y);
+    drawGlyph(character, currentX, layer.y);
     currentX += context.measureText(character).width + letterSpacing;
   });
 
@@ -103,10 +120,27 @@ function drawTextWithStyle(
 
 function drawMbcText(context: CanvasRenderingContext2D, form: FancamFormState) {
   const textLayer = fancamTemplateSpec.layers.mbcText;
+  const style = {
+    fillColor: textLayer.fillColor,
+    strokeColor: textLayer.strokeColor,
+    strokeWidth: textLayer.strokeWidth,
+    shadowColor: textLayer.shadowColor,
+    shadowBlur: textLayer.shadowBlur,
+  };
 
-  drawTextWithStyle(context, form.groupName, textLayer.groupName);
-  drawTextWithStyle(context, form.memberName, textLayer.memberName);
-  drawTextWithStyle(context, form.songName, textLayer.songName);
+  drawTextWithStyle(context, form.groupName, textLayer.groupName, style);
+  drawTextWithStyle(context, form.memberName, textLayer.memberName, style);
+  drawTextWithStyle(context, form.songName, textLayer.songName, style);
+}
+
+function drawSbsText(context: CanvasRenderingContext2D, form: FancamFormState) {
+  const textLayer = fancamTemplateSpec.layers.sbsText;
+  const style = {
+    fillColor: textLayer.fillColor,
+  };
+
+  drawTextWithStyle(context, form.memberName, textLayer.memberName, style);
+  drawTextWithStyle(context, form.groupName, textLayer.groupName, style);
 }
 
 export async function drawFancamFrame(
@@ -152,5 +186,10 @@ export async function drawFancamFrame(
 
   if (form.template === "mbc") {
     drawMbcText(context, form);
+    return;
+  }
+
+  if (form.template === "sbs") {
+    drawSbsText(context, form);
   }
 }

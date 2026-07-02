@@ -9,7 +9,7 @@ export const fancamAcceptedImageTypes = [
   "image/webp",
 ] as const;
 
-export type FancamTemplate = "mbc";
+export type FancamTemplate = "mbc" | "sbs";
 export type FancamEffect = "none" | "bubble" | "ribbon" | "star";
 
 export type FancamFormState = {
@@ -38,6 +38,7 @@ export type FancamImageCropArea = {
 
 export const fancamTemplateOptions = [
   { label: "MBC", value: "mbc", asset: "mbc_front.webp" },
+  { label: "SBS", value: "sbs", asset: "front_sbs.webp" },
 ] as const;
 
 export const fancamEffectOptions = [
@@ -76,6 +77,11 @@ export const fancamTemplateSpec = {
         '"Chiron GoRound TC Bold", "PingFang TC", "PingFang SC", "Microsoft JhengHei", sans-serif',
       load: '16px "Chiron GoRound TC Bold"',
     },
+    chironHei: {
+      family:
+        '"Chiron Hei HK", "PingFang HK", "PingFang TC", "PingFang SC", sans-serif',
+      load: '16px "Chiron Hei HK"',
+    },
   },
   layers: {
     full: { x: 0, y: 0, width: FANCAM_CANVAS_WIDTH, height: FANCAM_CANVAS_HEIGHT },
@@ -108,6 +114,23 @@ export const fancamTemplateSpec = {
         y: 638,
         fontSize: 90,
         font: "chironMedium",
+      },
+    },
+    sbsText: {
+      fillColor: "#ffffff",
+      memberName: {
+        x: 58,
+        y: 740,
+        fontSize: 200,
+        font: "chironHei",
+        fontWeight: 700,
+      },
+      groupName: {
+        x: 58,
+        y: 935,
+        fontSize: 83,
+        font: "chironHei",
+        fontWeight: 300,
       },
     },
   },
