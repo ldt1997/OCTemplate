@@ -40,13 +40,14 @@ function drawText(
   fontDefinition: string,
   color: string,
   letterSpacing = 0,
+  verticalAlign: "font" | "glyph" = "font",
 ) {
   context.font = fontDefinition;
   context.fillStyle = color;
   context.textBaseline = "alphabetic";
   context.textAlign = "left";
   const metrics = context.measureText(text || "Mg国");
-  const baseline = style.y + getAke2TextBaseline(metrics, style.fontSize, style.lineHeight);
+  const baseline = style.y + getAke2TextBaseline(metrics, style.fontSize, style.lineHeight, verticalAlign);
   if (!letterSpacing) {
     context.fillText(text, style.x, baseline);
     return context.measureText(text).width;
@@ -109,9 +110,9 @@ export function drawAke2Frame(
     context.drawImage(tintImage(resources.banner, color), banner.x, banner.y, banner.width, banner.height);
     drawImage(context, resources.logo, spec.logo);
     drawImage(context, resources.collabBackground, spec.collabBackground);
-    const collabFont = font(spec.collabText.fontSize, 400, "Ake2 Novecento Wide");
-    const prefixWidth = drawText(context, "限定联动活动", spec.collabText, collabFont, spec.white);
-    drawText(context, "新增干员", { ...spec.collabText, x: spec.collabText.x + prefixWidth }, collabFont, color);
+    const collabFont = font(spec.collabText.fontSize, 400, "Ake2 Noto Sans SC");
+    const prefixWidth = drawText(context, "限定联动活动", spec.collabText, collabFont, spec.white, 0, "glyph");
+    drawText(context, "新增干员", { ...spec.collabText, x: spec.collabText.x + prefixWidth }, collabFont, color, 0, "glyph");
 
     const englishName = form.enName.toUpperCase();
     withShadow(context, spec.largeName.shadow, () => {
@@ -153,7 +154,7 @@ export function drawAke2Frame(
       width: context.measureText(branch.label).width + badge.paddingX * 2,
       height: badge.lineHeight + badge.paddingY * 2,
     }, color);
-    drawText(context, branch.label, badge, badgeFont, spec.white);
+    drawText(context, branch.label, badge, badgeFont, spec.white, 0, "glyph");
 
     const english = spec.professionEnglish;
     const englishFont = font(english.fontSize, 400, "Ake2 Novecento Wide");

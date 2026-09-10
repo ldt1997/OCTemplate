@@ -129,16 +129,6 @@ export function useAke2Editor() {
     }
   };
 
-  const onRemoveImage = () => {
-    uploadVersion.current += 1;
-    // 导出下载 URL 独立保留到下载开始，移除立绘只释放上传资源。
-    if (currentImageUrl.current) releaseUrl(currentImageUrl.current);
-    currentImageUrl.current = null;
-    setIsImageLoading(false);
-    setImageError(null);
-    setForm((current) => ({ ...current, image: null }));
-  };
-
   const onProfessionChange = (value: string) => {
     const profession = ake2Professions.find((item) => item.value === value);
     if (!profession) return;
@@ -166,17 +156,11 @@ export function useAke2Editor() {
     setForm((current) => ({ ...current, imagePosition: position }));
   };
 
-  const onResetImage = () => {
-    setForm((current) => ({
-      ...current, scale: 100, imagePosition: { ...ake2TemplateSpec.image.initialPosition },
-    }));
-  };
-
   return {
     form, resources, resourcesReady, resourceError, setResourceError, fontError, fontsReady,
     canExport, isExporting, exportError, handleExport, onImagePositionChange,
     toolbarProps: {
-      form, imageError, isImageLoading, onUpload, onRemoveImage, onResetImage,
+      form, imageError, isImageLoading, onUpload,
       onProfessionChange, onBranchChange, onNumberChange,
       onTextChange: (field: TextField, value: string) => {
         setForm((current) => ({ ...current, [field]: value }));

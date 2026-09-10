@@ -33,9 +33,15 @@ export function formatAke2English(value: string) {
   return value.replace(/([a-z])([A-Z])/g, "$1 $2").toUpperCase();
 }
 
-export function getAke2TextBaseline(metrics: TextMetrics, fontSize: number, lineHeight: number) {
-  const ascent = metrics.fontBoundingBoxAscent ?? fontSize * 0.8;
-  const descent = metrics.fontBoundingBoxDescent ?? fontSize * 0.2;
+export function getAke2TextBaseline(
+  metrics: TextMetrics,
+  fontSize: number,
+  lineHeight: number,
+  verticalAlign: "font" | "glyph" = "font",
+) {
+  // 标签按实际可见字形居中，避免字体行框和中文回退字体的度量差异。
+  const ascent = (verticalAlign === "glyph" ? metrics.actualBoundingBoxAscent : metrics.fontBoundingBoxAscent) ?? fontSize * 0.8;
+  const descent = (verticalAlign === "glyph" ? metrics.actualBoundingBoxDescent : metrics.fontBoundingBoxDescent) ?? fontSize * 0.2;
   return (lineHeight - ascent - descent) / 2 + ascent;
 }
 
