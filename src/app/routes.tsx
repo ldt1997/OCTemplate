@@ -2,6 +2,11 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { HomePage } from "@/pages/homePage";
 
+const Ake2Page = lazy(async () => {
+  const module = await import("@/pages/ake2Page");
+  return { default: module.Ake2Page };
+});
+
 const AkRecruitPage = lazy(async () => {
   const module = await import("@/pages/akRecruitPage");
   return { default: module.AkRecruitPage };
@@ -43,6 +48,7 @@ export function AppRoutes() {
           <Route path="/" element={<HomePage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/akrecruit" element={<AkRecruitPage />} />
+          <Route path="/ake2" element={<Ake2Page />} />
           <Route path="/luoxiaohei" element={<LuoxiaoheiPage />} />
           <Route path="/notmecore" element={<NotmecorePage />} />
           <Route path="/br" element={<BrPage />} />

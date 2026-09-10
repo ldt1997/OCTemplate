@@ -1,4 +1,5 @@
 import type { TemplateItem } from "@/types/template";
+import ake2Preview from "@/assets/ake2/bg.webp";
 import akrecruitPreview from "@/assets/akrecruit/preview.webp";
 import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.webp";
 import notmecorePreview from "@/assets/notmecore/preview.webp";
@@ -6,6 +7,14 @@ import brPreview from "@/assets/br/preview.webp";
 import fancamPreview from "@/assets/fancam/preview.webp";
 
 export const templateList: TemplateItem[] = [
+  {
+    id: "ake2",
+    name: "明日方舟精二海报",
+    tag: "明日方舟",
+    description: "上传角色立绘，自定义名称、星级和职业，生成明日方舟精二风格海报。",
+    path: "/ake2",
+    previewImage: ake2Preview,
+  },
   {
     id: "fancam",
     name: "舞台直拍封面",
