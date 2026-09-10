@@ -1,4 +1,12 @@
 @font-face {
+  font-family: "Ake2 Source Han Serif CN";
+  src: url("../assets/fonts/source-han-serif-cn/SourceHanSerifCN-Heavy-4.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Ake2 Noto Sans SC";
   src: url("../assets/fonts/noto-sans-sc/NotoSansSC-Regular.woff2") format("woff2");
   font-weight: 400;

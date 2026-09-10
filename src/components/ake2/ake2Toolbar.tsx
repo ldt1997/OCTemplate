@@ -30,7 +30,7 @@ function Section({ legend, description, children }: {
 }
 
 export function Ake2Toolbar({
-  variant, form, imageError, isImageLoading, onUpload, onRemoveImage,
+  variant, form, imageError, isImageLoading, onUpload, onRemoveImage, onResetImage,
   onProfessionChange, onBranchChange, onNumberChange, onTextChange, onThemeColorChange,
 }: Ake2ToolbarProps) {
   const id = (field: string) => `ake2-${variant}-${field}`;
@@ -68,7 +68,11 @@ export function Ake2Toolbar({
                   <FieldDescription className="break-all">
                     当前文件：{form.image.name}（{form.image.width} × {form.image.height}）
                   </FieldDescription>
-                  <Button type="button" variant="outline" onClick={onRemoveImage}>移除图片</Button>
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" onClick={onResetImage}>重置位置与缩放</Button>
+                    <Button type="button" variant="outline" onClick={onRemoveImage}>移除图片</Button>
+                  </div>
+                  <FieldDescription>在画布上拖动立绘调整位置，超出画布的部分会被裁切。</FieldDescription>
                 </>
               )}
             </FieldContent>
