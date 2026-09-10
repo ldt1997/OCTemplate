@@ -18,8 +18,8 @@ Arguments:
 
 Examples:
   ./scripts/convert-fonts.sh
-  ./scripts/convert-fonts.sh src/assets/akrecruit
-  ./scripts/convert-fonts.sh src/assets/akrecruit/SourceHanSansSC-Normal.otf
+  ./scripts/convert-fonts.sh src/assets/fonts
+  ./scripts/convert-fonts.sh src/assets/fonts/source-han-sans-sc/SourceHanSansSC-Normal.otf
 EOF
 }
 

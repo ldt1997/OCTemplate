@@ -61,8 +61,8 @@ npm run fonts:convert
 转换指定目录或单个字体文件：
 
 ```bash
-bash ./scripts/convert-fonts.sh src/assets/akrecruit
-bash ./scripts/convert-fonts.sh src/assets/akrecruit/SourceHanSansSC-Normal.otf
+bash ./scripts/convert-fonts.sh src/assets/fonts
+bash ./scripts/convert-fonts.sh src/assets/fonts/source-han-sans-sc/SourceHanSansSC-Normal.otf
 ```
 
 脚本依赖 `pyftsubset`，首次使用前请先安装：
