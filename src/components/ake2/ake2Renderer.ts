@@ -108,6 +108,7 @@ export function drawAke2Frame(
 
     const banner = spec.banner;
     context.drawImage(tintImage(resources.banner, color), banner.x, banner.y, banner.width, banner.height);
+    drawImage(context, resources.bannerEffect, spec.bannerEffect);
     drawImage(context, resources.logo, spec.logo);
     drawImage(context, resources.collabBackground, spec.collabBackground);
     const collabFont = font(spec.collabText.fontSize, 400, "Ake2 Noto Sans SC");

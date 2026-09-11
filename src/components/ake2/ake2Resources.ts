@@ -1,5 +1,6 @@
 import backgroundUrl from "@/assets/ake2/bg.webp";
 import bannerUrl from "@/assets/ake2/banner.svg";
+import bannerEffectUrl from "@/assets/ake2/banner-effect.webp";
 import logoUrl from "@/assets/ake2/ak-logo.webp";
 import collabBackgroundUrl from "@/assets/ake2/collab-event-new-operators-wrapper.webp";
 import smallNameBackgroundUrl from "@/assets/ake2/small-en-name-bg.webp";
@@ -81,6 +82,7 @@ export function ensureAke2FontsLoaded(): Promise<void> {
 }
 
 const staticUrls = {
+  bannerEffect: bannerEffectUrl,
   background: backgroundUrl, banner: bannerUrl, logo: logoUrl,
   collabBackground: collabBackgroundUrl, smallNameBackground: smallNameBackgroundUrl,
   star: starUrl, attention: attentionUrl, arrow: arrowUrl, rightDecoration: rightDecorationUrl,

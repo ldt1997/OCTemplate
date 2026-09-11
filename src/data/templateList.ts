@@ -1,5 +1,5 @@
 import type { TemplateItem } from "@/types/template";
-import ake2Preview from "@/assets/ake2/bg.webp";
+import ake2Preview from "@/assets/ake2/preview.webp";
 import akrecruitPreview from "@/assets/akrecruit/preview.webp";
 import luoxiaoheiPreview from "@/assets/luoxiaohei/preview.webp";
 import notmecorePreview from "@/assets/notmecore/preview.webp";
@@ -9,11 +9,19 @@ import fancamPreview from "@/assets/fancam/preview.webp";
 export const templateList: TemplateItem[] = [
   {
     id: "ake2",
-    name: "明日方舟精二海报",
+    name: "明日方舟干员精二海报",
     tag: "明日方舟",
-    description: "上传角色立绘，自定义名称、星级和职业，生成明日方舟精二风格海报。",
+    description: "生成仿明日方舟干员精二海报",
     path: "/ake2",
     previewImage: ake2Preview,
+  },
+  {
+    id: "ak-recruit",
+    name: "明日方舟干员招募界面",
+    tag: "明日方舟",
+    description: "生成仿明日方舟干员招募界面",
+    path: "/akrecruit",
+    previewImage: akrecruitPreview,
   },
   {
     id: "fancam",
@@ -23,14 +31,6 @@ export const templateList: TemplateItem[] = [
       "K-POP 打歌舞台直拍封面",
     path: "/fancam",
     previewImage: fancamPreview,
-  },
-  {
-    id: "ak-recruit",
-    name: "明日方舟干员招募界面",
-    tag: "明日方舟",
-    description: "生成仿明日方舟干员招募界面",
-    path: "/akrecruit",
-    previewImage: akrecruitPreview,
   },
   {
     id: "luoxiaohei",
