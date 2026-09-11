@@ -89,7 +89,7 @@ export function Ake2Toolbar({
                 }}
               />
               <FieldDescription id={id("image-help")}>
-                支持 PNG、JPEG，最大 10 MB。
+                支持 PNG、JPEG，最大 15 MB
               </FieldDescription>
               {isImageLoading && (
                 <p role="status" className="text-sm text-muted-foreground">
@@ -104,11 +104,7 @@ export function Ake2Toolbar({
               {form.image && (
                 <>
                   <FieldDescription className="break-all">
-                    当前文件：{form.image.name}（{form.image.width} ×{" "}
-                    {form.image.height}）
-                  </FieldDescription>
-                  <FieldDescription>
-                    在画布上拖动立绘调整位置，超出画布的部分会被裁切。
+                    当前文件：{form.image.name}
                   </FieldDescription>
                 </>
               )}

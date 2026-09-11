@@ -17,8 +17,8 @@ export function Ake2Viewport({ children }: {
   }, []);
 
   return (
-    <div className="h-full overflow-y-auto bg-muted/40 pb-28 lg:pb-4">
-      <div ref={viewportRef} className="w-full">
+    <div className="h-full overflow-y-auto bg-muted/40 pb-28 lg:flex lg:justify-center lg:pb-0">
+      <div ref={viewportRef} className="w-full lg:aspect-[4/3] lg:h-full lg:w-auto lg:shrink-0">
         {displayWidth > 0 && children(displayWidth)}
       </div>
     </div>

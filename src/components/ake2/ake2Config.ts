@@ -27,7 +27,7 @@ export const ake2TemplateSpec = {
   filePrefix: "ake2",
   image: {
     acceptedTypes: ["image/png", "image/jpeg"] as readonly string[],
-    maxBytes: 10 * 1024 * 1024,
+    maxBytes: 15 * 1024 * 1024,
     scale: { min: 50, max: 300, step: 1 },
     // 100% 时高度等于画布高度，与 akrecruit 相同。
     initialPosition: { x: 500, y: 60 },
