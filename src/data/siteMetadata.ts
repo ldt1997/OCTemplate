@@ -18,6 +18,12 @@ export const siteMetadata = {
 } as const;
 
 export const seoPages = {
+  ake2: {
+    title: "明日方舟精二海报生成器 - OCTemplate",
+    description: "上传角色立绘，自定义名称、星级和职业，生成明日方舟精二风格海报。",
+    path: "/ake2",
+    keywords: ["明日方舟", "精二海报", "角色海报", "图片模板生成器"],
+  },
   home: {
     title: siteMetadata.defaultTitle,
     description: siteMetadata.description,

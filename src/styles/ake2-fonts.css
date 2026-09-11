@@ -1,0 +1,71 @@
+@font-face {
+  font-family: "Ake2 Source Han Serif CN";
+  src: url("../assets/fonts/source-han-serif-cn/SourceHanSerifCN-Heavy-4.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ake2 Noto Sans SC";
+  src: url("../assets/fonts/noto-sans-sc/NotoSansSC-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ake2 Noto Sans SC";
+  src: url("../assets/fonts/noto-sans-sc/NotoSansSC-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ake2 Noto Sans SC";
+  src: url("../assets/fonts/noto-sans-sc/NotoSansSC-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ake2 Geom";
+  src: url("../assets/fonts/geom/Geom-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ake2 Geom";
+  src: url("../assets/fonts/geom/Geom-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ake2 Novecento Wide";
+  src: url("../assets/fonts/novecento/Novecento-Wide-Normal-2.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ake2 Akt";
+  src: url("../assets/fonts/akt/Akt-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ake2 Akt";
+  src: url("../assets/fonts/akt/Akt-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
