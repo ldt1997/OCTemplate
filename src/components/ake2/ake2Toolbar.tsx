@@ -261,7 +261,7 @@ export function Ake2Toolbar({
               <Input
                 id={id("watermark")}
                 value={form.watermark}
-                placeholder="@OCTemplate"
+                placeholder="©OCTEMPLATE"
                 onChange={(event) =>
                   onTextChange("watermark", event.target.value)
                 }
