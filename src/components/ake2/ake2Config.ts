@@ -83,6 +83,6 @@ export const initialAke2FormState: Ake2FormState = {
   rarity: 6,
   profession: "vanguard",
   branch: "charger",
-  watermark: "@OCTemplate",
+  watermark: "©OCTEMPLATE",
   description: "*图文内容仅作辅助说明使用，具体请以游戏实际情况为准。",
 };
