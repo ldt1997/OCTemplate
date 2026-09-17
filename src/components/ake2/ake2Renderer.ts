@@ -113,7 +113,8 @@ export function drawAke2Frame(
     if (form.collabLogo && resources.collabLogo) {
       const logo = spec.collabLogo;
       const height = logo.height * form.logoScale;
-      context.drawImage(resources.collabLogo, logo.x, logo.y,
+      const y = spec.logo.y + (resources.logo.naturalHeight - height) / 2;
+      context.drawImage(resources.collabLogo, logo.x, y,
         height * form.collabLogo.width / form.collabLogo.height, height);
     }
     drawImage(context, resources.collabBackground, spec.collabBackground);

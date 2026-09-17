@@ -45,7 +45,7 @@ export const ake2TemplateSpec = {
     banner: { x: 0, y: 0, width: 2870, height: 1090 },
     bannerEffect: { x: 0, y: 0, width: 2870, height: 1090 },
     logo: { x: 92, y: 111 },
-    collabLogo: { x: 534, y: 115, height: 165 },
+    collabLogo: { x: 534, height: 165 },
     collabBackground: { x: 187, y: 539 },
     collabText: { x: 255, y: 552, fontSize: 30, lineHeight: 36 },
     largeName: { x: 217, y: 989, fontSize: 310, lineHeight: 372, color: "#EAEAEA", shadow: { x: 0, y: 4, blur: 100, color: "rgba(255,255,255,0.25)" } },
