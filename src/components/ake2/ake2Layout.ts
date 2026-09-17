@@ -26,7 +26,7 @@ export function getAke2Profession(form: Ake2FormState) {
 }
 
 export function getAke2SelectionKey(form: Ake2FormState) {
-  return JSON.stringify([form.profession, form.branch, form.image?.url ?? null]);
+  return JSON.stringify([form.profession, form.branch, form.image?.url ?? null, form.collabLogo?.url ?? null, form.backgroundImage?.url ?? null]);
 }
 
 export function formatAke2English(value: string) {

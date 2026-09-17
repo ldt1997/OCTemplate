@@ -1,5 +1,6 @@
 import "@/styles/ake2-fonts.css";
 import { SlidersHorizontal } from "lucide-react";
+import { Ake2BackgroundCropDialog } from "@/components/ake2/ake2BackgroundCropDialog";
 import { Ake2Canvas } from "@/components/ake2/ake2Canvas";
 import { Ake2Toolbar } from "@/components/ake2/ake2Toolbar";
 import { Ake2Viewport } from "@/components/ake2/ake2Viewport";
@@ -14,7 +15,7 @@ import { createWebApplicationJsonLd, seoPages } from "@/data/siteMetadata";
 export function Ake2Page() {
   const {
     form, resources, resourcesReady, resourceError, setResourceError, fontError, fontsReady,
-    canExport, isExporting, exportError, handleExport, onImagePositionChange, toolbarProps,
+    canExport, isExporting, exportError, handleExport, onImagePositionChange, toolbarProps, backgroundCropDialogProps,
   } = useAke2Editor();
 
   return (
@@ -71,6 +72,7 @@ export function Ake2Page() {
           </div>
         </section>
       </div>
+      <Ake2BackgroundCropDialog {...backgroundCropDialogProps} />
     </AppLayout>
   );
 }

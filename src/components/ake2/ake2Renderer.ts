@@ -109,7 +109,19 @@ export function drawAke2Frame(
     const banner = spec.banner;
     context.drawImage(tintImage(resources.banner, color), banner.x, banner.y, banner.width, banner.height);
     drawImage(context, resources.bannerEffect, spec.bannerEffect);
+    if (form.backgroundImage && resources.customBackground) {
+      const { crop } = form.backgroundImage;
+      context.drawImage(resources.customBackground, crop.x, crop.y, crop.width, crop.height,
+        0, 0, canvasWidth, canvasHeight);
+    }
     drawImage(context, resources.logo, spec.logo);
+    if (form.collabLogo && resources.collabLogo) {
+      const logo = spec.collabLogo;
+      const height = logo.height * form.logoScale;
+      const y = spec.logo.y + (resources.logo.naturalHeight - height) / 2;
+      context.drawImage(resources.collabLogo, logo.x, y,
+        height * form.collabLogo.width / form.collabLogo.height, height);
+    }
     drawImage(context, resources.collabBackground, spec.collabBackground);
     const collabFont = font(spec.collabText.fontSize, 400, "Ake2 Noto Sans SC");
     const prefixWidth = drawText(context, "限定联动活动", spec.collabText, collabFont, spec.white, 0, "glyph");
