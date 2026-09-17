@@ -8,6 +8,8 @@ export type Ake2Image = {
 };
 
 export type Ake2FormState = {
+  collabLogo: Ake2Image | null;
+  logoScale: number;
   image: Ake2Image | null;
   scale: number;
   imagePosition: { x: number; y: number };
@@ -21,12 +23,18 @@ export type Ake2FormState = {
   description: string;
 };
 
+
 export const ake2TemplateSpec = {
   canvasWidth: 3000,
   canvasHeight: 2250,
   filePrefix: "ake2",
+  logoScale: { min: 0.5, max: 3, step: 0.01 },
+  collabLogoUpload: {
+    acceptedTypes: ["image/png", "image/jpeg", "image/webp"] as readonly string[],
+    maxBytes: 10 * 1024 * 1024,
+  },
   image: {
-    acceptedTypes: ["image/png", "image/jpeg"] as readonly string[],
+    acceptedTypes: ["image/png", "image/jpeg", "image/webp"] as readonly string[],
     maxBytes: 15 * 1024 * 1024,
     scale: { min: 50, max: 300, step: 1 },
     // 100% 时高度等于画布高度，与 akrecruit 相同。
@@ -37,6 +45,7 @@ export const ake2TemplateSpec = {
     banner: { x: 0, y: 0, width: 2870, height: 1090 },
     bannerEffect: { x: 0, y: 0, width: 2870, height: 1090 },
     logo: { x: 92, y: 111 },
+    collabLogo: { x: 534, y: 115, height: 165 },
     collabBackground: { x: 187, y: 539 },
     collabText: { x: 255, y: 552, fontSize: 30, lineHeight: 36 },
     largeName: { x: 217, y: 989, fontSize: 310, lineHeight: 372, color: "#EAEAEA", shadow: { x: 0, y: 4, blur: 100, color: "rgba(255,255,255,0.25)" } },
@@ -74,6 +83,8 @@ export const ake2TemplateSpec = {
 } as const;
 
 export const initialAke2FormState: Ake2FormState = {
+  collabLogo: null,
+  logoScale: 1,
   image: null,
   scale: 100,
   imagePosition: { ...ake2TemplateSpec.image.initialPosition },

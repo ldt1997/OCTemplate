@@ -107,16 +107,18 @@ export type Ake2Resources = StaticResources & {
   profession: HTMLImageElement;
   branch: HTMLImageElement;
   character: HTMLImageElement | null;
+  collabLogo: HTMLImageElement | null;
 };
 
 export async function loadAke2Resources(form: Ake2FormState): Promise<Ake2Resources> {
   const { profession, branch } = getAke2Profession(form);
-  const [images, professionImage, branchImage, character] = await Promise.all([
+  const [images, professionImage, branchImage, character, collabLogo] = await Promise.all([
     loadStaticResources(), loadProfessionLogo(profession.logo), loadAke2Image(branch.logo),
     form.image ? loadAke2Image(form.image.url) : Promise.resolve(null),
+    form.collabLogo ? loadAke2Image(form.collabLogo.url) : Promise.resolve(null),
   ]);
   return {
     ...images, selectionKey: getAke2SelectionKey(form),
-    profession: professionImage, branch: branchImage, character,
+    profession: professionImage, branch: branchImage, character, collabLogo,
   };
 }

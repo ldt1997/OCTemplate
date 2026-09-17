@@ -12,6 +12,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -52,6 +53,7 @@ export function Ake2Toolbar({
   imageError,
   isImageLoading,
   onUpload,
+  logoError, isLogoLoading, onLogoUpload, onLogoRemove,
   onProfessionChange,
   onBranchChange,
   onNumberChange,
@@ -252,9 +254,41 @@ export function Ake2Toolbar({
     },
     {
       key: "auxiliary",
-      label: "辅助文本",
+      label: "自定义",
       content: (
-        <Section legend="辅助文本" description="设置模板中的辅助说明文本">
+        <Section legend="自定义" description="设置联动 LOGO 及缩放、水印与说明文本">
+          <Field>
+            <FieldLabel htmlFor={id("collab-logo")}>联动 LOGO</FieldLabel>
+            <FieldContent>
+              <Input id={id("collab-logo")} type="file"
+                accept={ake2TemplateSpec.collabLogoUpload.acceptedTypes.join(",")}
+                aria-invalid={!!logoError} aria-describedby={id("logo-help")}
+                onChange={(event) => {
+                  const file = event.target.files?.[0] ?? null;
+                  event.target.value = "";
+                  void onLogoUpload(file);
+                }} />
+              {form.collabLogo && (
+                <div className="flex items-center gap-3">
+                  <Button type="button" variant="outline" className="shrink-0" onClick={onLogoRemove}>移除图片</Button>
+                  <Slider
+                    className="min-w-0 flex-1"
+                    aria-label="LOGO缩放"
+                    value={[form.logoScale]}
+                    {...ake2TemplateSpec.logoScale}
+                    onValueChange={([value]) => onNumberChange("logoScale", value)}
+                  />
+                  <span className="shrink-0 text-sm tabular-nums text-muted-foreground">{form.logoScale} 倍</span>
+                </div>
+              )}
+              <FieldDescription id={id("logo-help")}>
+                支持 PNG、JPEG，最大 {ake2TemplateSpec.collabLogoUpload.maxBytes / 1024 / 1024} MB。
+              </FieldDescription>
+              {form.collabLogo && <FieldDescription className="break-all">当前 LOGO：{form.collabLogo.name}</FieldDescription>}
+              {isLogoLoading && <p role="status" className="text-sm text-muted-foreground">正在读取 LOGO…</p>}
+              {logoError && <p role="alert" className="text-sm text-destructive">{logoError}</p>}
+            </FieldContent>
+          </Field>
           <Field>
             <FieldLabel htmlFor={id("watermark")}>水印</FieldLabel>
             <FieldContent>
