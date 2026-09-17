@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ake2TemplateSpec, initialAke2FormState, type Ake2FormState } from "./ake2Config";
+import { ake2TemplateSpec, initialAke2FormState, type Ake2FormState, type Ake2Background } from "./ake2Config";
 import { ake2Professions } from "./ake2Professions";
 import { getAke2SelectionKey, type Ake2Point } from "./ake2Layout";
 import { exportAke2Image } from "./ake2Poster";
@@ -29,6 +29,11 @@ export function useAke2Editor() {
   const [logoError, setLogoError] = useState<string | null>(null);
   const [isLogoLoading, setIsLogoLoading] = useState(false);
   const logoUploadVersion = useRef(0);
+  const backgroundUploadVersion = useRef(0);
+  const currentBackgroundUrl = useRef<string | null>(null);
+  const [backgroundDraft, setBackgroundDraft] = useState<Ake2Background | null>(null);
+  const [backgroundError, setBackgroundError] = useState<string | null>(null);
+  const [isBackgroundLoading, setIsBackgroundLoading] = useState(false);
 
   const releaseUrl = (url: string) => {
     if (ownedUrls.current.delete(url)) disposeAke2ObjectUrl(url);
@@ -48,6 +53,7 @@ export function useAke2Editor() {
       mounted.current = false;
       uploadVersion.current += 1;
       logoUploadVersion.current += 1;
+      backgroundUploadVersion.current += 1;
       urls.forEach(disposeAke2ObjectUrl);
       urls.clear();
     };
@@ -63,10 +69,10 @@ export function useAke2Editor() {
     });
     return () => { active = false; };
     // 文本、颜色与位置变化只重绘，不重新加载资源。
-  }, [form.profession, form.branch, form.image, form.collabLogo?.url]);
+  }, [form.profession, form.branch, form.image, form.collabLogo?.url, form.backgroundImage?.url]);
 
   const resourcesReady = resources?.selectionKey === getAke2SelectionKey(form);
-  const canExport = resourcesReady && fontsReady && !resourceError && !isImageLoading && !isLogoLoading && !isExporting;
+  const canExport = resourcesReady && fontsReady && !resourceError && !isImageLoading && !isLogoLoading && !isBackgroundLoading && !backgroundDraft && !isExporting;
 
   const handleExport = async () => {
     if (!canExport || !resources || exportLock.current) return;
@@ -181,6 +187,62 @@ export function useAke2Editor() {
     setLogoError(null);
   };
 
+  const onBackgroundUpload = async (file: File | null) => {
+    if (!file) return;
+    const version = ++backgroundUploadVersion.current;
+    setBackgroundError(null);
+    setIsBackgroundLoading(false);
+    const spec = ake2TemplateSpec.backgroundUpload;
+    if (!spec.acceptedTypes.includes(file.type)) {
+      setBackgroundError("请上传 PNG、JPEG 或 WebP 图片。");
+      return;
+    }
+    if (file.size > spec.maxBytes) {
+      setBackgroundError("背景图片大小不能超过 15 MB。");
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    ownedUrls.current.add(url);
+    setIsBackgroundLoading(true);
+    try {
+      const image = await loadAke2Image(url);
+      if (version !== backgroundUploadVersion.current) { releaseUrl(url); return; }
+      const aspect = ake2TemplateSpec.canvasWidth / ake2TemplateSpec.canvasHeight;
+      const width = Math.min(image.naturalWidth, image.naturalHeight * aspect);
+      const height = width / aspect;
+      setBackgroundDraft({ url, name: file.name, width: image.naturalWidth, height: image.naturalHeight,
+        crop: { x: (image.naturalWidth - width) / 2, y: (image.naturalHeight - height) / 2, width, height } });
+    } catch {
+      releaseUrl(url);
+      if (version === backgroundUploadVersion.current) setBackgroundError("无法读取背景图片，请选择有效的图片文件。");
+    } finally {
+      if (version === backgroundUploadVersion.current) setIsBackgroundLoading(false);
+    }
+  };
+
+  const onBackgroundCancel = () => {
+    if (backgroundDraft && backgroundDraft.url !== currentBackgroundUrl.current) releaseUrl(backgroundDraft.url);
+    setBackgroundDraft(null);
+  };
+
+  const onBackgroundConfirm = (crop: Ake2Background["crop"]) => {
+    if (!backgroundDraft) return;
+    const previousUrl = currentBackgroundUrl.current;
+    currentBackgroundUrl.current = backgroundDraft.url;
+    setForm((current) => ({ ...current, backgroundImage: { ...backgroundDraft, crop } }));
+    setBackgroundDraft(null);
+    if (previousUrl && previousUrl !== backgroundDraft.url) releaseUrl(previousUrl);
+  };
+
+  const onBackgroundRemove = () => {
+    backgroundUploadVersion.current += 1;
+    if (currentBackgroundUrl.current) releaseUrl(currentBackgroundUrl.current);
+    currentBackgroundUrl.current = null;
+    setForm((current) => ({ ...current, backgroundImage: null }));
+    setIsBackgroundLoading(false);
+    setBackgroundError(null);
+  };
+
   const onProfessionChange = (value: string) => {
     const profession = ake2Professions.find((item) => item.value === value);
     if (!profession) return;
@@ -214,7 +276,10 @@ export function useAke2Editor() {
   return {
     form, resources, resourcesReady, resourceError, setResourceError, fontError, fontsReady,
     canExport, isExporting, exportError, handleExport, onImagePositionChange,
+    backgroundCropDialogProps: { image: backgroundDraft, onCancel: onBackgroundCancel, onConfirm: onBackgroundConfirm },
     toolbarProps: {
+      backgroundError, isBackgroundLoading, onBackgroundUpload, onBackgroundRemove,
+      onBackgroundRecrop: () => setBackgroundDraft(form.backgroundImage),
       logoError, isLogoLoading, onLogoUpload, onLogoRemove,
       form, imageError, isImageLoading, onUpload,
       onProfessionChange, onBranchChange, onNumberChange,

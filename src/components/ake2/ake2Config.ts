@@ -7,7 +7,10 @@ export type Ake2Image = {
   height: number;
 };
 
+export type Ake2Background = Ake2Image & { crop: { x: number; y: number; width: number; height: number } };
+
 export type Ake2FormState = {
+  backgroundImage: Ake2Background | null;
   collabLogo: Ake2Image | null;
   logoScale: number;
   image: Ake2Image | null;
@@ -29,6 +32,10 @@ export const ake2TemplateSpec = {
   canvasHeight: 2250,
   filePrefix: "ake2",
   logoScale: { min: 0.5, max: 3, step: 0.01 },
+  backgroundUpload: {
+    acceptedTypes: ["image/png", "image/jpeg", "image/webp"] as readonly string[],
+    maxBytes: 15 * 1024 * 1024,
+  },
   collabLogoUpload: {
     acceptedTypes: ["image/png", "image/jpeg", "image/webp"] as readonly string[],
     maxBytes: 10 * 1024 * 1024,
@@ -45,7 +52,7 @@ export const ake2TemplateSpec = {
     banner: { x: 0, y: 0, width: 2870, height: 1090 },
     bannerEffect: { x: 0, y: 0, width: 2870, height: 1090 },
     logo: { x: 92, y: 111 },
-    collabLogo: { x: 534, height: 165 },
+    collabLogo: { x: 520, height: 165 },
     collabBackground: { x: 187, y: 539 },
     collabText: { x: 255, y: 552, fontSize: 30, lineHeight: 36 },
     largeName: { x: 217, y: 989, fontSize: 310, lineHeight: 372, color: "#EAEAEA", shadow: { x: 0, y: 4, blur: 100, color: "rgba(255,255,255,0.25)" } },
@@ -83,6 +90,7 @@ export const ake2TemplateSpec = {
 } as const;
 
 export const initialAke2FormState: Ake2FormState = {
+  backgroundImage: null,
   collabLogo: null,
   logoScale: 1,
   image: null,
